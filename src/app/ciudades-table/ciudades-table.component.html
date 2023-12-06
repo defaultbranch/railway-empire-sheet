@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Population</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ciudad of ciudades">
+      <th>{{ ciudad.name }}</th>
+      <th>{{ ciudad.size }}</th>
+      <th>{{ ciudad.poblacion }}</th>
+    </tr>
+  </tbody>
+</table>
