@@ -21,4 +21,5 @@ export const actions = createActionGroup({
 export const {
   addCiudad,
   removeCiudad,
+  loadCiudades,
 } = actions;

@@ -4,7 +4,9 @@ import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { CiudadesTableComponent } from "./ciudades-table/ciudades-table.component";
-import { actions } from './ciudad.actions';
+import { loadCiudades } from './ciudad.actions';
+import { GoodsTableComponent } from "./goods-table/goods-table.component";
+import { loadGoods } from './goods.actions';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +16,14 @@ import { actions } from './ciudad.actions';
   imports: [
     CommonModule,
     RouterOutlet,
-    CiudadesTableComponent
+    CiudadesTableComponent,
+    GoodsTableComponent,
   ]
 })
 export class AppComponent {
 
   constructor(store: Store) {
-    store.dispatch(actions.loadCiudades());
+    store.dispatch(loadCiudades());
+    store.dispatch(loadGoods());
   }
 }

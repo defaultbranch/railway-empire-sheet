@@ -1,0 +1,22 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let good of goods$ | async">
+      <td>{{ good }}</td>
+      <td>
+        <button (click)="removeGood(good)">Remove</button>
+      </td>
+    </tr>
+    <tr>
+      <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
+      <td>
+        <button (click)="addGood(newName!)" [disabled]="!newName">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
