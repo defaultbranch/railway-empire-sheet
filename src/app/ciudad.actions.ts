@@ -7,11 +7,13 @@ export const actions = createActionGroup({
   source: CIUDADES_FEATURE_KEY,
   events: {
     addCiudad: props<({ ciudad: Ciudad })>(),
+    removeCiudad: props<({ nombre: string })>(),
   }
 })
 
 // public actions
 
 export const {
-  addCiudad
+  addCiudad,
+  removeCiudad,
 } = actions;

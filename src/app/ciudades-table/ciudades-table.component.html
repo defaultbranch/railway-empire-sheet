@@ -12,6 +12,9 @@
       <td>{{ ciudad.name }}</td>
       <td>{{ ciudad.size }}</td>
       <td>{{ ciudad.population }}</td>
+      <td>
+        <button (click)="removeCity(ciudad.name)">Remove</button>
+      </td>
     </tr>
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>

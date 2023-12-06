@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ciudad';
-import { addCiudad } from '../ciudad.actions';
+import { addCiudad, removeCiudad } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
 
 @Component({
@@ -32,5 +32,9 @@ export class CiudadesTableComponent {
 
   addCity(p: { name: string, size: number, population: number }) {
     this.store.dispatch(addCiudad({ ciudad: { name: p.name, size: p.size, population: p.population } }));
+  }
+
+  removeCity(name: string) {
+    this.store.dispatch(removeCiudad({ nombre: name }));
   }
 }

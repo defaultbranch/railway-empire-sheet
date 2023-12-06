@@ -10,7 +10,8 @@ export const CIUDAD_REDUCER = createReducer(
 
   ciudadAdapter.getInitialState(),
 
-  on(actions.addCiudad, (state: EntityState<Ciudad>, p: { ciudad: Ciudad }): EntityState<Ciudad> => ciudadAdapter.addOne(p.ciudad, state))
+  on(actions.addCiudad, (state: EntityState<Ciudad>, p: { ciudad: Ciudad }): EntityState<Ciudad> => ciudadAdapter.addOne(p.ciudad, state)),
+  on(actions.removeCiudad, (state: EntityState<Ciudad>, p: { nombre: string }): EntityState<Ciudad> => ciudadAdapter.removeOne(p.nombre, state)),
 );
 
 // selectors
