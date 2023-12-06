@@ -8,7 +8,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let ciudad of ciudades">
+    <tr *ngFor="let ciudad of ciudades$ | async">
       <td>{{ ciudad.name }}</td>
       <td>{{ ciudad.size }}</td>
       <td>{{ ciudad.population }}</td>
