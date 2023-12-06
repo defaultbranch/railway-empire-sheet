@@ -10,8 +10,8 @@
   <tbody>
     <tr *ngFor="let ciudad of ciudades$ | async">
       <td>{{ ciudad.name }}</td>
-      <td>{{ ciudad.size }}</td>
-      <td>{{ ciudad.population }}</td>
+      <td class="align-right">{{ ciudad.size }}</td>
+      <td class="align-right">{{ ciudad.population | number }}</td>
       <td>
         <button (click)="removeCity(ciudad.name)">Remove</button>
       </td>
