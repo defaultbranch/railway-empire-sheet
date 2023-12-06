@@ -1,12 +1,12 @@
 import { ApplicationConfig, importProvidersFrom, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CIUDADES_FEATURE_KEY } from './ciudad.actions';
 import { CIUDAD_REDUCER } from './ciudad.state';
-import { EffectsModule } from '@ngrx/effects';
 import { ciudadesEffects } from './ciudad.effects';
 
 export const appConfig: ApplicationConfig = {

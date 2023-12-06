@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { CiudadesTableComponent } from "./ciudades-table/ciudades-table.component";
 import { Store } from '@ngrx/store';
+
+import { CiudadesTableComponent } from "./ciudades-table/ciudades-table.component";
+import { actions } from './ciudad.actions';
 
 @Component({
   selector: 'app-root',
@@ -17,5 +19,7 @@ import { Store } from '@ngrx/store';
 })
 export class AppComponent {
 
-  constructor(store: Store) { }
+  constructor(store: Store) {
+    store.dispatch(actions.loadCiudades());
+  }
 }
