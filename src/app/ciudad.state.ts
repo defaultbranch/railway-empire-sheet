@@ -18,7 +18,6 @@ export const CIUDAD_REDUCER = createReducer(
 
 const selectCiudadFeature = createFeatureSelector<EntityState<Ciudad>>(CIUDADES_FEATURE_KEY);
 
-
 const {
   selectAll,
 } = ciudadAdapter.getSelectors();
