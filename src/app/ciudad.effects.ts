@@ -34,7 +34,7 @@ const persistCiudadesEffect = createEffect(
 const loadCiudadesEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadCiudades),
-    map(() => actions.setCiudades({ ciudades: JSON.parse(localStorage.getItem('ciudades') as string) })),
+    map(() => actions.setCiudades({ ciudades: JSON.parse(localStorage.getItem('ciudades') as string ?? '[]') })),
   ),
   { functional: true }
 );

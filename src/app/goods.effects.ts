@@ -34,7 +34,7 @@ const persistGoodsEffect = createEffect(
 const loadGoodsEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadGoods),
-    map(() => actions.setGoods({ goods: JSON.parse(localStorage.getItem('goods') as string) })),
+    map(() => actions.setGoods({ goods: JSON.parse(localStorage.getItem('goods') as string ?? '[]') })),
   ),
   { functional: true }
 );

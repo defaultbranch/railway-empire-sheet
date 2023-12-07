@@ -1,0 +1,36 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Product</th>
+      <th>Weekly Production</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let negocio of negocios$ | async">
+      <td>{{ negocio.name }}</td>
+      <td class="align-right">{{ negocio.size }}</td>
+      <td>{{ negocio.product }}</td>
+      <td class="align-right">{{ negocio.perWeek | number:'.1-1' }}</td>
+      <td>
+        <button (click)="removeNegocio(negocio.name)">Remove</button>
+      </td>
+    </tr>
+    <tr>
+      <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
+      <td><input [(ngModel)]="newSize" placeholder="size" type="number"></td>
+      <td>
+        <select [(ngModel)]="newProduct">
+          <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+        </select>
+      </td>
+      <td><input [(ngModel)]="newPerWeek" placeholder="perWeek" type="number"></td>
+      <td>
+        <button (click)="addNegocio({name: newName!, size: newSize!, product: newProduct!, perWeek: newPerWeek!})"
+          [disabled]="!newName || !newSize || !newProduct || !newPerWeek">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

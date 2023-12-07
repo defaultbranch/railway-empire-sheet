@@ -3,23 +3,23 @@ import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/
 
 import { GOODS_FEATURE_KEY, actions } from "./goods.actions";
 
-export const goodsAdapter = createEntityAdapter<string>({ selectId: good => good });
+const adapter = createEntityAdapter<string>({ selectId: good => good });
 
 export const GOOD_REDUCER = createReducer(
 
-  goodsAdapter.getInitialState(),
+  adapter.getInitialState(),
 
-  on(actions.addGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => goodsAdapter.addOne(p.good, state)),
-  on(actions.removeGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => goodsAdapter.removeOne(p.good, state)),
-  on(actions.setGoods, (state: EntityState<string>, p: { goods: string[] }): EntityState<string> => goodsAdapter.setAll(p.goods, state)),
+  on(actions.addGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => adapter.addOne(p.good, state)),
+  on(actions.removeGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => adapter.removeOne(p.good, state)),
+  on(actions.setGoods, (state: EntityState<string>, p: { goods: string[] }): EntityState<string> => adapter.setAll(p.goods, state)),
 );
 
 // selectors
 
-const selectGoodsFeature = createFeatureSelector<EntityState<string>>(GOODS_FEATURE_KEY);
+const selectFeature = createFeatureSelector<EntityState<string>>(GOODS_FEATURE_KEY);
 
 const {
   selectAll,
-} = goodsAdapter.getSelectors();
+} = adapter.getSelectors();
 
-export const allGoods = createSelector(selectGoodsFeature, selectAll);
+export const allGoods = createSelector(selectFeature, selectAll);

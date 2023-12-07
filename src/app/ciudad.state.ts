@@ -4,23 +4,23 @@ import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/
 import { Ciudad } from "./ciudad";
 import { CIUDADES_FEATURE_KEY, actions } from "./ciudad.actions";
 
-export const ciudadAdapter = createEntityAdapter<Ciudad>({ selectId: ciudad => ciudad.name });
+const adapter = createEntityAdapter<Ciudad>({ selectId: ciudad => ciudad.name });
 
 export const CIUDAD_REDUCER = createReducer(
 
-  ciudadAdapter.getInitialState(),
+  adapter.getInitialState(),
 
-  on(actions.addCiudad, (state: EntityState<Ciudad>, p: { ciudad: Ciudad }): EntityState<Ciudad> => ciudadAdapter.addOne(p.ciudad, state)),
-  on(actions.removeCiudad, (state: EntityState<Ciudad>, p: { nombre: string }): EntityState<Ciudad> => ciudadAdapter.removeOne(p.nombre, state)),
-  on(actions.setCiudades, (state: EntityState<Ciudad>, p: { ciudades: Ciudad[] }): EntityState<Ciudad> => ciudadAdapter.setAll(p.ciudades, state)),
+  on(actions.addCiudad, (state: EntityState<Ciudad>, p: { ciudad: Ciudad }): EntityState<Ciudad> => adapter.addOne(p.ciudad, state)),
+  on(actions.removeCiudad, (state: EntityState<Ciudad>, p: { nombre: string }): EntityState<Ciudad> => adapter.removeOne(p.nombre, state)),
+  on(actions.setCiudades, (state: EntityState<Ciudad>, p: { ciudades: Ciudad[] }): EntityState<Ciudad> => adapter.setAll(p.ciudades, state)),
 );
 
 // selectors
 
-const selectCiudadFeature = createFeatureSelector<EntityState<Ciudad>>(CIUDADES_FEATURE_KEY);
+const selectFeature = createFeatureSelector<EntityState<Ciudad>>(CIUDADES_FEATURE_KEY);
 
 const {
   selectAll,
-} = ciudadAdapter.getSelectors();
+} = adapter.getSelectors();
 
-export const todosLosCiudades = createSelector(selectCiudadFeature, selectAll);
+export const todosLosCiudades = createSelector(selectFeature, selectAll);
