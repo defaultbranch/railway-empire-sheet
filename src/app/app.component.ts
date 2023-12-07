@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { loadCiudades } from './ciudad.actions';
 import { loadGoods } from './goods.actions';
 import { loadNegociosRurales } from './negocio-rural.actions';
+import { GameDateComponent } from "./game-date/game-date.component";
+import { loadGameDate } from './game-date.actions';
 
 @Component({
     selector: 'app-root',
@@ -16,6 +18,7 @@ import { loadNegociosRurales } from './negocio-rural.actions';
         CommonModule,
         RouterOutlet,
         RouterLink,
+        GameDateComponent,
     ]
 })
 export class AppComponent {
@@ -24,5 +27,6 @@ export class AppComponent {
     store.dispatch(loadCiudades());
     store.dispatch(loadGoods());
     store.dispatch(loadNegociosRurales());
+    store.dispatch(loadGameDate());
   }
 }
