@@ -1,8 +1,7 @@
-<h1>Ciudades</h1>
-<app-ciudades-table></app-ciudades-table>
+<div class="links">
+  <a [routerLink]="['ciudades']">Ciudades</a>
+  <a [routerLink]="['goods']">Goods</a>
+  <a [routerLink]="['rurales']">Negocios Rurales</a>
+</div>
 
-<h1>Goods</h1>
-<app-goods-table></app-goods-table>
-
-<h1>Negocios Rurales</h1>
-<app-negocios-rurales-table></app-negocios-rurales-table>
+<router-outlet></router-outlet>
