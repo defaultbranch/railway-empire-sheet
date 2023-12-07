@@ -1,15 +1,15 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
+      <th class="clickable" (click)="sortByName()">Name</th>
       <th>Size</th>
-      <th>Product</th>
+      <th class="clickable" (click)="sortByProduct()">Product</th>
       <th>Weekly Production</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let negocio of negocios$ | async">
+    <tr *ngFor="let negocio of negociosSorted$ | async">
       <td>{{ negocio.name }}</td>
       <td class="align-right">{{ negocio.size }}</td>
       <td>{{ negocio.product }}</td>

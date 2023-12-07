@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../negocio-rural';
@@ -22,6 +22,7 @@ import { allGoods } from '../goods.state';
 export class NegociosRuralesTableComponent {
 
   negocios$: Observable<NegocioRural[]>;
+  negociosSorted$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
 
   newName?: string;
@@ -31,6 +32,7 @@ export class NegociosRuralesTableComponent {
 
   constructor(private store: Store) {
     this.negocios$ = store.select(todosLosNegociosRurales);
+    this.negociosSorted$ = this.negocios$;
     this.goods$ = store.select(allGoods);
   }
 
@@ -40,5 +42,13 @@ export class NegociosRuralesTableComponent {
 
   removeNegocio(name: string) {
     this.store.dispatch(removeNegocioRural({ nombre: name }));
+  }
+
+  sortByName() {
+    this.negociosSorted$ = this.negocios$.pipe(map(it => it.sort((a, b) => a.name.localeCompare(b.name))));
+  }
+
+  sortByProduct() {
+    this.negociosSorted$ = this.negocios$.pipe(map(it => it.sort((a, b) => a.product.localeCompare(b.product))));
   }
 }
