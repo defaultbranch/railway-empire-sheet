@@ -1,9 +1,22 @@
 <ng-container *ngIf="ciudad$ | async as ciudad">
+
   <h1>{{ ciudad.name }}</h1>
+
   <div>
     <label>Population</label>
-    <input [ngModel]="ciudad.population"
-          (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number"
-          class="medium-number">
+    <input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })"
+      type="number" class="medium-number">
   </div>
+
+  <div *ngFor="let index of [0,1,2]">
+    <label>Industria {{ index + 1 }}</label>
+    <select [ngModel]="ciudad.businesses?.[index]?.business"
+      (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
+      <option></option>
+      <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
+    </select>
+    <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size"
+      (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
+  </div>
+
 </ng-container>
