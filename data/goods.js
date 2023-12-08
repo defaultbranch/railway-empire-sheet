@@ -1,0 +1,1 @@
+["Cereales","Ganado","Maíz","Madera","Carne","Cerveza","Algodón","Azúcar","Papel","Leche","Verduras","Fruta","Ropa","Mobiliario","Cemento","Caramelos","Carbón","Hierro","Acero","Periódicos","Productos químicos","Juguetes","Aceite","Gasolina","Automóviles"]
