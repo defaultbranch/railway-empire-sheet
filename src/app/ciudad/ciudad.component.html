@@ -1,3 +1,9 @@
 <ng-container *ngIf="ciudad$ | async as ciudad">
-  <p>ciudad {{ ciudad.name }} works!</p>
+  <h1>{{ ciudad.name }}</h1>
+  <div>
+    <label>Population</label>
+    <input [ngModel]="ciudad.population"
+          (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number"
+          class="medium-number">
+  </div>
 </ng-container>

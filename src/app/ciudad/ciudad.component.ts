@@ -1,15 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, Subscriber, filter, map, switchMap, takeUntil, tap } from 'rxjs';
+
 import { Ciudad } from '../ciudad';
 import { ciudad } from '../ciudad.state';
+import { updatePopulation } from '../ciudad.actions';
 
 @Component({
   selector: 'app-ciudad',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './ciudad.component.html',
   styleUrl: './ciudad.component.scss'
 })
@@ -20,8 +26,8 @@ export class CiudadComponent implements OnDestroy {
   private disposing$ = new Subject<void>();
 
   constructor(
+    private store: Store,
     route: ActivatedRoute,
-    store: Store,
   ) {
     this.ciudad$ = route.queryParams.pipe(
       map(it => it['name']),
@@ -32,5 +38,9 @@ export class CiudadComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.disposing$.next(void 0);
+  }
+
+  updatePopulation(p: { name: string, population: number }) {
+    this.store.dispatch(updatePopulation({ name: p.name, population: p.population }));
   }
 }
