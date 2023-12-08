@@ -5,7 +5,7 @@ import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ciudad';
-import { addCiudad, removeCiudad, updatePopulation } from '../ciudad.actions';
+import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
 import { allIndustries } from '../industrias.state';
 
@@ -41,6 +41,13 @@ export class CiudadesTableComponent {
 
   updatePopulation(p: { name: string, population: number }) {
     this.store.dispatch(updatePopulation({ name: p.name, population: p.population }));
+  }
+
+  updateBusiness(p: { name: string, index: number, business: string | undefined, size: number | undefined }) {
+    console.log(p);
+    if (p.index >= 0 && p.index <= 3 && !!p.business && !!p.size && p.size >= 1 && p.size <= 5) {
+      this.store.dispatch(updateBusiness({ name: p.name, index: p.index, business: p.business, size: p.size }));
+    }
   }
 
   removeCity(name: string) {

@@ -16,6 +16,15 @@ export const CIUDAD_REDUCER = createReducer(
   on(actions.setCiudades, (state: EntityState<Ciudad>, p: { ciudades: Ciudad[] }): EntityState<Ciudad> => adapter.setAll(p.ciudades, state)),
 
   on(actions.updatePopulation, (state: EntityState<Ciudad>, p: { name: string, population: number }): EntityState<Ciudad> => adapter.mapOne({ id: p.name, map: ciudad => ({ ...ciudad, population: p.population }) }, state)),
+  on(actions.updateBusiness, (state: EntityState<Ciudad>, p: { name: string, index: number, business: string, size: number }): EntityState<Ciudad> => adapter.mapOne({
+    id: p.name, map: ciudad => ({
+      ...ciudad,
+      businesses: (businesses => {
+        businesses[p.index] = { business: p.business, size: p.size };
+        return businesses;
+      })([...ciudad.businesses ?? []])
+    })
+  }, state)),
 );
 
 // selectors

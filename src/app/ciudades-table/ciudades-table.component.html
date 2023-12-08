@@ -4,9 +4,7 @@
       <th class="clickable" (click)="sortByName()">Name</th>
       <th class="clickable" (click)="sortByPopulation()">Size</th>
       <th class="clickable" (click)="sortByPopulation()">Population</th>
-      <th>Business 1</th>
-      <th>Business 2</th>
-      <th>Business 3</th>
+      <th *ngFor="let index of [0,1,2]">Business {{ index + 1 }}</th>
       <th></th>
     </tr>
   </thead>
@@ -15,26 +13,12 @@
       <td>{{ ciudad.name }}</td>
       <td class="align-right">{{ ciudad.size }}</td>
       <td><input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number" class="medium-number"></td>
-      <th>
-        <select>
+      <th *ngFor="let index of [0,1,2]">
+        <select [ngModel]="ciudad.businesses?.[index]?.business" (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
           <option></option>
           <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
         </select>
-        <input class="short-number" type="number">
-      </th>
-      <th>
-        <select>
-          <option></option>
-          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
-        </select>
-        <input class="short-number" type="number">
-      </th>
-      <th>
-        <select>
-          <option></option>
-          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
-        </select>
-        <input class="short-number" type="number">
+        <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size" (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
       </th>
       <td>
         <button (click)="removeCity(ciudad.name)">Remove</button>
