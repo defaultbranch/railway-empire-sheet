@@ -1,0 +1,22 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let industria of industrias$ | async">
+      <td>{{ industria }}</td>
+      <td>
+        <button (click)="removeIndustria(industria)">Remove</button>
+      </td>
+    </tr>
+    <tr>
+      <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
+      <td>
+        <button (click)="addIndustria(newName!)" [disabled]="!newName">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

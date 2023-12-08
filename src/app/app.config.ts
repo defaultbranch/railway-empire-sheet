@@ -17,6 +17,9 @@ import { negociosRuralesEffects } from './negocio-rural.effects';
 import { GAME_DATE_FEATURE_KEY } from './game-date.actions';
 import { GAME_DATE_REDUCER } from './game-date.state';
 import { gameDateEffects } from './game-date.effects';
+import { INDUSTRIAS_FEATURE_KEY } from './industrias.actions';
+import { INDUSTRIAS_REDUCER } from './industrias.state';
+import { industriasEffects } from './industrias.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,11 +30,13 @@ export const appConfig: ApplicationConfig = {
       StoreModule.forFeature(GOODS_FEATURE_KEY, GOOD_REDUCER),
       StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
       StoreModule.forFeature(GAME_DATE_FEATURE_KEY, GAME_DATE_REDUCER),
+      StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
       EffectsModule.forRoot(),
       EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(goodsEffects),
       EffectsModule.forFeature(negociosRuralesEffects),
       EffectsModule.forFeature(gameDateEffects),
+      EffectsModule.forFeature(industriasEffects),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),
   ]

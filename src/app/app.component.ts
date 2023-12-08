@@ -8,6 +8,7 @@ import { loadGoods } from './goods.actions';
 import { loadNegociosRurales } from './negocio-rural.actions';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date.actions';
+import { loadIndustrias } from './industrias.actions';
 
 @Component({
     selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent {
   constructor(store: Store) {
     store.dispatch(loadCiudades());
     store.dispatch(loadGoods());
+    store.dispatch(loadIndustrias());
     store.dispatch(loadNegociosRurales());
     store.dispatch(loadGameDate());
   }
