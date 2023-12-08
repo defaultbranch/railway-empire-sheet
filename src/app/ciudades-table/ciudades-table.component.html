@@ -31,7 +31,7 @@
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
       <td><input [(ngModel)]="newSize" placeholder="size" type="number"></td>
-      <td><input [(ngModel)]="newPopulation" placeholder="pobulation" type="number" class="medium-number"></td>
+      <td><input [(ngModel)]="newPopulation" placeholder="population" type="number" class="medium-number"></td>
       <td>
         <button (click)="addCity({name: newName!, size: newSize!, population: newPopulation!})"
           [disabled]="!newName || !newSize || !newPopulation">Add</button>
