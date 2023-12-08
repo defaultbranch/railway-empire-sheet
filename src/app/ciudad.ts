@@ -6,4 +6,5 @@ export type Ciudad = {
     business: string;
     size: number
   }[];
+  perWeek?: { [product: string]: number };
 }

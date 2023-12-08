@@ -8,13 +8,15 @@ import { Ciudad } from '../ciudad';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
 import { allIndustrieNames } from '../industrias.state';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-ciudades-table',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    RouterLink,
   ],
   templateUrl: './ciudades-table.component.html',
   styleUrl: './ciudades-table.component.scss'

@@ -10,15 +10,19 @@
   </thead>
   <tbody>
     <tr *ngFor="let ciudad of ciudadesSorted$ | async">
-      <td>{{ ciudad.name }}</td>
+      <td><a [routerLink]="['/','ciudad']" [queryParams]="{name: ciudad.name}">{{ ciudad.name }}</a></td>
       <td class="align-right">{{ ciudad.size }}</td>
-      <td><input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number" class="medium-number"></td>
+      <td><input [ngModel]="ciudad.population"
+          (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number"
+          class="medium-number"></td>
       <th *ngFor="let index of [0,1,2]">
-        <select [ngModel]="ciudad.businesses?.[index]?.business" (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
+        <select [ngModel]="ciudad.businesses?.[index]?.business"
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
           <option></option>
           <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
         </select>
-        <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size" (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
+        <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size"
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
       </th>
       <td>
         <button (click)="removeCity(ciudad.name)">Remove</button>

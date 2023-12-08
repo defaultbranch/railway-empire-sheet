@@ -36,3 +36,4 @@ const {
 } = adapter.getSelectors();
 
 export const todosLosCiudades = createSelector(selectFeature, selectAll);
+export const ciudad = (name: string) => createSelector(selectFeature, (feature) => feature.entities[name]);
