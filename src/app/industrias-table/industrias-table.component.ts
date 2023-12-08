@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { addIndustria, removeIndustria } from '../industrias.actions';
+import { addIndustria, removeIndustria, setMateriaPrima, setProduct } from '../industrias.actions';
 import { allIndustries } from '../industrias.state';
 import { Industria } from '../industria';
 import { allGoods } from '../goods.state';
@@ -32,10 +32,18 @@ export class IndustriasTableComponent {
   }
 
   addIndustria(name: string) {
-    this.store.dispatch(addIndustria({ industria: { name }}));
+    this.store.dispatch(addIndustria({ industria: { name } }));
   }
 
   removeIndustria(nombre: string) {
     this.store.dispatch(removeIndustria({ nombre }));
+  }
+
+  setMaterialPrima(industria: Industria, index: number, good: string) {
+    this.store.dispatch(setMateriaPrima({ industria: industria.name, index, good }));
+  }
+
+  setProduct(industria: Industria, index: number, good: string) {
+    this.store.dispatch(setProduct({ industria: industria.name, index, good }));
   }
 }

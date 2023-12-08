@@ -14,6 +14,26 @@ export const INDUSTRIAS_REDUCER = createReducer(
   on(actions.removeIndustria, (state: EntityState<Industria>, p: { nombre: string }): EntityState<Industria> => adapter.removeOne(p.nombre, state)),
   on(actions.setIndustrias, (state: EntityState<Industria>, p: { industrias: Industria[] }): EntityState<Industria> => adapter.setAll(p.industrias, state)),
 
+  on(actions.setMateriaPrima, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
+    id: p.industria, map: industria => ({
+      ...industria,
+      materiasPrimas: (materiasPrimas => {
+        materiasPrimas[p.index] = { name: p.good };
+        return materiasPrimas;
+      })([...industria.materiasPrimas ?? []])
+    })
+  }, state)),
+
+  on(actions.setProduct, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
+    id: p.industria, map: industria => ({
+      ...industria,
+      productos: (productos => {
+        productos[p.index] = { name: p.good };
+        return productos;
+      })([...industria.productos ?? []])
+    })
+  }, state)),
+
 );
 
 // selectors

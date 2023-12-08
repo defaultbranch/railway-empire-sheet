@@ -11,6 +11,9 @@ export const actions = createActionGroup({
     removeIndustria: props<({ nombre: string })>(),
     setIndustrias: props<{ industrias: Industria[] }>(),
 
+    setMateriaPrima: props<({ industria: string, index: number, good: string })>(),
+    setProduct: props<({ industria: string, index: number, good: string })>(),
+
     persistIndustrias: emptyProps(),
     loadIndustrias: emptyProps(),
   }
@@ -21,5 +24,7 @@ export const actions = createActionGroup({
 export const {
   addIndustria,
   removeIndustria,
+  setMateriaPrima,
+  setProduct,
   loadIndustrias,
 } = actions;

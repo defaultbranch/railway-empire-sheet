@@ -13,6 +13,8 @@ const industriasChangedEffect = createEffect(
     ofType(
       actions.addIndustria,
       actions.removeIndustria,
+      actions.setMateriaPrima,
+      actions.setProduct,
     ),
     map(() => actions.persistIndustrias()),
   ),

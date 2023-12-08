@@ -11,23 +11,23 @@
   </thead>
   <tbody>
     <ng-container *ngFor="let industria of industrias$ | async">
-      <tr >
+      <tr>
         <td rowspan="2">{{ industria.name }}</td>
         <td rowspan="2">
           <button (click)="removeIndustria(industria.name)">Remove</button>
         </td>
         <td>
-          <!-- materia prima 1 -->
-          <select>
-            <option></option>
+          <select [ngModel]="(industria.materiasPrimas ?? [ undefined, undefined])[0]?.name"
+            (ngModelChange)="setMaterialPrima(industria, 0, $event)">
+            <option disabled></option>
             <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
           </select>
         </td>
         <td rowspan="2">⇒</td>
         <td>
-          <!-- producto 1 -->
-          <select>
-            <option></option>
+          <select [ngModel]="(industria.productos ?? [ undefined, undefined])[0]?.name"
+            (ngModelChange)="setProduct(industria, 0, $event)">
+            <option disabled></option>
             <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
           </select>
         </td>
@@ -43,16 +43,16 @@
       </tr>
       <tr>
         <td>
-          <!-- materia prima 2 -->
-          <select>
-            <option></option>
+          <select [ngModel]="(industria.materiasPrimas ?? [ undefined, undefined])[1]?.name"
+            (ngModelChange)="setMaterialPrima(industria, 1, $event)">
+            <option disabled></option>
             <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
           </select>
         </td>
         <td>
-          <!-- producto 2 -->
-          <select>
-            <option></option>
+          <select [ngModel]="(industria.productos ?? [ undefined, undefined])[1]?.name"
+            (ngModelChange)="setProduct(industria, 1, $event)">
+            <option disabled></option>
             <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
           </select>
         </td>
