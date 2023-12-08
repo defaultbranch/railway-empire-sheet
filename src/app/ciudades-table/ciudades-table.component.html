@@ -1,14 +1,14 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Size</th>
-      <th>Population</th>
+      <th class="clickable" (click)="sortByName()">Name</th>
+      <th class="clickable" (click)="sortByPopulation()">Size</th>
+      <th class="clickable" (click)="sortByPopulation()">Population</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let ciudad of ciudades$ | async">
+    <tr *ngFor="let ciudad of ciudadesSorted$ | async">
       <td>{{ ciudad.name }}</td>
       <td class="align-right">{{ ciudad.size }}</td>
       <td class="align-right">{{ ciudad.population | number }}</td>

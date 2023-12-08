@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ciudad';
@@ -21,6 +21,7 @@ import { todosLosCiudades } from '../ciudad.state';
 export class CiudadesTableComponent {
 
   ciudades$: Observable<Ciudad[]>;
+  ciudadesSorted$: Observable<Ciudad[]>;
 
   newName?: string;
   newSize?: number;
@@ -28,6 +29,7 @@ export class CiudadesTableComponent {
 
   constructor(private store: Store) {
     this.ciudades$ = store.select(todosLosCiudades);
+    this.ciudadesSorted$ = this.ciudades$
   }
 
   addCity(p: { name: string, size: number, population: number }) {
@@ -36,5 +38,13 @@ export class CiudadesTableComponent {
 
   removeCity(name: string) {
     this.store.dispatch(removeCiudad({ nombre: name }));
+  }
+
+  sortByName() {
+    this.ciudadesSorted$ = this.ciudades$.pipe(map(it => it.sort((a, b) => a.name.localeCompare(b.name))));
+  }
+
+  sortByPopulation() {
+    this.ciudadesSorted$ = this.ciudades$.pipe(map(it => it.sort((a, b) => b.population - a.population)));
   }
 }
