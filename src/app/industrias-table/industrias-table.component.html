@@ -33,11 +33,15 @@
         </td>
         <ng-container *ngFor="let nivel of [1,2,3,4,5]">
           <td>
-            <input class="short-number" type="number">
+            <input class="short-number" type="number"
+              [ngModel]="((industria.materiasPrimas ?? [ undefined, undefined])[0]?.perWeek ?? []) [nivel - 1]"
+              (ngModelChange)="setMaterialPrimaPerWeek(industria, 0, nivel, $event )">
           </td>
           <td rowspan="2">⇒</td>
           <td>
-            <input class="short-number" type="number">
+            <input class="short-number" type="number"
+              [ngModel]="((industria.productos ?? [ undefined, undefined])[0]?.perWeek ?? []) [nivel - 1]"
+              (ngModelChange)="setProductosPerWeek(industria, 0, nivel, $event )">
           </td>
         </ng-container>
       </tr>
@@ -58,7 +62,9 @@
         </td>
         <ng-container *ngFor="let nivel of [1,2,3,4,5]">
           <td>
-            <input class="short-number" type="number">
+            <input class="short-number" type="number"
+              [ngModel]="((industria.materiasPrimas ?? [ undefined, undefined])[1]?.perWeek ?? []) [nivel - 1]"
+              (ngModelChange)="setMaterialPrimaPerWeek(industria, 1, nivel, $event )">
           </td>
           <td>
             <input class="short-number" type="number">

@@ -12,7 +12,9 @@ export const actions = createActionGroup({
     setIndustrias: props<{ industrias: Industria[] }>(),
 
     setMateriaPrima: props<({ industria: string, index: number, good: string })>(),
+    setMateriaPrimaPerWeek: props<({ industria: string, index: number, nivel: number, perWeek: number })>(),
     setProduct: props<({ industria: string, index: number, good: string })>(),
+    setProductPerWeek: props<({ industria: string, index: number, nivel: number, perWeek: number })>(),
 
     persistIndustrias: emptyProps(),
     loadIndustrias: emptyProps(),
@@ -25,6 +27,8 @@ export const {
   addIndustria,
   removeIndustria,
   setMateriaPrima,
+  setMateriaPrimaPerWeek,
   setProduct,
+  setProductPerWeek,
   loadIndustrias,
 } = actions;
