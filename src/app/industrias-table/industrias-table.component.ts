@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { addIndustria, removeIndustria } from '../industrias.actions';
 import { allIndustries } from '../industrias.state';
 import { Industria } from '../industria';
+import { allGoods } from '../goods.state';
 
 @Component({
   selector: 'app-industrias-table',
@@ -21,11 +22,13 @@ import { Industria } from '../industria';
 export class IndustriasTableComponent {
 
   industrias$: Observable<Industria[]>;
+  goods$: Observable<string[]>;
 
   newName?: string;
 
   constructor(private store: Store) {
     this.industrias$ = store.select(allIndustries);
+    this.goods$ = store.select(allGoods);
   }
 
   addIndustria(name: string) {

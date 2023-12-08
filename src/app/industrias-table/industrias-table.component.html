@@ -3,15 +3,69 @@
     <tr>
       <th>Name</th>
       <th></th>
+      <th>materias primas</th>
+      <th></th>
+      <th>productos</th>
+      <th colspan="3" *ngFor="let nivel of [1,2,3,4,5]">nivel {{ nivel }}</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let industria of industrias$ | async">
-      <td>{{ industria.name }}</td>
-      <td>
-        <button (click)="removeIndustria(industria.name)">Remove</button>
-      </td>
-    </tr>
+    <ng-container *ngFor="let industria of industrias$ | async">
+      <tr >
+        <td rowspan="2">{{ industria.name }}</td>
+        <td rowspan="2">
+          <button (click)="removeIndustria(industria.name)">Remove</button>
+        </td>
+        <td>
+          <!-- materia prima 1 -->
+          <select>
+            <option></option>
+            <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          </select>
+        </td>
+        <td rowspan="2">⇒</td>
+        <td>
+          <!-- producto 1 -->
+          <select>
+            <option></option>
+            <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          </select>
+        </td>
+        <ng-container *ngFor="let nivel of [1,2,3,4,5]">
+          <td>
+            <input class="short-number" type="number">
+          </td>
+          <td rowspan="2">⇒</td>
+          <td>
+            <input class="short-number" type="number">
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>
+          <!-- materia prima 2 -->
+          <select>
+            <option></option>
+            <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          </select>
+        </td>
+        <td>
+          <!-- producto 2 -->
+          <select>
+            <option></option>
+            <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          </select>
+        </td>
+        <ng-container *ngFor="let nivel of [1,2,3,4,5]">
+          <td>
+            <input class="short-number" type="number">
+          </td>
+          <td>
+            <input class="short-number" type="number">
+          </td>
+        </ng-container>
+      </tr>
+    </ng-container>
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
       <td>
