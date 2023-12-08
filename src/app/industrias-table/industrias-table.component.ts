@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 
 import { addIndustria, removeIndustria } from '../industrias.actions';
 import { allIndustries } from '../industrias.state';
+import { Industria } from '../industria';
 
 @Component({
   selector: 'app-industrias-table',
@@ -19,7 +20,7 @@ import { allIndustries } from '../industrias.state';
 })
 export class IndustriasTableComponent {
 
-  industrias$: Observable<string[]>;
+  industrias$: Observable<Industria[]>;
 
   newName?: string;
 
@@ -28,10 +29,10 @@ export class IndustriasTableComponent {
   }
 
   addIndustria(name: string) {
-    this.store.dispatch(addIndustria({ industria: name }));
+    this.store.dispatch(addIndustria({ industria: { name }}));
   }
 
-  removeIndustria(name: string) {
-    this.store.dispatch(removeIndustria({ industria: name }));
+  removeIndustria(nombre: string) {
+    this.store.dispatch(removeIndustria({ nombre }));
   }
 }

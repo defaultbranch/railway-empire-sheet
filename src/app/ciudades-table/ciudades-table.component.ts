@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Ciudad } from '../ciudad';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
-import { allIndustries } from '../industrias.state';
+import { allIndustrieNames } from '../industrias.state';
 
 @Component({
   selector: 'app-ciudades-table',
@@ -32,7 +32,7 @@ export class CiudadesTableComponent {
   constructor(private store: Store) {
     this.ciudades$ = store.select(todosLosCiudades);
     this.ciudadesSorted$ = this.ciudades$;
-    this.industrias$ = store.select(allIndustries);
+    this.industrias$ = store.select(allIndustrieNames);
   }
 
   addCity(p: { name: string, size: number, population: number }) {

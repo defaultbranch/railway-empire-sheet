@@ -7,9 +7,9 @@
   </thead>
   <tbody>
     <tr *ngFor="let industria of industrias$ | async">
-      <td>{{ industria }}</td>
+      <td>{{ industria.name }}</td>
       <td>
-        <button (click)="removeIndustria(industria)">Remove</button>
+        <button (click)="removeIndustria(industria.name)">Remove</button>
       </td>
     </tr>
     <tr>
