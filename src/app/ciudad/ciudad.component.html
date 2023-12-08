@@ -2,21 +2,41 @@
 
   <h1>{{ ciudad.name }}</h1>
 
-  <div>
-    <label>Population</label>
-    <input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })"
-      type="number" class="medium-number">
-  </div>
+  <h2>Demography</h2>
 
-  <div *ngFor="let index of [0,1,2]">
-    <label>Industria {{ index + 1 }}</label>
-    <select [ngModel]="ciudad.businesses?.[index]?.business"
-      (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
-      <option></option>
-      <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
-    </select>
-    <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size"
-      (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
-  </div>
+  <table>
+    <th style="text-align: left;">Population</th>
+    <td>
+      <input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })"
+      type="number" class="medium-number">
+    </td>
+  </table>
+
+  <h2>Industry</h2>
+
+  <table>
+    <tr *ngFor="let index of [0,1,2]">
+      <th style="text-align: left;">Industria {{ index + 1 }}</th>
+      <td>
+        <select [ngModel]="ciudad.businesses?.[index]?.business"
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses?.[index]?.size ?? 1})">
+          <option></option>
+          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
+        </select>
+      </td>
+      <td>
+        <input class="short-number" type="number" [ngModel]="ciudad.businesses?.[index]?.size"
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses?.[index]?.business, size: $event})">
+      </td>
+    </tr>
+  </table>
+
+  <h2>Goods</h2>
+
+  <table>
+    <tr *ngFor="let good of goods$ | async">
+      <th style="text-align: left;">{{ good }}</th>
+    </tr>
+  </table>
 
 </ng-container>

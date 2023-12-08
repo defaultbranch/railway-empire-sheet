@@ -9,6 +9,7 @@ import { Ciudad } from '../ciudad';
 import { ciudad } from '../ciudad.state';
 import { updateBusiness, updatePopulation } from '../ciudad.actions';
 import { allIndustrieNames } from '../industrias.state';
+import { allGoods } from '../goods.state';
 
 @Component({
   selector: 'app-ciudad',
@@ -24,6 +25,7 @@ export class CiudadComponent implements OnDestroy {
 
   ciudad$: Observable<Ciudad | undefined>;
   industrias$: Observable<string[]>;
+  goods$: Observable<string[]>;
 
   private disposing$ = new Subject<void>();
 
@@ -37,6 +39,7 @@ export class CiudadComponent implements OnDestroy {
       takeUntil(this.disposing$)
     );
     this.industrias$ = store.select(allIndustrieNames);
+    this.goods$ = store.select(allGoods);
   }
 
   ngOnDestroy(): void {
