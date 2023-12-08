@@ -13,6 +13,7 @@ const ciudadesChangedEffect = createEffect(
     ofType(
       actions.addCiudad,
       actions.removeCiudad,
+      actions.updatePopulation,
     ),
     map(() => actions.persistCiudades()),
   ),

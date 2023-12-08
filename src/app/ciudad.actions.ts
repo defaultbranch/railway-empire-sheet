@@ -11,6 +11,8 @@ export const actions = createActionGroup({
     removeCiudad: props<({ nombre: string })>(),
     setCiudades: props<{ ciudades: Ciudad[] }>(),
 
+    updatePopulation: props<({ name: string, population: number })>(),
+
     persistCiudades: emptyProps(),
     loadCiudades: emptyProps(),
   }
@@ -22,4 +24,5 @@ export const {
   addCiudad,
   removeCiudad,
   loadCiudades,
+  updatePopulation,
 } = actions;

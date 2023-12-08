@@ -5,8 +5,9 @@ import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ciudad';
-import { addCiudad, removeCiudad } from '../ciudad.actions';
+import { addCiudad, removeCiudad, updatePopulation } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
+import { allIndustries } from '../industrias.state';
 
 @Component({
   selector: 'app-ciudades-table',
@@ -22,6 +23,7 @@ export class CiudadesTableComponent {
 
   ciudades$: Observable<Ciudad[]>;
   ciudadesSorted$: Observable<Ciudad[]>;
+  industrias$: Observable<string[]>;
 
   newName?: string;
   newSize?: number;
@@ -29,11 +31,16 @@ export class CiudadesTableComponent {
 
   constructor(private store: Store) {
     this.ciudades$ = store.select(todosLosCiudades);
-    this.ciudadesSorted$ = this.ciudades$
+    this.ciudadesSorted$ = this.ciudades$;
+    this.industrias$ = store.select(allIndustries);
   }
 
   addCity(p: { name: string, size: number, population: number }) {
     this.store.dispatch(addCiudad({ ciudad: { name: p.name, size: p.size, population: p.population } }));
+  }
+
+  updatePopulation(p: { name: string, population: number }) {
+    this.store.dispatch(updatePopulation({ name: p.name, population: p.population }));
   }
 
   removeCity(name: string) {

@@ -4,6 +4,9 @@
       <th class="clickable" (click)="sortByName()">Name</th>
       <th class="clickable" (click)="sortByPopulation()">Size</th>
       <th class="clickable" (click)="sortByPopulation()">Population</th>
+      <th>Business 1</th>
+      <th>Business 2</th>
+      <th>Business 3</th>
       <th></th>
     </tr>
   </thead>
@@ -11,7 +14,28 @@
     <tr *ngFor="let ciudad of ciudadesSorted$ | async">
       <td>{{ ciudad.name }}</td>
       <td class="align-right">{{ ciudad.size }}</td>
-      <td class="align-right">{{ ciudad.population | number }}</td>
+      <td><input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number" class="medium-number"></td>
+      <th>
+        <select>
+          <option></option>
+          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
+        </select>
+        <input class="short-number" type="number">
+      </th>
+      <th>
+        <select>
+          <option></option>
+          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
+        </select>
+        <input class="short-number" type="number">
+      </th>
+      <th>
+        <select>
+          <option></option>
+          <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
+        </select>
+        <input class="short-number" type="number">
+      </th>
       <td>
         <button (click)="removeCity(ciudad.name)">Remove</button>
       </td>
@@ -19,11 +43,14 @@
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
       <td><input [(ngModel)]="newSize" placeholder="size" type="number"></td>
-      <td><input [(ngModel)]="newPopulation" placeholder="pobulation" type="number"></td>
+      <td><input [(ngModel)]="newPopulation" placeholder="pobulation" type="number" class="medium-number"></td>
       <td>
         <button (click)="addCity({name: newName!, size: newSize!, population: newPopulation!})"
           [disabled]="!newName || !newSize || !newPopulation">Add</button>
       </td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
   </tbody>
 </table>
