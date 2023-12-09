@@ -15,7 +15,8 @@ export const INDUSTRIAS_REDUCER = createReducer(
   on(actions.setIndustrias, (state: EntityState<Industria>, p: { industrias: Industria[] }): EntityState<Industria> => adapter.setAll(p.industrias, state)),
 
   on(actions.setMateriaPrima, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
-    id: p.industria, map: industria => ({
+    id: p.industria,
+    map: industria => ({
       ...industria,
       materiasPrimas: (materiasPrimas => {
         materiasPrimas[p.index] = { name: p.good };
@@ -25,7 +26,8 @@ export const INDUSTRIAS_REDUCER = createReducer(
   }, state)),
 
   on(actions.setMateriaPrimaPerWeek, (state: EntityState<Industria>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<Industria> => adapter.mapOne({
-    id: p.industria, map: industria => ({
+    id: p.industria,
+    map: industria => ({
       ...industria,
       materiasPrimas: (materiasPrimas => {
         materiasPrimas[p.index] = (materiaPrima => ({
@@ -41,7 +43,8 @@ export const INDUSTRIAS_REDUCER = createReducer(
   }, state)),
 
   on(actions.setProduct, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
-    id: p.industria, map: industria => ({
+    id: p.industria,
+    map: industria => ({
       ...industria,
       productos: (productos => {
         productos[p.index] = { name: p.good };
@@ -51,7 +54,8 @@ export const INDUSTRIAS_REDUCER = createReducer(
   }, state)),
 
   on(actions.setProductPerWeek, (state: EntityState<Industria>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<Industria> => adapter.mapOne({
-    id: p.industria, map: industria => ({
+    id: p.industria,
+    map: industria => ({
       ...industria,
       productos: (productos => {
         productos[p.index] = (producto => ({

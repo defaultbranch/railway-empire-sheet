@@ -16,6 +16,13 @@ export const DIRECT_LINES_REDUCER = createReducer(
   on(actions.removeDirectLine, (state: EntityState<DirectLine>, p: { line: DirectLine }): EntityState<DirectLine> => adapter.removeOne(toId(p.line), state)),
   on(actions.setDirectLines, (state: EntityState<DirectLine>, p: { lines: DirectLine[] }): EntityState<DirectLine> => adapter.setAll(p.lines, state)),
 
+  on(actions.runDirectLineNow, (state: EntityState<DirectLine>, p: { line: DirectLine, date: Date }): EntityState<DirectLine> => adapter.mapOne({
+    id: toId(p.line),
+    map: line => ({
+      ...line,
+      lastRun: p.date
+    })
+  }, state)),
 );
 
 // selectors

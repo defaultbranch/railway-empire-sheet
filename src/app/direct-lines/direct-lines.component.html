@@ -12,6 +12,7 @@
     <th>(effective rate)</th>
     <th>last run</th>
     <th>next run</th>
+    <th><!-- buttons --></th>
   </thead>
   <tbody>
 
@@ -27,6 +28,11 @@
       <td class="align-right">{{ line.productionFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ line.demandFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ effectiveRate$(line) | async | number:'.1-1' }}</td>
+      <td>{{ line.lastRun | date:'yyyy-MM-dd' }}</td>
+      <td>{{ nextRun$(line) | async | date:'yyyy-MM-dd' }}</td>
+      <td>
+        <button (click)="runNow(line)">Run now</button>
+      </td>
     </tr>
 
     <!-- new ones -->
@@ -56,7 +62,7 @@
       <td>
         <input class="medium-number" type="number" placeholder="cost" [(ngModel)]="newCost">
       </td>
-      <td colspan="7">
+      <td colspan="8">
         <button
           (click)="addLine({ruralProducer: newRuralProducer!, good: newGood!, destinationCity: newDestinationCity!, miles: newMiles!, cost: newCost! })"
           [disabled]="!newRuralProducer || !newGood || !newDestinationCity || !newMiles || !newCost">Add</button>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Observable, combineLatest, concatMap, filter, flatMap, from, map, take } from 'rxjs';
+import { NEVER, Observable, combineLatest, concatMap, filter, flatMap, from, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../negocio-rural';
@@ -11,7 +11,8 @@ import { Ciudad } from '../ciudad';
 import { todosLosCiudades } from '../ciudad.state';
 import { allLines } from '../direct-lines.state';
 import { DirectLine } from '../direct-line';
-import { addDirectLine } from '../direct-lines.actions';
+import { addDirectLine, runDirectLineNow } from '../direct-lines.actions';
+import { gameDate } from '../game-date.state';
 
 @Component({
   selector: 'app-direct-trains',
@@ -31,6 +32,7 @@ export class DirectLinesComponent {
   rurales$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
   ciudades$: Observable<Ciudad[]>;
+  gameDate$: Observable<Date>;
 
   newRuralProducer?: NegocioRural;
   newGood?: string;
@@ -46,6 +48,7 @@ export class DirectLinesComponent {
     this.rurales$ = store.select(todosLosNegociosRurales);
     this.goods$ = store.select(allGoods);
     this.ciudades$ = store.select(todosLosCiudades);
+    this.gameDate$ = store.select(gameDate).pipe(map(it => new Date(`${it}T00:00:00Z`)));
   }
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
@@ -81,5 +84,23 @@ export class DirectLinesComponent {
     return combineLatest([this.productionPerWeek$(line), this.demandPerWeek$(line)]).pipe(
       map(([prod, demand]) => Math.min(prod * (line.productionFactor ?? 1.0), demand * (line.demandFactor ?? 1.0)))
     );
+  }
+
+  runNow(line: DirectLine) {
+    this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runDirectLineNow({ line, date})));
+  }
+
+  nextRun$(line: DirectLine): Observable<Date | undefined> {
+    return combineLatest([this.effectiveRate$(line)]).pipe(
+      map(([effectiveRate]) => {
+        if (line.lastRun) {
+          const nextRun = new Date(line.lastRun);
+          nextRun.setDate(nextRun.getDate() + 56/effectiveRate);
+          return nextRun;
+        } else {
+          return undefined;
+        }
+      })
+    )
   }
 }
