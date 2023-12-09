@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ciudad';
 import { ciudad } from '../ciudad.state';
-import { updateBusiness, updatePopulation } from '../ciudad.actions';
+import { updateBusiness, updatePerWeek, updatePopulation } from '../ciudad.actions';
 import { allIndustrieNames } from '../industrias.state';
 import { allGoods } from '../goods.state';
 
@@ -51,9 +51,13 @@ export class CiudadComponent implements OnDestroy {
   }
 
   updateBusiness(p: { name: string, index: number, business: string | undefined, size: number | undefined }) {
-    console.log(p);
     if (p.index >= 0 && p.index <= 3 && !!p.business && !!p.size && p.size >= 1 && p.size <= 5) {
       this.store.dispatch(updateBusiness({ name: p.name, index: p.index, business: p.business, size: p.size }));
     }
+  }
+
+  updatePerWeek(p: { name: string, good: string, perWeek: number }) {
+    this.store.dispatch(updatePerWeek({ name: p.name, good: p.good, perWeek: p.perWeek }));
+
   }
 }

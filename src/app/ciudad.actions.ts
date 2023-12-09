@@ -7,12 +7,13 @@ export const actions = createActionGroup({
   source: CIUDADES_FEATURE_KEY,
   events: {
 
-    addCiudad: props<({ ciudad: Ciudad })>(),
-    removeCiudad: props<({ nombre: string })>(),
+    addCiudad: props<{ ciudad: Ciudad }>(),
+    removeCiudad: props<{ nombre: string }>(),
     setCiudades: props<{ ciudades: Ciudad[] }>(),
 
-    updatePopulation: props<({ name: string, population: number })>(),
-    updateBusiness: props<({ name: string, index: number, business: string, size: number})>(),
+    updatePopulation: props<{ name: string, population: number }>(),
+    updateBusiness: props<{ name: string, index: number, business: string, size: number}>(),
+    updatePerWeek: props<{ name: string, good: string, perWeek: number}>(),
 
     persistCiudades: emptyProps(),
     loadCiudades: emptyProps(),
@@ -29,5 +30,6 @@ export const {
 
   updatePopulation,
   updateBusiness,
+  updatePerWeek,
 
 } = actions;

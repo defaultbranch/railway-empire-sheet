@@ -25,6 +25,16 @@ export const CIUDAD_REDUCER = createReducer(
       })([...ciudad.businesses ?? []])
     })
   }, state)),
+  on(actions.updatePerWeek, (state: EntityState<Ciudad>, p: { name: string, good: string, perWeek: number}): EntityState<Ciudad> => adapter.mapOne({
+    id: p.name, map: ciudad => ({
+      ...ciudad,
+      perWeek: (perWeek => {
+        perWeek[p.good] = p.perWeek;
+        return perWeek;
+      })({...ciudad.perWeek ?? {}})
+    })
+  }, state)),
+
 );
 
 // selectors

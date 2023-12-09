@@ -15,6 +15,7 @@ const ciudadesChangedEffect = createEffect(
       actions.removeCiudad,
       actions.updatePopulation,
       actions.updateBusiness,
+      actions.updatePerWeek,
     ),
     map(() => actions.persistCiudades()),
   ),

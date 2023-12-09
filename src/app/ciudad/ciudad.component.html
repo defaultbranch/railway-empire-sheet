@@ -8,7 +8,7 @@
     <th style="text-align: left;">Population</th>
     <td>
       <input [ngModel]="ciudad.population" (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })"
-      type="number" class="medium-number">
+        type="number" class="medium-number">
     </td>
   </table>
 
@@ -36,6 +36,10 @@
   <table>
     <tr *ngFor="let good of goods$ | async">
       <th style="text-align: left;">{{ good }}</th>
+      <td>
+        <input class="short-number" type="number" [ngModel]="(ciudad.perWeek ?? {})[good]"
+          (ngModelChange)="updatePerWeek({name: ciudad.name, good, perWeek: $event})">
+      </td>
     </tr>
   </table>
 
