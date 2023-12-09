@@ -3,7 +3,6 @@ import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/
 
 import { Ciudad } from "./ciudad";
 import { CIUDADES_FEATURE_KEY, actions } from "./ciudad.actions";
-import { act } from "@ngrx/effects";
 
 const adapter = createEntityAdapter<Ciudad>({ selectId: ciudad => ciudad.name });
 

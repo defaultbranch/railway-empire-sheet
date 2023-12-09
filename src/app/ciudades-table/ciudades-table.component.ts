@@ -25,6 +25,7 @@ export class CiudadesTableComponent {
 
   ciudades$: Observable<Ciudad[]>;
   ciudadesSorted$: Observable<Ciudad[]>;
+
   industrias$: Observable<string[]>;
 
   newName?: string;

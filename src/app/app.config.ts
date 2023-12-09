@@ -20,6 +20,9 @@ import { gameDateEffects } from './game-date.effects';
 import { INDUSTRIAS_FEATURE_KEY } from './industrias.actions';
 import { INDUSTRIAS_REDUCER } from './industrias.state';
 import { industriasEffects } from './industrias.effects';
+import { DIRECT_LINES_FEATURE_KEY } from './direct-lines.actions';
+import { DIRECT_LINES_REDUCER } from './direct-lines.state';
+import { directLinesEffects } from './direct-lines.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,12 +34,14 @@ export const appConfig: ApplicationConfig = {
       StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
       StoreModule.forFeature(GAME_DATE_FEATURE_KEY, GAME_DATE_REDUCER),
       StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
+      StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
       EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(goodsEffects),
       EffectsModule.forFeature(negociosRuralesEffects),
       EffectsModule.forFeature(gameDateEffects),
       EffectsModule.forFeature(industriasEffects),
+      EffectsModule.forFeature(directLinesEffects),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),
   ]

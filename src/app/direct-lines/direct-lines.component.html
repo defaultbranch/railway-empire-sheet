@@ -1,44 +1,53 @@
 <table>
   <thead>
-    <th>Producer</th>
     <th>Good</th>
+    <th>Producer</th>
     <th>Destination</th>
-    <th>Distance</th>
-    <th>Cost</th>
-    <th>(production per week)</th>
-    <th>(demand per week)</th>
-    <th>production factor</th>
-    <th>demand factor</th>
-    <th>(effective demand)</th>
+    <th class="clickable" (click)="sortByMiles()">Distance</th>
+    <th class="clickable" (click)="sortByCost()">Cost</th>
+    <th>production<br>per week</th>
+    <th>demand<br>per week</th>
+    <th>production<br>factor</th>
+    <th>demand<br>factor</th>
+    <th>(effective rate)</th>
     <th>last run</th>
     <th>next run</th>
   </thead>
   <tbody>
 
     <!-- existing -->
-    <tr *ngFor="let line of []">
-      <td>not implemented</td>
+    <tr *ngFor="let line of linesSorted$ | async">
+      <td>{{ line.good }}</td>
+      <td>{{ line.ruralProducer }}</td>
+      <td>{{ line.destinationCity }}</td>
+      <td class="align-right">{{ line.miles }}</td>
+      <td class="align-right">{{ line.cost }}</td>
+      <td class="align-right">{{ productionPerWeek$(line) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ demandPerWeek$(line) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ line.productionFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ line.demandFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ effectiveRate$(line) | async | number:'.1-1' }}</td>
     </tr>
 
     <!-- new ones -->
     <tr>
       <td>
-        <select [(ngModel)]="newRuralProducer">
+        <select [(ngModel)]="newGood">
           <option disabled></option>
-          <option *ngFor="let rural of rurales$ | async" value="{{ rural }}">{{ rural.name }} ({{rural.product}})
-          </option>
+          <option *ngFor="let good of goods$ | async" [ngValue]="good">{{ good }}</option>
         </select>
       </td>
       <td>
-        <select [(ngModel)]="newGood">
+        <select [(ngModel)]="newRuralProducer">
           <option disabled></option>
-          <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          <option *ngFor="let rural of rurales$ | async" [ngValue]="rural">{{ rural.name }} ({{rural.product}})
+          </option>
         </select>
       </td>
       <td>
         <select [(ngModel)]="newDestinationCity">
           <option disabled></option>
-          <option *ngFor="let ciudad of ciudades$ | async" value="{{ ciudad }}">{{ ciudad.name }}</option>
+          <option *ngFor="let ciudad of ciudades$ | async" [ngValue]="ciudad">{{ ciudad.name }}</option>
         </select>
       </td>
       <td>
