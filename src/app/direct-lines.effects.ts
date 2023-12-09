@@ -13,6 +13,7 @@ const directLinesChangedEffect = createEffect(
     ofType(
       actions.addDirectLine,
       actions.removeDirectLine,
+      actions.runDirectLineNow,
     ),
     map(() => actions.persistDirectLines()),
   ),
