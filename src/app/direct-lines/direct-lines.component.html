@@ -1,0 +1,57 @@
+<table>
+  <thead>
+    <th>Producer</th>
+    <th>Good</th>
+    <th>Destination</th>
+    <th>Distance</th>
+    <th>Cost</th>
+    <th>(production per week)</th>
+    <th>(demand per week)</th>
+    <th>production factor</th>
+    <th>demand factor</th>
+    <th>(effective demand)</th>
+    <th>last run</th>
+    <th>next run</th>
+  </thead>
+  <tbody>
+
+    <!-- existing -->
+    <tr *ngFor="let line of []">
+      <td>not implemented</td>
+    </tr>
+
+    <!-- new ones -->
+    <tr>
+      <td>
+        <select [(ngModel)]="newRuralProducer">
+          <option disabled></option>
+          <option *ngFor="let rural of rurales$ | async" value="{{ rural }}">{{ rural.name }} ({{rural.product}})
+          </option>
+        </select>
+      </td>
+      <td>
+        <select [(ngModel)]="newGood">
+          <option disabled></option>
+          <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+        </select>
+      </td>
+      <td>
+        <select [(ngModel)]="newDestinationCity">
+          <option disabled></option>
+          <option *ngFor="let ciudad of ciudades$ | async" value="{{ ciudad }}">{{ ciudad.name }}</option>
+        </select>
+      </td>
+      <td>
+        <input class="medium-number" type="number" placeholder="miles" [(ngModel)]="newMiles">
+      </td>
+      <td>
+        <input class="medium-number" type="number" placeholder="cost" [(ngModel)]="newCost">
+      </td>
+      <td colspan="7">
+        <button
+          (click)="addLine({ruralProducer: newRuralProducer!, good: newGood!, destinationCity: newDestinationCity!, miles: newMiles!, cost: newCost! })"
+          [disabled]="!newRuralProducer || !newGood || !newDestinationCity || !newMiles || !newCost">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
