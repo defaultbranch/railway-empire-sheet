@@ -27,7 +27,7 @@ const persistNegociosEffect = createEffect(
   ) => actions$.pipe(
     ofType(actions.persistNegociosRurales),
     switchMap(() => store.select(todosLosNegociosRurales).pipe(take(1))),
-    tap(negocios => localStorage.setItem('negociosRurales', JSON.stringify(negocios))),
+    tap(negocios => localStorage.setItem('negocios-rurales', JSON.stringify(negocios))),
   ),
   { functional: true, dispatch: false }
 );
@@ -35,7 +35,7 @@ const persistNegociosEffect = createEffect(
 const loadNegociosEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadNegociosRurales),
-    map(() => actions.setNegociosRurales({ negocios: JSON.parse(localStorage.getItem('negociosRurales') as string ?? '[]') })),
+    map(() => actions.setNegociosRurales({ negocios: JSON.parse(localStorage.getItem('negocios-rurales') as string ?? '[]') })),
   ),
   { functional: true }
 );
