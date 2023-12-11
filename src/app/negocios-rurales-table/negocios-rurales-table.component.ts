@@ -5,7 +5,7 @@ import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../negocio-rural';
-import { addNegocioRural, removeNegocioRural } from '../negocio-rural.actions';
+import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../negocio-rural.actions';
 import { todosLosNegociosRurales } from '../negocio-rural.state';
 import { allGoods } from '../goods.state';
 
@@ -50,5 +50,9 @@ export class NegociosRuralesTableComponent {
 
   sortByProduct() {
     this.negociosSorted$ = this.negocios$.pipe(map(it => it.sort((a, b) => a.product.localeCompare(b.product))));
+  }
+
+  updateWeeklyProduction(p: { negocio: NegocioRural, perWeek: number }) {
+    this.store.dispatch(updateNegocioRural({ negocio: p.negocio, perWeek: p.perWeek }));
   }
 }

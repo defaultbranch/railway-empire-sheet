@@ -13,6 +13,7 @@ const negociosChangedEffect = createEffect(
     ofType(
       actions.addNegocioRural,
       actions.removeNegocioRural,
+      actions.updateNegocioRural,
     ),
     map(() => actions.persistNegociosRurales()),
   ),

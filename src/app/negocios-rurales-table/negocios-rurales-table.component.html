@@ -4,7 +4,7 @@
       <th class="clickable" (click)="sortByName()">Name</th>
       <th>Size</th>
       <th class="clickable" (click)="sortByProduct()">Product</th>
-      <th>Weekly Production</th>
+      <th>Weekly<br>Production</th>
       <th></th>
     </tr>
   </thead>
@@ -13,7 +13,10 @@
       <td>{{ negocio.name }}</td>
       <td class="align-right">{{ negocio.size }}</td>
       <td>{{ negocio.product }}</td>
-      <td class="align-right">{{ negocio.perWeek | number:'.1-1' }}</td>
+      <td class="align-right">
+        <input class="short-number" type="number" step="0.1" [ngModel]="negocio.perWeek | number:'.1-1'"
+        (ngModelChange)="updateWeeklyProduction({ negocio, perWeek: $event})">
+      </td>
       <td>
         <button (click)="removeNegocio(negocio.name)">Remove</button>
       </td>
