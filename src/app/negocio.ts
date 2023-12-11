@@ -1,5 +1,7 @@
 export type Negocio = {
   name: string;
-  product: string;
-  perWeek: number[];
+  productos?: {
+    name: string;
+    perWeek?: number[];
+  }[];
 }

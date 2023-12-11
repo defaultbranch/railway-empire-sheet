@@ -13,6 +13,8 @@ const negociosChangedEffect = createEffect(
     ofType(
       actions.addNegocio,
       actions.removeNegocio,
+      actions.setProduct,
+      actions.setProductPerWeek,
     ),
     map(() => actions.persistNegocios()),
   ),

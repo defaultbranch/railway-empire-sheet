@@ -1,0 +1,40 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+      <th>productos</th>
+      <th *ngFor="let nivel of [1,2,3,4,5]">nivel {{ nivel }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let industria of negocios$ | async">
+      <tr>
+        <td>{{ industria.name }}</td>
+        <td>
+          <button (click)="removeNegocio(industria.name)">Remove</button>
+        </td>
+        <td>
+          <select [ngModel]="(industria.productos ?? [ undefined, undefined])[0]?.name"
+            (ngModelChange)="setProduct(industria, 0, $event)">
+            <option disabled></option>
+            <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
+          </select>
+        </td>
+        <ng-container *ngFor="let nivel of [1,2,3,4,5]">
+          <td>
+            <input class="short-number" type="number"
+              [ngModel]="((industria.productos ?? [ undefined, undefined])[0]?.perWeek ?? []) [nivel - 1]"
+              (ngModelChange)="setProductosPerWeek(industria, 0, nivel, $event )">
+          </td>
+        </ng-container>
+      </tr>
+    </ng-container>
+    <tr>
+      <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
+      <td>
+        <button (click)="addNegocio(newName!)" [disabled]="!newName">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
