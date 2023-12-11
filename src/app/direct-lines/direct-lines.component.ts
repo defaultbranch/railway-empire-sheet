@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NEVER, Observable, combineLatest, concatMap, filter, flatMap, from, map, take } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { Observable, combineLatest, concatMap, filter, from, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../negocio-rural';
@@ -20,6 +21,7 @@ import { gameDate } from '../game-date.state';
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
   ],
   templateUrl: './direct-lines.component.html',
   styleUrl: './direct-lines.component.scss'
@@ -62,6 +64,10 @@ export class DirectLinesComponent {
 
   sortByMiles() {
     this.linesSorted$ = this.lines$.pipe(map(it => it.sort((a, b) => a.miles - b.miles)));
+  }
+
+  sortByDestination() {
+    this.linesSorted$ = this.lines$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
   }
 
   sortByNextRun() {

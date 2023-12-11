@@ -2,7 +2,7 @@
   <thead>
     <th>Good</th>
     <th>Producer</th>
-    <th>Destination</th>
+    <th class="clickable" (click)="sortByDestination()">Destination</th>
     <th class="clickable" (click)="sortByMiles()">Distance</th>
     <th class="clickable" (click)="sortByCost()">Cost</th>
     <th>production<br>per week</th>
@@ -20,7 +20,7 @@
     <tr *ngFor="let line of linesSorted$ | async">
       <td>{{ line.good }}</td>
       <td>{{ line.ruralProducer }}</td>
-      <td>{{ line.destinationCity }}</td>
+      <td><a [routerLink]="['/','ciudad']" [queryParams]="{name: line.destinationCity}">{{ line.destinationCity }}</a></td>
       <td class="align-right">{{ line.miles }}</td>
       <td class="align-right">{{ line.cost }}</td>
       <td class="align-right">{{ productionPerWeek$(line) | async | number:'.1-1' }}</td>
