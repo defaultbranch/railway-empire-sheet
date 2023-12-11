@@ -10,6 +10,7 @@ import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date.actions';
 import { loadIndustrias } from './industrias.actions';
 import { loadDirectLines } from './direct-lines.actions';
+import { loadNegocios } from './negocios.actions';
 
 @Component({
     selector: 'app-root',
@@ -26,9 +27,10 @@ import { loadDirectLines } from './direct-lines.actions';
 export class AppComponent {
 
   constructor(store: Store) {
-    store.dispatch(loadCiudades());
     store.dispatch(loadGoods());
     store.dispatch(loadIndustrias());
+    store.dispatch(loadNegocios());
+    store.dispatch(loadCiudades());
     store.dispatch(loadNegociosRurales());
     store.dispatch(loadGameDate());
     store.dispatch(loadDirectLines());

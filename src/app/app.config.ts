@@ -23,24 +23,29 @@ import { industriasEffects } from './industrias.effects';
 import { DIRECT_LINES_FEATURE_KEY } from './direct-lines.actions';
 import { DIRECT_LINES_REDUCER } from './direct-lines.state';
 import { directLinesEffects } from './direct-lines.effects';
+import { NEGOCIOS_FEATURE_KEY } from './negocios.actions';
+import { NEGOCIOS_REDUCER } from './negocios.state';
+import { negociosEffects } from './negocios.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     importProvidersFrom(
       StoreModule.forRoot(),
-      StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
       StoreModule.forFeature(GOODS_FEATURE_KEY, GOOD_REDUCER),
+      StoreModule.forFeature(NEGOCIOS_FEATURE_KEY, NEGOCIOS_REDUCER),
+      StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
+      StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
       StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
       StoreModule.forFeature(GAME_DATE_FEATURE_KEY, GAME_DATE_REDUCER),
-      StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
       StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(goodsEffects),
+      EffectsModule.forFeature(negociosEffects),
+      EffectsModule.forFeature(industriasEffects),
+      EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(negociosRuralesEffects),
       EffectsModule.forFeature(gameDateEffects),
-      EffectsModule.forFeature(industriasEffects),
       EffectsModule.forFeature(directLinesEffects),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),
