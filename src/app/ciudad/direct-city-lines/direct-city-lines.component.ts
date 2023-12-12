@@ -1,57 +1,57 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, combineLatest, concatMap, filter, from, map, take } from 'rxjs';
+import { Observable, combineLatest, concatMap, filter, from, map, of, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural } from '../negocio-rural';
-import { todosLosNegociosRurales } from '../negocio-rural.state';
-import { allGoods } from '../goods.state';
-import { Ciudad } from '../ciudad';
-import { todosLosCiudades } from '../ciudad.state';
-import { allLines } from '../direct-lines.state';
-import { DirectLine } from '../direct-line';
-import { addDirectLine, runDirectLineNow } from '../direct-lines.actions';
-import { gameDate } from '../game-date.state';
+import { NegocioRural } from '../../negocio-rural';
+import { todosLosNegociosRurales } from '../../negocio-rural.state';
+import { allGoods } from '../../goods.state';
+import { Ciudad } from '../../ciudad';
+import { todosLosCiudades } from '../../ciudad.state';
+import { allLines } from '../../direct-lines.state';
+import { DirectLine } from '../../direct-line';
+import { addDirectLine, runDirectLineNow } from '../../direct-lines.actions';
+import { gameDate } from '../../game-date.state';
 
 @Component({
-  selector: 'app-direct-trains',
+  selector: 'app-direct-city-lines',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     RouterLink,
   ],
-  templateUrl: './direct-lines.component.html',
-  styleUrl: './direct-lines.component.scss'
+  templateUrl: './direct-city-lines.component.html',
+  styleUrl: './direct-city-lines.component.scss'
 })
-export class DirectLinesComponent {
+export class DirectCityLinesComponent {
+
+  @Input() ciudad?: Ciudad;
 
   lines$: Observable<DirectLine[]>;
   linesSorted$: Observable<DirectLine[]>;
 
   rurales$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
-  ciudades$: Observable<Ciudad[]>;
   gameDate$: Observable<Date>;
 
   newRuralProducer?: NegocioRural;
   newGood?: string;
-  newDestinationCity?: Ciudad;
   newMiles?: number;
   newCost?: number;
 
   constructor(private store: Store) {
 
-    this.lines$ = store.select(allLines);
+    this.lines$ = store.select(allLines).pipe(map(lines => lines.filter(line => line.destinationCity === this.ciudad?.name)));
     this.linesSorted$ = this.lines$;
 
     this.rurales$ = store.select(todosLosNegociosRurales);
     this.goods$ = store.select(allGoods);
-    this.ciudades$ = store.select(todosLosCiudades);
     this.gameDate$ = store.select(gameDate).pipe(map(it => new Date(`${it}T00:00:00Z`)));
   }
+
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
     this.store.dispatch(addDirectLine({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name, miles: p.miles, cost: p.cost } }));
@@ -73,11 +73,10 @@ export class DirectLinesComponent {
     this.linesSorted$ = combineLatest([
       this.lines$,
       this.rurales$,
-      this.ciudades$,
     ]).pipe(
-      map(([lines, rurales, ciudades]) => lines.map(line => {
+      map(([lines, rurales]) => lines.map(line => {
         const productionPerWeek = rurales.find(it => it.name === line.ruralProducer && it.product === line.good)?.perWeek ?? 0;
-        const demandPerWeek = (ciudades.find(it => it.name === line.destinationCity)?.perWeek ?? {})[line.good] ?? 0;
+        const demandPerWeek = (this.ciudad?.perWeek ?? {})[line.good] ?? 0;
         const effectiveRate = this.effectiveRate({ line, productionPerWeek, demandPerWeek});
         return {
           ...line,
@@ -97,11 +96,7 @@ export class DirectLinesComponent {
   }
 
   demandPerWeek$(line: DirectLine): Observable<number> {
-    return this.ciudades$.pipe(
-      concatMap(it => from(it)),
-      filter(it => it.name === line.destinationCity),
-      map(it => (it.perWeek ?? {})[line.good])
-    )
+    return of((this.ciudad?.perWeek ?? {})[line.good]);
   }
 
   effectiveRate(p: { line: DirectLine, productionPerWeek: number, demandPerWeek: number }) {
