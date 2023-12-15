@@ -1,0 +1,54 @@
+<table *ngIf="ciudad as ciudad">
+  <thead>
+    <th>Good</th>
+    <th>Producer</th>
+    <th>production<br>per week</th>
+    <th>demand<br>per week</th>
+    <th>production<br>factor</th>
+    <th>demand<br>factor</th>
+    <th>(effective rate)</th>
+    <th>last run</th>
+    <th class="clickable" (click)="sortByNextRun()">next run</th>
+    <th><!-- buttons --></th>
+  </thead>
+  <tbody>
+
+    <!-- existing -->
+    <tr *ngFor="let line of linesSorted$ | async">
+      <td>{{ line.good }}</td>
+      <td>{{ line.ruralProducer }}</td>
+      <td class="align-right">{{ productionPerWeek$(line) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ demandPerWeek$(line) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ line.productionFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ line.demandFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ effectiveRate$(line) | async | number:'.1-1' }}</td>
+      <td>{{ line.lastRun | date:'yyyy-MM-dd' }}</td>
+      <td>{{ nextRun$(line) | async | date:'yyyy-MM-dd' }}</td>
+      <td>
+        <button (click)="runNow(line)">Run now</button>
+      </td>
+    </tr>
+
+    <!-- new ones -->
+    <tr>
+      <td>
+        <select [(ngModel)]="newGood">
+          <option disabled></option>
+          <option *ngFor="let good of goods$ | async" [ngValue]="good">{{ good }}</option>
+        </select>
+      </td>
+      <td>
+        <select [(ngModel)]="newRuralProducer">
+          <option disabled></option>
+          <option *ngFor="let rural of rurales$ | async" [ngValue]="rural">{{ rural.name }} ({{rural.product}})
+          </option>
+        </select>
+      </td>
+      <td colspan="8">
+        <button
+          (click)="addLine({ruralProducer: newRuralProducer!, good: newGood!, destinationCity: ciudad })"
+          [disabled]="!newRuralProducer || !newGood || !ciudad">Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

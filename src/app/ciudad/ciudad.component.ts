@@ -5,13 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { DirectCityLinesComponent } from './direct-city-lines/direct-city-lines.component';
-
 import { Ciudad } from '../ciudad';
 import { ciudad } from '../ciudad.state';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ciudad.actions';
 import { allIndustrieNames } from '../industrias.state';
 import { allGoods } from '../goods.state';
+import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 
 @Component({
   selector: 'app-ciudad',
@@ -19,7 +18,7 @@ import { allGoods } from '../goods.state';
   imports: [
     CommonModule,
     FormsModule,
-    DirectCityLinesComponent,
+    DirectCityProviderComponent,
   ],
   templateUrl: './ciudad.component.html',
   styleUrl: './ciudad.component.scss'
