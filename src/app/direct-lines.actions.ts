@@ -10,7 +10,6 @@ export const actions = createActionGroup({
     addDirectLine: props<{ line: DirectLine }>(),
     removeDirectLine: props<{ line: DirectLine }>(),
     setDirectLines: props<{ lines: DirectLine[] }>(),
-    runDirectLineNow: props<{ line: DirectLine, date: Date }>(),
 
     persistDirectLines: emptyProps(),
     loadDirectLines: emptyProps(),
@@ -24,7 +23,5 @@ export const {
   addDirectLine,
   removeDirectLine,
   loadDirectLines,
-
-  runDirectLineNow,
 
 } = actions;

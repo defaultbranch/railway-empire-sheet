@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 import { actions } from "./provider-connections.actions";
-import { allLines } from "./provider-connections.state";
+import { allProviderConnections } from "./provider-connections.state";
 
 const providerConnectionsChangedEffect = createEffect(
   (
@@ -26,7 +26,7 @@ const persistProviderConnectionsEffect = createEffect(
     store = inject(Store),
   ) => actions$.pipe(
     ofType(actions.persistProviderConnections),
-    switchMap(() => store.select(allLines).pipe(take(1))),
+    switchMap(() => store.select(allProviderConnections).pipe(take(1))),
     tap(lines => localStorage.setItem('provider-connections', JSON.stringify(lines))),
   ),
   { functional: true, dispatch: false }

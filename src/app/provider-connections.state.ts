@@ -33,4 +33,4 @@ const {
   selectAll,
 } = adapter.getSelectors();
 
-export const allLines = createSelector(selectFeature, selectAll);
+export const allProviderConnections = createSelector(selectFeature, selectAll);
