@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 
 import { loadCiudades } from './ciudades';
 import { loadGoods } from './goods';
-import { loadNegociosRurales } from './negocio-rural.actions';
+import { loadNegociosRurales } from './negocios-rurales';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date';
 import { loadIndustrias } from './industrias';

@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural } from '../negocio-rural';
-import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../negocio-rural.actions';
-import { todosLosNegociosRurales } from '../negocio-rural.state';
+import { NegocioRural } from '../negocios-rurales';
+import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../negocios-rurales';
+import { todosLosNegociosRurales } from '../negocios-rurales';
 import { allGoods } from '../goods';
 
 @Component({
