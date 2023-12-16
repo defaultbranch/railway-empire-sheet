@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Ciudad } from '../ciudad';
 import { ciudad } from '../ciudad.state';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ciudad.actions';
-import { allIndustrieNames } from '../industrias.state';
+import { allIndustrieNames } from '../industrias';
 import { allGoods } from '../goods.state';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 

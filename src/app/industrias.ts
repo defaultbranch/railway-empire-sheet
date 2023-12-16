@@ -1,10 +1,64 @@
+import { createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
+import { inject } from "@angular/core";
+import { map, switchMap, take, tap } from "rxjs";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 
-import { INDUSTRIAS_FEATURE_KEY, actions } from "./industrias.actions";
-import { Industria } from "./industria";
+// entity
+
+export type Industria = {
+  name: string;
+  materiasPrimas?: {
+    name: string;
+    perWeek?: number[];
+  }[];
+  productos?: {
+    name: string;
+    perWeek?: number[];
+  }[];
+};
+
+// NgRx feature key
+
+export const INDUSTRIAS_FEATURE_KEY = 'industrias';
+
+// NgRx actions
+
+export const actions = createActionGroup({
+  source: INDUSTRIAS_FEATURE_KEY,
+  events: {
+
+    addIndustria: props<({ industria: Industria })>(),
+    removeIndustria: props<({ nombre: string })>(),
+    setIndustrias: props<{ industrias: Industria[] }>(),
+
+    setMateriaPrima: props<({ industria: string, index: number, good: string })>(),
+    setMateriaPrimaPerWeek: props<({ industria: string, index: number, nivel: number, perWeek: number })>(),
+    setProduct: props<({ industria: string, index: number, good: string })>(),
+    setProductPerWeek: props<({ industria: string, index: number, nivel: number, perWeek: number })>(),
+
+    persistIndustrias: emptyProps(),
+    loadIndustrias: emptyProps(),
+  }
+});
+
+export const {
+  addIndustria,
+  removeIndustria,
+  setMateriaPrima,
+  setMateriaPrimaPerWeek,
+  setProduct,
+  setProductPerWeek,
+  loadIndustrias,
+} = actions;
+
+// NgRx entity adapter
 
 const adapter = createEntityAdapter<Industria>({ selectId: industria => industria.name });
+
+// NgRx reducer
 
 export const INDUSTRIAS_REDUCER = createReducer(
 
@@ -72,7 +126,7 @@ export const INDUSTRIAS_REDUCER = createReducer(
 
 );
 
-// selectors
+// NgRx selectors
 
 const selectFeature = createFeatureSelector<EntityState<Industria>>(INDUSTRIAS_FEATURE_KEY);
 
@@ -82,3 +136,48 @@ const {
 
 export const allIndustries = createSelector(selectFeature, selectAll);
 export const allIndustrieNames = createSelector(allIndustries, industry => industry.map(it => it.name));
+
+// NgRx effects
+
+const industriasChangedEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+  ) => actions$.pipe(
+    ofType(
+      actions.addIndustria,
+      actions.removeIndustria,
+      actions.setMateriaPrima,
+      actions.setMateriaPrimaPerWeek,
+      actions.setProduct,
+      actions.setProductPerWeek,
+    ),
+    map(() => actions.persistIndustrias()),
+  ),
+  { functional: true }
+);
+
+const persistIndustriasEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    store = inject(Store),
+  ) => actions$.pipe(
+    ofType(actions.persistIndustrias),
+    switchMap(() => store.select(allIndustries).pipe(take(1))),
+    tap(industrias => localStorage.setItem('industrias', JSON.stringify(industrias))),
+  ),
+  { functional: true, dispatch: false }
+);
+
+const loadIndustriasEffect = createEffect(
+  (actions$ = inject(Actions)) => actions$.pipe(
+    ofType(actions.loadIndustrias),
+    map(() => actions.setIndustrias({ industrias: JSON.parse(localStorage.getItem('industrias') as string ?? '[]') })),
+  ),
+  { functional: true }
+);
+
+export const industriasEffects = {
+  industriasChangedEffect,
+  persistIndustriasEffect,
+  loadIndustriasEffect,
+}

@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { addIndustria, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../industrias.actions';
-import { allIndustries } from '../industrias.state';
-import { Industria } from '../industria';
+import { addIndustria, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../industrias';
+import { allIndustries } from '../industrias';
+import { Industria } from '../industrias';
 import { allGoods } from '../goods.state';
 
 @Component({

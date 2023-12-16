@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Ciudad } from '../ciudad';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudad.actions';
 import { todosLosCiudades } from '../ciudad.state';
-import { allIndustrieNames } from '../industrias.state';
+import { allIndustrieNames } from '../industrias';
 import { RouterLink } from '@angular/router';
 
 @Component({

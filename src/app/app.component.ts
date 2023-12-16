@@ -8,7 +8,7 @@ import { loadGoods } from './goods.actions';
 import { loadNegociosRurales } from './negocio-rural.actions';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date.actions';
-import { loadIndustrias } from './industrias.actions';
+import { loadIndustrias } from './industrias';
 import { loadDirectLines } from './direct-lines.actions';
 import { loadNegocios } from './negocios.actions';
 import { loadProviderConnections } from './provider-connections.actions';
