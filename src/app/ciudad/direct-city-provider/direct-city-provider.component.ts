@@ -9,7 +9,7 @@ import { NegocioRural } from '../../negocio-rural';
 import { todosLosNegociosRurales } from '../../negocio-rural.state';
 import { allGoods } from '../../goods.state';
 import { Ciudad } from '../../ciudades';
-import { gameDate } from '../../game-date.state';
+import { gameDate } from '../../game-date';
 import { ProviderConnection } from '../../provider-connection';
 import { allProviderConnections } from '../../provider-connections.state';
 import { addProviderConnection, runProviderConnectionNow } from '../../provider-connections.actions';

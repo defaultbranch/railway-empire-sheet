@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { gameDate } from '../game-date.state';
 import { Store } from '@ngrx/store';
-import { setGameDate } from '../game-date.actions';
+
+import { gameDate } from '../game-date';
+import { setGameDate } from '../game-date';
 
 @Component({
   selector: 'app-game-date',

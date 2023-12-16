@@ -13,7 +13,7 @@ import { todosLosCiudades } from '../ciudades';
 import { allLines } from '../direct-lines.state';
 import { DirectLine } from '../direct-line';
 import { addDirectLine } from '../direct-lines.actions';
-import { gameDate } from '../game-date.state';
+import { gameDate } from '../game-date';
 import { ProviderConnection } from '../provider-connection';
 import { allProviderConnections } from '../provider-connections.state';
 import { addProviderConnection, runProviderConnectionNow } from '../provider-connections.actions';

@@ -1,11 +1,40 @@
+import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
-import { actions } from "./game-date.actions";
-import { INITIAL_GAME_DATE, gameDate } from "./game-date.state";
+export type GameDate = string;
 
+export const GAME_DATE_FEATURE_KEY = 'game-date';
+
+export const actions = createActionGroup({
+  source: GAME_DATE_FEATURE_KEY,
+  events: {
+
+    setGameDate: props<{ date: GameDate }>(),
+
+    persistGameDate: emptyProps(),
+    loadGameDate: emptyProps(),
+  }
+})
+
+export const {
+  setGameDate,
+  loadGameDate,
+} = actions;
+
+export const INITIAL_GAME_DATE = '1910-01-01';
+
+export const GAME_DATE_REDUCER = createReducer(
+  INITIAL_GAME_DATE,
+  on(actions.setGameDate, (state: string, p: { date: GameDate }): string => p.date),
+);
+
+const selectFeature = createFeatureSelector<string>(GAME_DATE_FEATURE_KEY);
+
+export const gameDate = createSelector(selectFeature, it => it);
 
 const gameDateChangedEffect = createEffect(
   (
@@ -36,8 +65,6 @@ const loadGameDateEffect = createEffect(
   ),
   { functional: true }
 );
-
-// publish effects
 
 export const gameDateEffects = {
   gameDateChangedEffect,
