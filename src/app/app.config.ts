@@ -5,9 +5,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
-import { CIUDADES_FEATURE_KEY } from './ciudad.actions';
-import { CIUDAD_REDUCER } from './ciudad.state';
-import { ciudadesEffects } from './ciudad.effects';
+import { CIUDADES_FEATURE_KEY } from './ciudades';
+import { CIUDAD_REDUCER } from './ciudades';
+import { ciudadesEffects } from './ciudades';
 import { GOODS_FEATURE_KEY } from './goods.actions';
 import { goodsEffects } from './goods.effects';
 import { GOOD_REDUCER } from './goods.state';

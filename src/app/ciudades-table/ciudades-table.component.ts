@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad } from '../ciudad';
-import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudad.actions';
-import { todosLosCiudades } from '../ciudad.state';
+import { Ciudad } from '../ciudades';
+import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ciudades';
+import { todosLosCiudades } from '../ciudades';
 import { allIndustrieNames } from '../industrias';
 import { RouterLink } from '@angular/router';
 
