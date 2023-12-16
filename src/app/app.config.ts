@@ -26,9 +26,9 @@ import { directLinesEffects } from './direct-lines';
 import { NEGOCIOS_FEATURE_KEY } from './negocios';
 import { NEGOCIOS_REDUCER } from './negocios';
 import { negociosEffects } from './negocios';
-import { PROVIDER_CONNECTIONS_FEATURE_KEY } from './provider-connections.actions';
-import { PROVIDER_CONNECTIONS_REDUCER } from './provider-connections.state';
-import { providerConnectionsEffects } from './provider-connections.effects';
+import { PROVIDER_CONNECTIONS_FEATURE_KEY } from './provider-connections';
+import { PROVIDER_CONNECTIONS_REDUCER } from './provider-connections';
+import { providerConnectionsEffects } from './provider-connections';
 
 export const appConfig: ApplicationConfig = {
   providers: [

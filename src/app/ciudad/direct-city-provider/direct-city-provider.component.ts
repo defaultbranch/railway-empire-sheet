@@ -10,9 +10,9 @@ import { todosLosNegociosRurales } from '../../negocios-rurales';
 import { allGoods } from '../../goods';
 import { Ciudad } from '../../ciudades';
 import { gameDate } from '../../game-date';
-import { ProviderConnection } from '../../provider-connection';
-import { allProviderConnections } from '../../provider-connections.state';
-import { addProviderConnection, runProviderConnectionNow } from '../../provider-connections.actions';
+import { ProviderConnection } from '../../provider-connections';
+import { allProviderConnections } from '../../provider-connections';
+import { addProviderConnection, runProviderConnectionNow } from '../../provider-connections';
 
 @Component({
   selector: 'app-direct-city-provider',
