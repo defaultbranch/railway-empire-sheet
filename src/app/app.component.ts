@@ -10,7 +10,7 @@ import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date.actions';
 import { loadIndustrias } from './industrias';
 import { loadDirectLines } from './direct-lines.actions';
-import { loadNegocios } from './negocios.actions';
+import { loadNegocios } from './negocios';
 import { loadProviderConnections } from './provider-connections.actions';
 
 @Component({

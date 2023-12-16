@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Negocio } from '../negocio';
-import { todosLosNegocios } from '../negocios.state';
+import { Negocio } from '../negocios';
+import { todosLosNegocios } from '../negocios';
 import { allGoods } from '../goods.state';
-import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../negocios.actions';
+import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../negocios';
 
 @Component({
   selector: 'app-negocios-table',
