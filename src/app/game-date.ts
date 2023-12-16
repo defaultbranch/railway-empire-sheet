@@ -5,9 +5,15 @@ import { map, switchMap, take, tap } from "rxjs";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
+// entity
+
 export type GameDate = string;
 
+// NgRx feature key
+
 export const GAME_DATE_FEATURE_KEY = 'game-date';
+
+// NgRx actions
 
 export const actions = createActionGroup({
   source: GAME_DATE_FEATURE_KEY,
@@ -25,16 +31,24 @@ export const {
   loadGameDate,
 } = actions;
 
+// NgRx initial value
+
 export const INITIAL_GAME_DATE = '1910-01-01';
+
+// NgRx reducer
 
 export const GAME_DATE_REDUCER = createReducer(
   INITIAL_GAME_DATE,
   on(actions.setGameDate, (state: string, p: { date: GameDate }): string => p.date),
 );
 
+// NgRx selectors
+
 const selectFeature = createFeatureSelector<string>(GAME_DATE_FEATURE_KEY);
 
 export const gameDate = createSelector(selectFeature, it => it);
+
+// NgRx effects
 
 const gameDateChangedEffect = createEffect(
   (

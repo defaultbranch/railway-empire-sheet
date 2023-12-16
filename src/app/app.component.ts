@@ -4,7 +4,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { loadCiudades } from './ciudades';
-import { loadGoods } from './goods.actions';
+import { loadGoods } from './goods';
 import { loadNegociosRurales } from './negocio-rural.actions';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date';

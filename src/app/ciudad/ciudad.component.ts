@@ -9,7 +9,7 @@ import { Ciudad } from '../ciudades';
 import { ciudad } from '../ciudades';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ciudades';
 import { allIndustrieNames } from '../industrias';
-import { allGoods } from '../goods.state';
+import { allGoods } from '../goods';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 
 @Component({

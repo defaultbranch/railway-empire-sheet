@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { NegocioRural } from '../negocio-rural';
 import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../negocio-rural.actions';
 import { todosLosNegociosRurales } from '../negocio-rural.state';
-import { allGoods } from '../goods.state';
+import { allGoods } from '../goods';
 
 @Component({
   selector: 'app-negocios-rurales-table',

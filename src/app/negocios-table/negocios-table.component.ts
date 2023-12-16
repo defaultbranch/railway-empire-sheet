@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 
 import { Negocio } from '../negocios';
 import { todosLosNegocios } from '../negocios';
-import { allGoods } from '../goods.state';
+import { allGoods } from '../goods';
 import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../negocios';
 
 @Component({
