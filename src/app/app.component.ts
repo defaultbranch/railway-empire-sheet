@@ -8,7 +8,6 @@ import { loadGoods } from './goods';
 import { loadNegociosRurales } from './negocios-rurales';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date';
-import { loadIndustrias } from './industrias';
 import { loadDirectLines } from './direct-lines';
 import { loadNegocios } from './negocios';
 import { loadProviderConnections } from './provider-connections';
@@ -29,7 +28,6 @@ export class AppComponent {
 
   constructor(store: Store) {
     store.dispatch(loadGoods());
-    store.dispatch(loadIndustrias());
     store.dispatch(loadNegocios());
     store.dispatch(loadCiudades());
     store.dispatch(loadNegociosRurales());

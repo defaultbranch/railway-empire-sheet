@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -22,11 +22,11 @@ export type Industria = {
 
 // NgRx feature key
 
-export const INDUSTRIAS_FEATURE_KEY = 'industrias';
+const INDUSTRIAS_FEATURE_KEY = 'industrias';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: INDUSTRIAS_FEATURE_KEY,
   events: {
 
@@ -60,7 +60,7 @@ const adapter = createEntityAdapter<Industria>({ selectId: industria => industri
 
 // NgRx reducer
 
-export const INDUSTRIAS_REDUCER = createReducer(
+const INDUSTRIAS_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
@@ -176,8 +176,22 @@ const loadIndustriasEffect = createEffect(
   { functional: true }
 );
 
-export const industriasEffects = {
+const industriasEffects = {
   industriasChangedEffect,
   persistIndustriasEffect,
   loadIndustriasEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
+    EffectsModule.forFeature(industriasEffects)
+  ]
+})
+export class IndustriasNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadIndustrias());
+  }
 }
