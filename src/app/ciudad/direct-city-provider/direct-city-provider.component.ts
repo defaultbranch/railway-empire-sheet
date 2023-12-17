@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { NegocioRural } from '../../negocios-rurales';
 import { todosLosNegociosRurales } from '../../negocios-rurales';
 import { allGoods } from '../../ngrx/goods.ngrx';
-import { Ciudad } from '../../ciudades';
+import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../game-date';
 import { ProviderConnection } from '../../provider-connections';
 import { allProviderConnections } from '../../provider-connections';

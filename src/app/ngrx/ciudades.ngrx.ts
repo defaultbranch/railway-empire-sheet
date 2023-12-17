@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -21,11 +21,11 @@ export type Ciudad = {
 
 // NgRx feature key
 
-export const CIUDADES_FEATURE_KEY = 'ciudades';
+const CIUDADES_FEATURE_KEY = 'ciudades';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: CIUDADES_FEATURE_KEY,
   events: {
 
@@ -60,7 +60,7 @@ const adapter = createEntityAdapter<Ciudad>({ selectId: ciudad => ciudad.name })
 
 // NgRx reducer
 
-export const CIUDAD_REDUCER = createReducer(
+const CIUDAD_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
@@ -139,8 +139,22 @@ const loadCiudadesEffect = createEffect(
   { functional: true }
 );
 
-export const ciudadesEffects = {
+const ciudadesEffects = {
   ciudadesChangedEffect,
   persistCiudadesEffect,
   loadCiudadesEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
+    EffectsModule.forFeature(ciudadesEffects)
+  ]
+})
+export class CiudadesNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadCiudades());
+  }
 }

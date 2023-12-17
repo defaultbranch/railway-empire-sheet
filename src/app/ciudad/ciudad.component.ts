@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad } from '../ciudades';
-import { ciudad } from '../ciudades';
-import { updateBusiness, updatePerWeek, updatePopulation } from '../ciudades';
+import { Ciudad } from '../ngrx/ciudades.ngrx';
+import { ciudad } from '../ngrx/ciudades.ngrx';
+import { updateBusiness, updatePerWeek, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { allIndustrieNames } from '../ngrx/industrias.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';

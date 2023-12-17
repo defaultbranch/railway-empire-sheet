@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { loadCiudades } from './ciudades';
+import { loadCiudades } from './ngrx/ciudades.ngrx';
 import { loadNegociosRurales } from './negocios-rurales';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date';
