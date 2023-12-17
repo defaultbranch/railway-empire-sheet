@@ -4,7 +4,6 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { loadCiudades } from './ciudades';
-import { loadGoods } from './goods';
 import { loadNegociosRurales } from './negocios-rurales';
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadGameDate } from './game-date';
@@ -27,7 +26,6 @@ import { loadProviderConnections } from './provider-connections';
 export class AppComponent {
 
   constructor(store: Store) {
-    store.dispatch(loadGoods());
     store.dispatch(loadNegocios());
     store.dispatch(loadCiudades());
     store.dispatch(loadNegociosRurales());

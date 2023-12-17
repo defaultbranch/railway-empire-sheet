@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -12,17 +12,17 @@ export type Good = string;
 
 // NgRx feature key
 
-export const GOODS_FEATURE_KEY = 'goods';
+const GOODS_FEATURE_KEY = 'goods';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: GOODS_FEATURE_KEY,
   events: {
 
-    addGood: props<({ good: string })>(),
-    removeGood: props<({ good: string })>(),
-    setGoods: props<{ goods: string[] }>(),
+    addGood: props<({ good: Good })>(),
+    removeGood: props<({ good: Good })>(),
+    setGoods: props<{ goods: Good[] }>(),
 
     persistGoods: emptyProps(),
     loadGoods: emptyProps(),
@@ -37,22 +37,22 @@ export const {
 
 // NgRx entity adapter
 
-const adapter = createEntityAdapter<string>({ selectId: good => good });
+const adapter = createEntityAdapter<Good>({ selectId: good => good });
 
 // NgRx reducer
 
-export const GOOD_REDUCER = createReducer(
+const GOOD_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
-  on(actions.addGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => adapter.addOne(p.good, state)),
-  on(actions.removeGood, (state: EntityState<string>, p: { good: string }): EntityState<string> => adapter.removeOne(p.good, state)),
-  on(actions.setGoods, (state: EntityState<string>, p: { goods: string[] }): EntityState<string> => adapter.setAll(p.goods, state)),
+  on(actions.addGood, (state: EntityState<Good>, p: { good: Good }): EntityState<Good> => adapter.addOne(p.good, state)),
+  on(actions.removeGood, (state: EntityState<Good>, p: { good: Good }): EntityState<Good> => adapter.removeOne(p.good, state)),
+  on(actions.setGoods, (state: EntityState<Good>, p: { goods: Good[] }): EntityState<Good> => adapter.setAll(p.goods, state)),
 );
 
 // NgRx selectors
 
-const selectFeature = createFeatureSelector<EntityState<string>>(GOODS_FEATURE_KEY);
+const selectFeature = createFeatureSelector<EntityState<Good>>(GOODS_FEATURE_KEY);
 
 const {
   selectAll,
@@ -95,8 +95,22 @@ const loadGoodsEffect = createEffect(
   { functional: true }
 );
 
-export const goodsEffects = {
+const goodsEffects = {
   goodsChangedEffect,
   persistGoodsEffect,
   loadGoodsEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(GOODS_FEATURE_KEY, GOOD_REDUCER),
+    EffectsModule.forFeature(goodsEffects)
+  ]
+})
+export class GoodsNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadGoods());
+  }
 }

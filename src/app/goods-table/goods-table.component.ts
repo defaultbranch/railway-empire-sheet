@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { addGood, removeGood } from '../goods';
-import { allGoods } from '../goods';
+import { addGood, removeGood } from '../ngrx/goods.ngrx';
+import { allGoods } from '../ngrx/goods.ngrx';
 
 @Component({
   selector: 'app-goods-table',

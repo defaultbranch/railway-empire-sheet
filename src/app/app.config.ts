@@ -8,9 +8,7 @@ import { routes } from './app.routes';
 import { CIUDADES_FEATURE_KEY } from './ciudades';
 import { CIUDAD_REDUCER } from './ciudades';
 import { ciudadesEffects } from './ciudades';
-import { GOODS_FEATURE_KEY } from './goods';
-import { goodsEffects } from './goods';
-import { GOOD_REDUCER } from './goods';
+import { GoodsNgrxModule } from './ngrx/goods.ngrx';
 import { NEGOCIOS_RURALES_FEATURE_KEY } from './negocios-rurales';
 import { NEGOCIOS_RURALES_REDUCER } from './negocios-rurales';
 import { negociosRuralesEffects } from './negocios-rurales';
@@ -33,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     importProvidersFrom(
       StoreModule.forRoot(),
-      StoreModule.forFeature(GOODS_FEATURE_KEY, GOOD_REDUCER),
+      GoodsNgrxModule,
       StoreModule.forFeature(NEGOCIOS_FEATURE_KEY, NEGOCIOS_REDUCER),
       IndustriasNgrxModule,
       StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
@@ -42,7 +40,6 @@ export const appConfig: ApplicationConfig = {
       StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
       StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(goodsEffects),
       EffectsModule.forFeature(negociosEffects),
       EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(negociosRuralesEffects),

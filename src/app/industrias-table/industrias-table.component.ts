@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { addIndustria, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../ngrx/industrias.ngrx';
 import { allIndustries } from '../ngrx/industrias.ngrx';
 import { Industria } from '../ngrx/industrias.ngrx';
-import { allGoods } from '../goods';
+import { allGoods } from '../ngrx/goods.ngrx';
 
 @Component({
   selector: 'app-industrias-table',
