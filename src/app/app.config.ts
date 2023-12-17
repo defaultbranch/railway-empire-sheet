@@ -19,9 +19,7 @@ import { IndustriasNgrxModule } from './ngrx/industrias.ngrx';
 import { DIRECT_LINES_FEATURE_KEY } from './direct-lines';
 import { DIRECT_LINES_REDUCER } from './direct-lines';
 import { directLinesEffects } from './direct-lines';
-import { NEGOCIOS_FEATURE_KEY } from './negocios';
-import { NEGOCIOS_REDUCER } from './negocios';
-import { negociosEffects } from './negocios';
+import { NegociosNgrxModule } from './ngrx/negocios.ngrx';
 import { PROVIDER_CONNECTIONS_FEATURE_KEY } from './provider-connections';
 import { PROVIDER_CONNECTIONS_REDUCER } from './provider-connections';
 import { providerConnectionsEffects } from './provider-connections';
@@ -32,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       StoreModule.forRoot(),
       GoodsNgrxModule,
-      StoreModule.forFeature(NEGOCIOS_FEATURE_KEY, NEGOCIOS_REDUCER),
+      NegociosNgrxModule,
       IndustriasNgrxModule,
       StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
       StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
@@ -40,7 +38,6 @@ export const appConfig: ApplicationConfig = {
       StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
       StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(negociosEffects),
       EffectsModule.forFeature(ciudadesEffects),
       EffectsModule.forFeature(negociosRuralesEffects),
       EffectsModule.forFeature(gameDateEffects),

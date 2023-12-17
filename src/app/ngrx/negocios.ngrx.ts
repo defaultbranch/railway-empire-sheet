@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -18,7 +18,7 @@ export type Negocio = {
 
 // NgRx feature key
 
-export const NEGOCIOS_FEATURE_KEY = 'negocios';
+const NEGOCIOS_FEATURE_KEY = 'negocios';
 
 // NgRx actions
 
@@ -52,7 +52,7 @@ const adapter = createEntityAdapter<Negocio>({ selectId: negocio => negocio.name
 
 // NgRx reducer
 
-export const NEGOCIOS_REDUCER = createReducer(
+const NEGOCIOS_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
@@ -137,8 +137,22 @@ const loadNegociosEffect = createEffect(
   { functional: true }
 );
 
-export const negociosEffects = {
+const negociosEffects = {
   negociosChangedEffect,
   persistNegociosEffect,
   loadNegociosEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(NEGOCIOS_FEATURE_KEY, NEGOCIOS_REDUCER),
+    EffectsModule.forFeature(negociosEffects)
+  ]
+})
+export class NegociosNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadNegocios());
+  }
 }
