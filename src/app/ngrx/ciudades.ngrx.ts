@@ -155,6 +155,7 @@ const ciudadesEffects = {
 })
 export class CiudadesNgrxModule {
   constructor(store: Store) {
+    console.log('CiudadesNgrxModule initializing');
     store.dispatch(loadCiudades());
   }
 }

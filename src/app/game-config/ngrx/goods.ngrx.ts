@@ -111,6 +111,7 @@ const goodsEffects = {
 })
 export class GoodsNgrxModule {
   constructor(store: Store) {
+    console.log('GoodsNgrxModule initializing');
     store.dispatch(loadGoods());
   }
 }

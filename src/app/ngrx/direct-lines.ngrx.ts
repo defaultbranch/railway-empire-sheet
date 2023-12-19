@@ -122,6 +122,7 @@ const directLinesEffects = {
 })
 export class DirectLinesNgrxModule {
   constructor(store: Store) {
+    console.log('DirectLinesNgrxModule initializing');
     store.dispatch(loadDirectLines());
   }
 }

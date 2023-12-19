@@ -96,6 +96,7 @@ const gameDateEffects = {
 })
 export class GameDateNgrxModule {
   constructor(store: Store) {
+    console.log('GameDateNgrxModule initializing');
     store.dispatch(loadGameDate());
   }
 }

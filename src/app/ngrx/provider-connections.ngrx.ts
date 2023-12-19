@@ -136,6 +136,7 @@ const providerConnectionsEffects = {
 })
 export class ProviderConnectionsNgrxModule {
   constructor(store: Store) {
+    console.log('ProviderConnectionsNgrxModule initializing');
     store.dispatch(loadProviderConnections());
   }
 }

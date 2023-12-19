@@ -128,6 +128,7 @@ const negociosRuralesEffects = {
 })
 export class NegociosRuralesNgrxModule {
   constructor(store: Store) {
+    console.log('NegociosRuralesNgrxModule initializing');
     store.dispatch(loadNegociosRurales());
   }
 }

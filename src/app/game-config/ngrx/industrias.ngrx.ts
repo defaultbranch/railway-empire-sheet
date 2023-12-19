@@ -192,6 +192,7 @@ const industriasEffects = {
 })
 export class IndustriasNgrxModule {
   constructor(store: Store) {
+    console.log('IndustriasNgrxModule initializing');
     store.dispatch(loadIndustrias());
   }
 }

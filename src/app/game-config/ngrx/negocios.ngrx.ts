@@ -153,6 +153,7 @@ const negociosEffects = {
 })
 export class NegociosNgrxModule {
   constructor(store: Store) {
+    console.log('NegociosNgrxModule initializing');
     store.dispatch(loadNegocios());
   }
 }
