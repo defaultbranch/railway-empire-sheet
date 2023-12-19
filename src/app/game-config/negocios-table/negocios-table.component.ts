@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Negocio } from '../ngrx/negocios.ngrx';
+import { Negocio, NegociosNgrxModule } from '../ngrx/negocios.ngrx';
 import { todosLosNegocios } from '../ngrx/negocios.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngrx/negocios.ngrx';
@@ -14,7 +14,8 @@ import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngr
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    NegociosNgrxModule,
   ],
   templateUrl: './negocios-table.component.html',
   styleUrl: './negocios-table.component.scss'

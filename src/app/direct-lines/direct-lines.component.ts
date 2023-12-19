@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
-import { allGoods } from '../game-config/ngrx/goods.ngrx';
+import { GoodsNgrxModule, allGoods } from '../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { allLines } from '../ngrx/direct-lines.ngrx';
@@ -25,6 +25,7 @@ import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provide
     CommonModule,
     FormsModule,
     RouterLink,
+    GoodsNgrxModule
   ],
   templateUrl: './direct-lines.component.html',
   styleUrl: './direct-lines.component.scss'

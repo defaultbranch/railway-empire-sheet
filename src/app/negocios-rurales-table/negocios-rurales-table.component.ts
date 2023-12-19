@@ -8,13 +8,15 @@ import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../game-config/ngrx/goods.ngrx';
+import { NegociosNgrxModule } from '../game-config/ngrx/negocios.ngrx';
 
 @Component({
   selector: 'app-negocios-rurales-table',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    NegociosNgrxModule,
   ],
   templateUrl: './negocios-rurales-table.component.html',
   styleUrl: './negocios-rurales-table.component.scss'
