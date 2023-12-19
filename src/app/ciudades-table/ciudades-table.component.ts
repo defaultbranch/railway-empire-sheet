@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad } from '../ngrx/ciudades.ngrx';
+import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { IndustriasNgrxModule, allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
+import { allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     FormsModule,
     RouterLink,
-    IndustriasNgrxModule,
+    CiudadesNgrxModule,
   ],
   templateUrl: './ciudades-table.component.html',
   styleUrl: './ciudades-table.component.scss'

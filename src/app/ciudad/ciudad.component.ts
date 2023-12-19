@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad } from '../ngrx/ciudades.ngrx';
+import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { IndustriasNgrxModule, allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
@@ -19,7 +19,7 @@ import { DirectCityProviderComponent } from './direct-city-provider/direct-city-
     CommonModule,
     FormsModule,
     DirectCityProviderComponent,
-    IndustriasNgrxModule,
+    CiudadesNgrxModule,
   ],
   templateUrl: './ciudad.component.html',
   styleUrl: './ciudad.component.scss'

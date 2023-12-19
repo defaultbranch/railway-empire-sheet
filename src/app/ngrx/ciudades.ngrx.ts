@@ -5,6 +5,7 @@ import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { IndustriasNgrxModule } from "../game-config/ngrx/industrias.ngrx";
 
 // entity
 
@@ -149,6 +150,7 @@ const ciudadesEffects = {
 
 @NgModule({
   imports: [
+    IndustriasNgrxModule,
     StoreModule.forFeature(CIUDADES_FEATURE_KEY, CIUDAD_REDUCER),
     EffectsModule.forFeature(ciudadesEffects)
   ]

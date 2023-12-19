@@ -17,7 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     importProvidersFrom(
       StoreModule.forRoot(),
-      CiudadesNgrxModule,
       NegociosRuralesNgrxModule,
       GameDateNgrxModule,
       ProviderConnectionsNgrxModule,
