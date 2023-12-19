@@ -10,9 +10,9 @@ import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
-import { ProviderConnection } from '../../provider-connections';
-import { allProviderConnections } from '../../provider-connections';
-import { addProviderConnection, runProviderConnectionNow } from '../../provider-connections';
+import { ProviderConnection } from '../../ngrx/provider-connections.ngrx';
+import { allProviderConnections } from '../../ngrx/provider-connections.ngrx';
+import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
 
 @Component({
   selector: 'app-direct-city-provider',

@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -25,7 +25,7 @@ export const PROVIDER_CONNECTIONS_FEATURE_KEY = 'provider-connections';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: PROVIDER_CONNECTIONS_FEATURE_KEY,
   events: {
 
@@ -57,7 +57,7 @@ const adapter = createEntityAdapter<ProviderConnection>({ selectId: line => toId
 
 // NgRx reducer
 
-export const PROVIDER_CONNECTIONS_REDUCER = createReducer(
+const PROVIDER_CONNECTIONS_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
@@ -120,8 +120,22 @@ const loadProviderConnectionsEffect = createEffect(
   { functional: true }
 );
 
-export const providerConnectionsEffects = {
+const providerConnectionsEffects = {
   providerConnectionsChangedEffect,
   persistProviderConnectionsEffect,
   loadProviderConnectionsEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
+    EffectsModule.forFeature(providerConnectionsEffects)
+  ]
+})
+export class ProviderConnectionsNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadProviderConnections());
+  }
 }

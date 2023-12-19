@@ -14,9 +14,9 @@ import { allLines } from '../direct-lines';
 import { DirectLine } from '../direct-lines';
 import { addDirectLine } from '../direct-lines';
 import { gameDate } from '../ngrx/game-date.ngrx';
-import { ProviderConnection } from '../provider-connections';
-import { allProviderConnections } from '../provider-connections';
-import { addProviderConnection, runProviderConnectionNow } from '../provider-connections';
+import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
+import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
+import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
 
 @Component({
   selector: 'app-direct-trains',

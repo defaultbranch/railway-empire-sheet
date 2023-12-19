@@ -1,11 +1,10 @@
-import { Component, NgModule } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Store, StoreModule } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import { GameDateComponent } from "./game-date/game-date.component";
 import { loadDirectLines } from './direct-lines';
-import { loadProviderConnections } from './provider-connections';
 
 @Component({
     selector: 'app-root',
@@ -22,7 +21,6 @@ import { loadProviderConnections } from './provider-connections';
 export class AppComponent {
 
   constructor(store: Store) {
-    store.dispatch(loadProviderConnections());
     store.dispatch(loadDirectLines());
   }
 }

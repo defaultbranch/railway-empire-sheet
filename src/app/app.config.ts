@@ -14,9 +14,7 @@ import { DIRECT_LINES_FEATURE_KEY } from './direct-lines';
 import { DIRECT_LINES_REDUCER } from './direct-lines';
 import { directLinesEffects } from './direct-lines';
 import { NegociosNgrxModule } from './ngrx/negocios.ngrx';
-import { PROVIDER_CONNECTIONS_FEATURE_KEY } from './provider-connections';
-import { PROVIDER_CONNECTIONS_REDUCER } from './provider-connections';
-import { providerConnectionsEffects } from './provider-connections';
+import { ProviderConnectionsNgrxModule } from './ngrx/provider-connections.ngrx';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,10 +27,9 @@ export const appConfig: ApplicationConfig = {
       CiudadesNgrxModule,
       NegociosRuralesNgrxModule,
       GameDateNgrxModule,
-      StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
+      ProviderConnectionsNgrxModule,
       StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(providerConnectionsEffects),
       EffectsModule.forFeature(directLinesEffects),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),
