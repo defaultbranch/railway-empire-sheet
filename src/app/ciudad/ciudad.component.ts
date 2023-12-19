@@ -8,8 +8,8 @@ import { Store } from '@ngrx/store';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ngrx/ciudades.ngrx';
-import { allIndustrieNames } from '../ngrx/industrias.ngrx';
-import { allGoods } from '../ngrx/goods.ngrx';
+import { allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
+import { allGoods } from '../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 
 @Component({

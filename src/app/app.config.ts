@@ -5,13 +5,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
+
+import { GoodsNgrxModule } from './game-config/ngrx/goods.ngrx';
+import { NegociosNgrxModule } from './game-config/ngrx/negocios.ngrx';
+import { IndustriasNgrxModule } from './game-config/ngrx/industrias.ngrx';
+
 import { CiudadesNgrxModule } from './ngrx/ciudades.ngrx';
-import { GoodsNgrxModule } from './ngrx/goods.ngrx';
 import { NegociosRuralesNgrxModule } from './ngrx/negocios-rurales.ngrx';
 import { GameDateNgrxModule } from './ngrx/game-date.ngrx';
-import { IndustriasNgrxModule } from './ngrx/industrias.ngrx';
 import { DirectLinesNgrxModule } from './ngrx/direct-lines.ngrx';
-import { NegociosNgrxModule } from './ngrx/negocios.ngrx';
 import { ProviderConnectionsNgrxModule } from './ngrx/provider-connections.ngrx';
 
 export const appConfig: ApplicationConfig = {
