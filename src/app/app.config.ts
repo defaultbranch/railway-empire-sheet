@@ -6,7 +6,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
 
-import { GoodsNgrxModule } from './game-config/ngrx/goods.ngrx';
 import { NegociosNgrxModule } from './game-config/ngrx/negocios.ngrx';
 import { IndustriasNgrxModule } from './game-config/ngrx/industrias.ngrx';
 
@@ -21,7 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     importProvidersFrom(
       StoreModule.forRoot(),
-      GoodsNgrxModule,
       NegociosNgrxModule,
       IndustriasNgrxModule,
       CiudadesNgrxModule,

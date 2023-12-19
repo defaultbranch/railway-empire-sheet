@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { addGood, removeGood } from '../ngrx/goods.ngrx';
+import { GoodsNgrxModule, addGood, removeGood } from '../ngrx/goods.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 
 @Component({
@@ -12,7 +12,8 @@ import { allGoods } from '../ngrx/goods.ngrx';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    GoodsNgrxModule,
   ],
   templateUrl: './goods-table.component.html',
   styleUrl: './goods-table.component.scss'

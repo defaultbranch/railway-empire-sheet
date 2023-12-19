@@ -1,15 +1,15 @@
-import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
+import { Store, StoreModule, createActionGroup, createFeatureSelector, createReducer, createSelector, emptyProps, on, props } from "@ngrx/store";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+
+import { Good, GoodsNgrxModule } from "./goods.ngrx";
 
 // entity
 
 export type Negocio = {
-  name: string;
+  name: Good;
   productos?: {
     name: string;
     perWeek?: number[];
@@ -147,6 +147,7 @@ const negociosEffects = {
 
 @NgModule({
   imports: [
+    GoodsNgrxModule,
     StoreModule.forFeature(NEGOCIOS_FEATURE_KEY, NEGOCIOS_REDUCER),
     EffectsModule.forFeature(negociosEffects)
   ]
