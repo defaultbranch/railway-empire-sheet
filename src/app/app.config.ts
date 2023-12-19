@@ -7,9 +7,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
 import { CiudadesNgrxModule } from './ngrx/ciudades.ngrx';
 import { GoodsNgrxModule } from './ngrx/goods.ngrx';
-import { NEGOCIOS_RURALES_FEATURE_KEY } from './negocios-rurales';
-import { NEGOCIOS_RURALES_REDUCER } from './negocios-rurales';
-import { negociosRuralesEffects } from './negocios-rurales';
+import { NegociosRuralesNgrxModule } from './ngrx/negocios-rurales.ngrx';
 import { GAME_DATE_FEATURE_KEY } from './game-date';
 import { GAME_DATE_REDUCER } from './game-date';
 import { gameDateEffects } from './game-date';
@@ -31,12 +29,11 @@ export const appConfig: ApplicationConfig = {
       NegociosNgrxModule,
       IndustriasNgrxModule,
       CiudadesNgrxModule,
-      StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
+      NegociosRuralesNgrxModule,
       StoreModule.forFeature(GAME_DATE_FEATURE_KEY, GAME_DATE_REDUCER),
       StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
       StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(negociosRuralesEffects),
       EffectsModule.forFeature(gameDateEffects),
       EffectsModule.forFeature(providerConnectionsEffects),
       EffectsModule.forFeature(directLinesEffects),

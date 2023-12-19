@@ -5,8 +5,8 @@ import { RouterLink } from '@angular/router';
 import { Observable, combineLatest, concatMap, filter, from, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural } from '../negocios-rurales';
-import { todosLosNegociosRurales } from '../negocios-rurales';
+import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
+import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
