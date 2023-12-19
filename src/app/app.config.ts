@@ -15,7 +15,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       StoreModule.forRoot(),
       GameDateNgrxModule,
-      DirectLinesNgrxModule,
       EffectsModule.forRoot(),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),

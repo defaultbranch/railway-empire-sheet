@@ -5,16 +5,16 @@ import { RouterLink } from '@angular/router';
 import { Observable, combineLatest, concatMap, filter, from, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, NegociosRuralesNgrxModule } from '../ngrx/negocios-rurales.ngrx';
+import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../game-config/ngrx/goods.ngrx';
-import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
+import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { allLines } from '../ngrx/direct-lines.ngrx';
+import { DirectLinesNgrxModule, allLines } from '../ngrx/direct-lines.ngrx';
 import { DirectLine } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';
 import { gameDate } from '../ngrx/game-date.ngrx';
-import { ProviderConnection, ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
+import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
 
@@ -25,7 +25,7 @@ import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provide
     CommonModule,
     FormsModule,
     RouterLink,
-    ProviderConnectionsNgrxModule,
+    DirectLinesNgrxModule
   ],
   templateUrl: './direct-lines.component.html',
   styleUrl: './direct-lines.component.scss'

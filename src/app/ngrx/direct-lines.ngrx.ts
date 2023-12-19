@@ -5,6 +5,7 @@ import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { ProviderConnectionsNgrxModule } from "./provider-connections.ngrx";
 
 // entity
 
@@ -116,6 +117,7 @@ const directLinesEffects = {
 
 @NgModule({
   imports: [
+    ProviderConnectionsNgrxModule,
     StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
     EffectsModule.forFeature(directLinesEffects)
   ]
