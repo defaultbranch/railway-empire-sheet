@@ -112,7 +112,7 @@ const loadNegociosEffect = createEffect(
   { functional: true }
 );
 
-export const negociosRuralesEffects = {
+const negociosRuralesEffects = {
   negociosChangedEffect,
   persistNegociosEffect,
   loadNegociosEffect,

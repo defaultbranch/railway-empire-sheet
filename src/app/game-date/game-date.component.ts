@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { gameDate } from '../game-date';
-import { setGameDate } from '../game-date';
+import { gameDate } from '../ngrx/game-date.ngrx';
+import { setGameDate } from '../ngrx/game-date.ngrx';
 
 @Component({
   selector: 'app-game-date',

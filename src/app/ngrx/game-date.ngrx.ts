@@ -1,8 +1,8 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -11,11 +11,11 @@ export type GameDate = string;
 
 // NgRx feature key
 
-export const GAME_DATE_FEATURE_KEY = 'game-date';
+const GAME_DATE_FEATURE_KEY = 'game-date';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: GAME_DATE_FEATURE_KEY,
   events: {
 
@@ -33,11 +33,11 @@ export const {
 
 // NgRx initial value
 
-export const INITIAL_GAME_DATE = '1910-01-01';
+const INITIAL_GAME_DATE = '1910-01-01';
 
 // NgRx reducer
 
-export const GAME_DATE_REDUCER = createReducer(
+const GAME_DATE_REDUCER = createReducer(
   INITIAL_GAME_DATE,
   on(actions.setGameDate, (state: string, p: { date: GameDate }): string => p.date),
 );
@@ -80,8 +80,22 @@ const loadGameDateEffect = createEffect(
   { functional: true }
 );
 
-export const gameDateEffects = {
+const gameDateEffects = {
   gameDateChangedEffect,
   persistGameDateEffect,
   loadGameDateEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(GAME_DATE_FEATURE_KEY, GAME_DATE_REDUCER),
+    EffectsModule.forFeature(gameDateEffects)
+  ]
+})
+export class GameDateNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadGameDate());
+  }
 }

@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 
 import { GameDateComponent } from "./game-date/game-date.component";
-import { loadGameDate } from './game-date';
 import { loadDirectLines } from './direct-lines';
 import { loadProviderConnections } from './provider-connections';
 
@@ -23,7 +22,6 @@ import { loadProviderConnections } from './provider-connections';
 export class AppComponent {
 
   constructor(store: Store) {
-    store.dispatch(loadGameDate());
     store.dispatch(loadProviderConnections());
     store.dispatch(loadDirectLines());
   }

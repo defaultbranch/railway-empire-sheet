@@ -9,7 +9,7 @@ import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
-import { gameDate } from '../../game-date';
+import { gameDate } from '../../ngrx/game-date.ngrx';
 import { ProviderConnection } from '../../provider-connections';
 import { allProviderConnections } from '../../provider-connections';
 import { addProviderConnection, runProviderConnectionNow } from '../../provider-connections';
