@@ -8,9 +8,10 @@ import { Store } from '@ngrx/store';
 import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePerWeek, updatePopulation } from '../ngrx/ciudades.ngrx';
-import { IndustriasNgrxModule, allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
+import { allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
 import { allGoods } from '../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
+import { NegociosRuralesNgrxModule } from '../ngrx/negocios-rurales.ngrx';
 
 @Component({
   selector: 'app-ciudad',
@@ -20,6 +21,7 @@ import { DirectCityProviderComponent } from './direct-city-provider/direct-city-
     FormsModule,
     DirectCityProviderComponent,
     CiudadesNgrxModule,
+    NegociosRuralesNgrxModule,
   ],
   templateUrl: './ciudad.component.html',
   styleUrl: './ciudad.component.scss'

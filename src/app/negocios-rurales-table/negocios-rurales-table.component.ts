@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
+import { NegocioRural, NegociosRuralesNgrxModule } from '../ngrx/negocios-rurales.ngrx';
 import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../game-config/ngrx/goods.ngrx';
-import { NegociosNgrxModule } from '../game-config/ngrx/negocios.ngrx';
 
 @Component({
   selector: 'app-negocios-rurales-table',
@@ -16,7 +15,7 @@ import { NegociosNgrxModule } from '../game-config/ngrx/negocios.ngrx';
   imports: [
     CommonModule,
     FormsModule,
-    NegociosNgrxModule,
+    NegociosRuralesNgrxModule,
   ],
   templateUrl: './negocios-rurales-table.component.html',
   styleUrl: './negocios-rurales-table.component.scss'

@@ -1,10 +1,10 @@
-import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
+import { Store, StoreModule, createActionGroup, createFeatureSelector, createReducer, createSelector, emptyProps, on, props } from "@ngrx/store";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+
+import { NegociosNgrxModule } from "../game-config/ngrx/negocios.ngrx";
 
 // entity
 
@@ -122,6 +122,7 @@ const negociosRuralesEffects = {
 
 @NgModule({
   imports: [
+    NegociosNgrxModule,
     StoreModule.forFeature(NEGOCIOS_RURALES_FEATURE_KEY, NEGOCIOS_RURALES_REDUCER),
     EffectsModule.forFeature(negociosRuralesEffects)
   ]
