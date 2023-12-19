@@ -4,7 +4,7 @@ import { Store, StoreModule, createActionGroup, createFeatureSelector, createRed
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
-import { Good } from "./goods.ngrx";
+import { Good, GoodsNgrxModule } from "./goods.ngrx";
 
 // entity
 
@@ -186,6 +186,7 @@ const industriasEffects = {
 
 @NgModule({
   imports: [
+    GoodsNgrxModule,
     StoreModule.forFeature(INDUSTRIAS_FEATURE_KEY, INDUSTRIAS_REDUCER),
     EffectsModule.forFeature(industriasEffects)
   ]
