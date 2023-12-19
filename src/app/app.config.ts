@@ -10,9 +10,7 @@ import { GoodsNgrxModule } from './ngrx/goods.ngrx';
 import { NegociosRuralesNgrxModule } from './ngrx/negocios-rurales.ngrx';
 import { GameDateNgrxModule } from './ngrx/game-date.ngrx';
 import { IndustriasNgrxModule } from './ngrx/industrias.ngrx';
-import { DIRECT_LINES_FEATURE_KEY } from './direct-lines';
-import { DIRECT_LINES_REDUCER } from './direct-lines';
-import { directLinesEffects } from './direct-lines';
+import { DirectLinesNgrxModule } from './ngrx/direct-lines.ngrx';
 import { NegociosNgrxModule } from './ngrx/negocios.ngrx';
 import { ProviderConnectionsNgrxModule } from './ngrx/provider-connections.ngrx';
 
@@ -28,9 +26,8 @@ export const appConfig: ApplicationConfig = {
       NegociosRuralesNgrxModule,
       GameDateNgrxModule,
       ProviderConnectionsNgrxModule,
-      StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
+      DirectLinesNgrxModule,
       EffectsModule.forRoot(),
-      EffectsModule.forFeature(directLinesEffects),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ),
   ]

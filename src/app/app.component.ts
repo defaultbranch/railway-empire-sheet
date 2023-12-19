@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Store } from '@ngrx/store';
 
 import { GameDateComponent } from "./game-date/game-date.component";
-import { loadDirectLines } from './direct-lines';
 
 @Component({
     selector: 'app-root',
@@ -18,9 +16,4 @@ import { loadDirectLines } from './direct-lines';
         GameDateComponent,
     ]
 })
-export class AppComponent {
-
-  constructor(store: Store) {
-    store.dispatch(loadDirectLines());
-  }
-}
+export class AppComponent { }

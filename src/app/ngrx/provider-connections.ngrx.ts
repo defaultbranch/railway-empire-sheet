@@ -21,7 +21,7 @@ export type ProviderConnection = {
 
 // NgRx feature key
 
-export const PROVIDER_CONNECTIONS_FEATURE_KEY = 'provider-connections';
+const PROVIDER_CONNECTIONS_FEATURE_KEY = 'provider-connections';
 
 // NgRx actions
 

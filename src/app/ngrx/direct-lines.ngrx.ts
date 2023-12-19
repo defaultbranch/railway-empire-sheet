@@ -1,9 +1,9 @@
-import { createActionGroup, emptyProps, props } from "@ngrx/store";
+import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
-import { inject } from "@angular/core";
+import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 
 // entity
@@ -19,11 +19,11 @@ export type DirectLine = {
 
 // NgRx feature key
 
-export const DIRECT_LINES_FEATURE_KEY = 'direct-lines';
+const DIRECT_LINES_FEATURE_KEY = 'direct-lines';
 
 // NgRx actions
 
-export const actions = createActionGroup({
+const actions = createActionGroup({
   source: DIRECT_LINES_FEATURE_KEY,
   events: {
 
@@ -52,7 +52,7 @@ const adapter = createEntityAdapter<DirectLine>({ selectId: line => toId(line) }
 
 // NgRx reducer
 
-export const DIRECT_LINES_REDUCER = createReducer(
+const DIRECT_LINES_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
@@ -106,8 +106,22 @@ const loadDirectLinesEffect = createEffect(
   { functional: true }
 );
 
-export const directLinesEffects = {
+const directLinesEffects = {
   directLinesChangedEffect,
   persistDirectLinesEffect,
   loadDirectLinesEffect,
+}
+
+// Angular module
+
+@NgModule({
+  imports: [
+    StoreModule.forFeature(DIRECT_LINES_FEATURE_KEY, DIRECT_LINES_REDUCER),
+    EffectsModule.forFeature(directLinesEffects)
+  ]
+})
+export class DirectLinesNgrxModule {
+  constructor(store: Store) {
+    store.dispatch(loadDirectLines());
+  }
 }
