@@ -1,10 +1,11 @@
-import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
+import { Store, StoreModule, createActionGroup, createFeatureSelector, createReducer, createSelector, emptyProps, on, props } from "@ngrx/store";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+
+import { CiudadesNgrxModule } from "./ciudades.ngrx";
+import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
 
 // entity
 
@@ -130,6 +131,8 @@ const providerConnectionsEffects = {
 
 @NgModule({
   imports: [
+    CiudadesNgrxModule,
+    NegociosRuralesNgrxModule,
     StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
     EffectsModule.forFeature(providerConnectionsEffects)
   ]

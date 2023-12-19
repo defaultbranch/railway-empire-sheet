@@ -8,7 +8,6 @@ import { routes } from './app.routes';
 
 import { GameDateNgrxModule } from './ngrx/game-date.ngrx';
 import { DirectLinesNgrxModule } from './ngrx/direct-lines.ngrx';
-import { ProviderConnectionsNgrxModule } from './ngrx/provider-connections.ngrx';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +15,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       StoreModule.forRoot(),
       GameDateNgrxModule,
-      ProviderConnectionsNgrxModule,
       DirectLinesNgrxModule,
       EffectsModule.forRoot(),
       StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),

@@ -14,7 +14,7 @@ import { allLines } from '../ngrx/direct-lines.ngrx';
 import { DirectLine } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';
 import { gameDate } from '../ngrx/game-date.ngrx';
-import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
+import { ProviderConnection, ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
 
@@ -25,8 +25,7 @@ import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provide
     CommonModule,
     FormsModule,
     RouterLink,
-    CiudadesNgrxModule,
-    NegociosRuralesNgrxModule,
+    ProviderConnectionsNgrxModule,
   ],
   templateUrl: './direct-lines.component.html',
   styleUrl: './direct-lines.component.scss'
