@@ -9,18 +9,20 @@ import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
+import { GameDateComponent } from "../game-date/game-date.component";
 
 @Component({
-  selector: 'app-ciudades-table',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    CiudadesNgrxModule,
-  ],
-  templateUrl: './ciudades-table.component.html',
-  styleUrl: './ciudades-table.component.scss'
+    selector: 'app-ciudades-table',
+    standalone: true,
+    templateUrl: './ciudades-table.component.html',
+    styleUrl: './ciudades-table.component.scss',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterLink,
+        GameDateComponent,
+        CiudadesNgrxModule,
+    ]
 })
 export class CiudadesTableComponent {
 

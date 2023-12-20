@@ -17,18 +17,20 @@ import { gameDate } from '../../game-state/ngrx/game-date.ngrx';
 import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
+import { GameDateComponent } from "../game-date/game-date.component";
 
 @Component({
-  selector: 'app-direct-trains',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    DirectLinesNgrxModule
-  ],
-  templateUrl: './direct-lines.component.html',
-  styleUrl: './direct-lines.component.scss'
+    selector: 'app-direct-trains',
+    standalone: true,
+    templateUrl: './direct-lines.component.html',
+    styleUrl: './direct-lines.component.scss',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterLink,
+        GameDateComponent,
+        DirectLinesNgrxModule,
+    ]
 })
 export class DirectLinesComponent {
 
