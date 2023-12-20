@@ -4,7 +4,7 @@ import { Store, StoreModule, createActionGroup, createFeatureSelector, createRed
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
-import { NegociosNgrxModule } from "../game-config/ngrx/negocios.ngrx";
+import { NegociosNgrxModule } from "../../game-config/ngrx/negocios.ngrx";
 
 // entity
 

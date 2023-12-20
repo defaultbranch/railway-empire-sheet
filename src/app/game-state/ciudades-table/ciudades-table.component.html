@@ -10,7 +10,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let ciudad of ciudadesSorted$ | async">
-      <td><a [routerLink]="['/','ciudad']" [queryParams]="{name: ciudad.name}">{{ ciudad.name }}</a></td>
+      <td><a [routerLink]="['/', 'game-state','ciudad']" [queryParams]="{name: ciudad.name}">{{ ciudad.name }}</a></td>
       <td class="align-right">{{ ciudad.size }}</td>
       <td><input [ngModel]="ciudad.population"
           (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number"

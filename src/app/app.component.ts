@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
-import { GameDateComponent } from "./game-date/game-date.component";
+import { GameDateComponent } from "./game-state/game-date/game-date.component";
 
 @Component({
     selector: 'app-root',

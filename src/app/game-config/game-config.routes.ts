@@ -10,7 +10,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
 })
-export class GameConfigurationRoutesModule {
+export class GameConfigRoutesModule {
   constructor() {
     console.log('GameConfigurationRoutesModule initializing');
   }

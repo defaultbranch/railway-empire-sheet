@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { allIndustrieNames } from '../game-config/ngrx/industrias.ngrx';
-import { RouterLink } from '@angular/router';
+import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
 
 @Component({
   selector: 'app-ciudades-table',

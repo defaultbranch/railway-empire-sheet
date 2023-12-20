@@ -6,8 +6,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
 
-import { GameDateNgrxModule } from './ngrx/game-date.ngrx';
-import { DirectLinesNgrxModule } from './ngrx/direct-lines.ngrx';
+import { GameDateNgrxModule } from './game-state/ngrx/game-date.ngrx';
 
 export const appConfig: ApplicationConfig = {
   providers: [
