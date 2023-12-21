@@ -139,7 +139,7 @@ export class DirectLinesComponent {
     this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line, date })));
   }
 
-  nextRun(line: ProviderConnection, effectiveRate: number) {
+  private nextRun(line: ProviderConnection, effectiveRate: number) {
     if (line.lastRun) {
       const nextRun = new Date(line.lastRun);
       nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
