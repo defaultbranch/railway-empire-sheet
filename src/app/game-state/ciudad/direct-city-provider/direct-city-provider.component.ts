@@ -116,6 +116,10 @@ export class DirectCityProviderComponent {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
   }
 
+  sortByGood() {
+    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.good.localeCompare(b.good))));
+  }
+
   sortByNextRun() {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.nextRun?.getTime() ?? 0) - (b.nextRun?.getTime() ?? 0))));
   }

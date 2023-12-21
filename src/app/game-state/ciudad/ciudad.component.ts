@@ -12,18 +12,20 @@ import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
+import { GameDateComponent } from "../game-date/game-date.component";
 
 @Component({
-  selector: 'app-ciudad',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ProviderConnectionsNgrxModule,
-    DirectCityProviderComponent,
-  ],
-  templateUrl: './ciudad.component.html',
-  styleUrl: './ciudad.component.scss'
+    selector: 'app-ciudad',
+    standalone: true,
+    templateUrl: './ciudad.component.html',
+    styleUrl: './ciudad.component.scss',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ProviderConnectionsNgrxModule,
+        DirectCityProviderComponent,
+        GameDateComponent
+    ]
 })
 export class CiudadComponent implements OnDestroy {
 
