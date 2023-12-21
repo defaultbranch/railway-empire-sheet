@@ -19,21 +19,21 @@
   <tbody>
 
     <!-- existing -->
-    <tr *ngFor="let line of linesSorted$ | async">
-      <td>{{ line.good }}</td>
-      <td>{{ line.ruralProducer }}</td>
-      <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: line.destinationCity}">{{ line.destinationCity }}</a></td>
-      <td class="align-right">{{ line.miles }}</td>
-      <td class="align-right">{{ line.cost }}</td>
-      <td class="align-right">{{ productionPerWeek$(line) | async | number:'.1-1' }}</td>
-      <td class="align-right">{{ demandPerWeek$(line) | async | number:'.1-1' }}</td>
-      <td class="align-right">{{ line.productionFactor ?? 1.0 | number:'.2-2' }}</td>
-      <td class="align-right">{{ line.demandFactor ?? 1.0 | number:'.2-2' }}</td>
-      <td class="align-right">{{ effectiveRate$(line) | async | number:'.1-1' }}</td>
-      <td>{{ line.lastRun | date:'yyyy-MM-dd' }}</td>
-      <td>{{ nextRun$(line) | async | date:'yyyy-MM-dd' }}</td>
+    <tr *ngFor="let item of itemsSorted$ | async">
+      <td>{{ item.good }}</td>
+      <td>{{ item.ruralProducer }}</td>
+      <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{ item.destinationCity }}</a></td>
+      <td class="align-right">{{ item.miles }}</td>
+      <td class="align-right">{{ item.cost }}</td>
+      <td class="align-right">{{ productionPerWeek$(item) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ demandPerWeek$(item) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ item.productionFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right">{{ effectiveRate$(item) | async | number:'.1-1' }}</td>
+      <td>{{ item.lastRun | date:'yyyy-MM-dd' }}</td>
+      <td>{{ nextRun$(item) | async | date:'yyyy-MM-dd' }}</td>
       <td>
-        <button (click)="runNow(line)">Run now</button>
+        <button (click)="runNow(item)">Run now</button>
       </td>
     </tr>
 

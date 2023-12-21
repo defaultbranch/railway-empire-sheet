@@ -34,8 +34,32 @@ import { GameDateComponent } from "../game-date/game-date.component";
 })
 export class DirectLinesComponent {
 
-  lines$: Observable<(DirectLine & ProviderConnection)[]>;
-  linesSorted$: Observable<(DirectLine & ProviderConnection)[]>;
+  items$: Observable<{
+
+    ruralProducer: string;
+    good: string;
+    destinationCity: string;
+
+    productionFactor?: number;
+    demandFactor?: number;
+    lastRun?: Date;
+
+    miles?: number;
+    cost?: number;
+  }[]>;
+  itemsSorted$: Observable<{
+
+    ruralProducer: string;
+    good: string;
+    destinationCity: string;
+
+    productionFactor?: number;
+    demandFactor?: number;
+    lastRun?: Date;
+
+    miles?: number;
+    cost?: number;
+  }[]>;
 
   rurales$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
@@ -50,20 +74,25 @@ export class DirectLinesComponent {
 
   constructor(private store: Store) {
 
-    this.lines$ = combineLatest([store.select(allLines), store.select(allProviderConnections)], (lines, providers) => {
-      return providers
-        .map(provider => {
-          const line = lines.find(line => line.ruralProducer == provider.ruralProducer && line.destinationCity == provider.destinationCity);
-          return line ? { ...line, ...provider } satisfies DirectLine & ProviderConnection : undefined;
-        })
-        .filter((it): it is DirectLine & ProviderConnection => it !== undefined)
-    });
-    this.linesSorted$ = this.lines$;
-
     this.rurales$ = store.select(todosLosNegociosRurales);
     this.goods$ = store.select(allGoods);
     this.ciudades$ = store.select(todosLosCiudades);
     this.gameDate$ = store.select(gameDate).pipe(map(it => new Date(`${it}T00:00:00Z`)));
+
+    this.items$ = combineLatest([
+      store.select(allProviderConnections),
+      store.select(allLines),
+      this.rurales$,
+      this.ciudades$,
+      this.gameDate$,
+    ], (providers, lines, rurales, ciudades, gameDate) => {
+      return providers
+        .map(provider => {
+          const line = lines.find(line => line.ruralProducer == provider.ruralProducer && line.destinationCity == provider.destinationCity);
+          return line ? { ...line, ...provider } satisfies DirectLine & ProviderConnection : provider;
+        })
+    });
+    this.itemsSorted$ = this.items$;
   }
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
@@ -72,20 +101,20 @@ export class DirectLinesComponent {
   }
 
   sortByCost() {
-    this.linesSorted$ = this.lines$.pipe(map(it => it.sort((a, b) => a.cost - b.cost)));
+    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.cost ?? 1e9) - (b.cost ?? 1e9))));
   }
 
   sortByMiles() {
-    this.linesSorted$ = this.lines$.pipe(map(it => it.sort((a, b) => a.miles - b.miles)));
+    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.miles ?? 1e9) - (b.miles ?? 1e9))));
   }
 
   sortByDestination() {
-    this.linesSorted$ = this.lines$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
+    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
   }
 
   sortByNextRun() {
-    this.linesSorted$ = combineLatest([
-      this.lines$,
+    this.itemsSorted$ = combineLatest([
+      this.items$,
       this.rurales$,
       this.ciudades$,
     ]).pipe(
@@ -102,7 +131,7 @@ export class DirectLinesComponent {
     );
   }
 
-  productionPerWeek$(line: DirectLine & ProviderConnection): Observable<number> {
+  productionPerWeek$(line: ProviderConnection): Observable<number> {
     return this.rurales$.pipe(
       concatMap(it => from(it)),
       filter(it => it.name === line.ruralProducer && it.product === line.good),
@@ -110,7 +139,7 @@ export class DirectLinesComponent {
     )
   }
 
-  demandPerWeek$(line: DirectLine & ProviderConnection): Observable<number> {
+  demandPerWeek$(line: ProviderConnection): Observable<number> {
     return this.ciudades$.pipe(
       concatMap(it => from(it)),
       filter(it => it.name === line.destinationCity),
@@ -118,23 +147,23 @@ export class DirectLinesComponent {
     )
   }
 
-  effectiveRate(p: { line: DirectLine & ProviderConnection, productionPerWeek: number, demandPerWeek: number }) {
+  effectiveRate(p: { line: ProviderConnection, productionPerWeek: number, demandPerWeek: number }) {
     return Math.min(
       p.productionPerWeek * (p.line.productionFactor ?? 1.0),
       p.demandPerWeek * (p.line.demandFactor ?? 1.0));
   }
 
-  effectiveRate$(line: DirectLine & ProviderConnection): Observable<number> {
+  effectiveRate$(line: ProviderConnection): Observable<number> {
     return combineLatest([this.productionPerWeek$(line), this.demandPerWeek$(line)]).pipe(
       map(([prod, demand]) => this.effectiveRate({ line, productionPerWeek: prod, demandPerWeek: demand }))
     );
   }
 
-  runNow(line: DirectLine & ProviderConnection) {
+  runNow(line: ProviderConnection) {
     this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line, date })));
   }
 
-  nextRun(line: DirectLine & ProviderConnection, effectiveRate: number) {
+  nextRun(line: ProviderConnection, effectiveRate: number) {
     if (line.lastRun) {
       const nextRun = new Date(line.lastRun);
       nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
@@ -144,7 +173,7 @@ export class DirectLinesComponent {
     }
   }
 
-  nextRun$(line: DirectLine & ProviderConnection): Observable<Date | undefined> {
+  nextRun$(line: ProviderConnection): Observable<Date | undefined> {
     return combineLatest([this.effectiveRate$(line)]).pipe(
       map(([effectiveRate]) => this.nextRun(line, effectiveRate))
     )
