@@ -4,7 +4,6 @@
   <thead>
     <tr>
       <th class="clickable" (click)="sortByName()">Name</th>
-      <th class="clickable" (click)="sortByPopulation()">Size</th>
       <th class="clickable" (click)="sortByPopulation()">Population</th>
       <th *ngFor="let index of [0,1,2]">Business {{ index + 1 }}</th>
       <th></th>
@@ -13,7 +12,6 @@
   <tbody>
     <tr *ngFor="let ciudad of ciudadesSorted$ | async">
       <td><a [routerLink]="['/', 'game-state','ciudad']" [queryParams]="{name: ciudad.name}">{{ ciudad.name }}</a></td>
-      <td class="align-right">{{ ciudad.size }}</td>
       <td><input [ngModel]="ciudad.population"
           (ngModelChange)="updatePopulation({ name: ciudad.name, population: $event })" type="number"
           class="medium-number"></td>
@@ -32,11 +30,10 @@
     </tr>
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
-      <td><input [(ngModel)]="newSize" placeholder="size" type="number"></td>
       <td><input [(ngModel)]="newPopulation" placeholder="population" type="number" class="medium-number"></td>
       <td>
-        <button (click)="addCity({name: newName!, size: newSize!, population: newPopulation!})"
-          [disabled]="!newName || !newSize || !newPopulation">Add</button>
+        <button (click)="addCity({name: newName!, population: newPopulation!})"
+          [disabled]="!newName || !newPopulation">Add</button>
       </td>
       <td></td>
       <td></td>

@@ -32,7 +32,6 @@ export class CiudadesTableComponent {
   industrias$: Observable<string[]>;
 
   newName?: string;
-  newSize?: number;
   newPopulation?: number;
 
   constructor(private store: Store) {
@@ -41,8 +40,8 @@ export class CiudadesTableComponent {
     this.industrias$ = store.select(allIndustrieNames);
   }
 
-  addCity(p: { name: string, size: number, population: number }) {
-    this.store.dispatch(addCiudad({ ciudad: { name: p.name, size: p.size, population: p.population } }));
+  addCity(p: { name: string, population: number }) {
+    this.store.dispatch(addCiudad({ ciudad: { name: p.name, population: p.population } }));
   }
 
   updatePopulation(p: { name: string, population: number }) {

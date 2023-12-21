@@ -10,7 +10,6 @@ import { IndustriasNgrxModule } from "../../game-config/ngrx/industrias.ngrx";
 
 export type Ciudad = {
   name: string;
-  size: number;
   population: number;
   businesses?: {
     business: string;
