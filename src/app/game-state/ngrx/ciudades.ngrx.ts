@@ -15,7 +15,6 @@ export type Ciudad = {
     business: string;
     size: number
   }[];
-  perWeek?: { [product: string]: number };
 }
 
 // NgRx feature key
@@ -34,7 +33,6 @@ const actions = createActionGroup({
 
     updatePopulation: props<{ name: string, population: number }>(),
     updateBusiness: props<{ name: string, index: number, business: string, size: number}>(),
-    updatePerWeek: props<{ name: string, good: string, perWeek: number}>(),
 
     persistCiudades: emptyProps(),
     loadCiudades: emptyProps(),
@@ -49,7 +47,6 @@ export const {
 
   updatePopulation,
   updateBusiness,
-  updatePerWeek,
 
 } = actions;
 
@@ -77,15 +74,6 @@ const CIUDAD_REDUCER = createReducer(
       })([...ciudad.businesses ?? []])
     })
   }, state)),
-  on(actions.updatePerWeek, (state: EntityState<Ciudad>, p: { name: string, good: string, perWeek: number}): EntityState<Ciudad> => adapter.mapOne({
-    id: p.name, map: ciudad => ({
-      ...ciudad,
-      perWeek: (perWeek => {
-        perWeek[p.good] = p.perWeek;
-        return perWeek;
-      })({...ciudad.perWeek ?? {}})
-    })
-  }, state)),
 
 );
 
@@ -111,7 +99,6 @@ const ciudadesChangedEffect = createEffect(
       actions.removeCiudad,
       actions.updatePopulation,
       actions.updateBusiness,
-      actions.updatePerWeek,
     ),
     map(() => actions.persistCiudades()),
   ),

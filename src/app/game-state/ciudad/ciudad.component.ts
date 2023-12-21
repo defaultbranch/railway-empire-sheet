@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
-import { updateBusiness, updatePerWeek, updatePopulation } from '../ngrx/ciudades.ngrx';
+import { updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
@@ -58,10 +58,5 @@ export class CiudadComponent implements OnDestroy {
     if (p.index >= 0 && p.index <= 3 && !!p.business && !!p.size && p.size >= 1 && p.size <= 5) {
       this.store.dispatch(updateBusiness({ name: p.name, index: p.index, business: p.business, size: p.size }));
     }
-  }
-
-  updatePerWeek(p: { name: string, good: string, perWeek: number }) {
-    this.store.dispatch(updatePerWeek({ name: p.name, good: p.good, perWeek: p.perWeek }));
-
   }
 }

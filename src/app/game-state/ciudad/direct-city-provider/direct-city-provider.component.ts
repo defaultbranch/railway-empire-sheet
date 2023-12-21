@@ -13,6 +13,8 @@ import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
 import { ProviderConnection } from '../../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
+import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
+import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 
 type VM = {
 
@@ -36,6 +38,7 @@ type VM = {
     CommonModule,
     FormsModule,
     RouterLink,
+    DemandsNgrxModule,
   ],
   templateUrl: './direct-city-provider.component.html',
   styleUrl: './direct-city-provider.component.scss'
@@ -65,13 +68,25 @@ export class DirectCityProviderComponent {
         map(providers => providers.filter(it => it.destinationCity === this.ciudad?.name))
       ),
       store.select(todosLosNegociosRurales),
+      store.select(allDemands),
+      store.select(allIndustries),
       this.gameDate$,
-    ], (providers, rurales, gameDate) => {
+    ], (providers, rurales, demands, industries, gameDate) => {
       return providers
         .map(provider => {
 
           const productionPerWeek = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good)?.perWeek ?? 0;
-          const demandPerWeek = (this.ciudad?.perWeek ?? {})[provider.good] ?? 0;
+          const wagonsPerMillion = demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0;
+          const businesses = this.ciudad?.businesses ?? [];
+          const businessDemandPerWeek = businesses.reduce((total, business) => {
+            if (!business) throw Error('no business');
+            const industrie = industries.find(it => it.name === business.business);
+            const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
+            return total + perWeek;
+          }, 0);
+          const citizenDemandPerWeek = (this.ciudad?.population ?? 0) / 1e6 * wagonsPerMillion;
+          const demandPerWeek = businessDemandPerWeek + citizenDemandPerWeek;
+
           const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
 
           return {

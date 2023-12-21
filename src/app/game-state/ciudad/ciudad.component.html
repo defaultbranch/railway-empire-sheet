@@ -40,10 +40,7 @@
   <table>
     <tr *ngFor="let good of goods$ | async">
       <th style="text-align: left;">{{ good }}</th>
-      <td>
-        <input class="short-number" type="number" step="0.1" [ngModel]="(ciudad.perWeek ?? {})[good]"
-          (ngModelChange)="updatePerWeek({name: ciudad.name, good, perWeek: $event})">
-      </td>
+      <td>not implemented</td>
     </tr>
   </table>
 </ng-container>
