@@ -10,9 +10,8 @@ import { NegociosNgrxModule } from "../../game-config/ngrx/negocios.ngrx";
 
 export type NegocioRural = {
   name: string;
-  size: number;
   product: string;
-  perWeek: number;
+  size: number;
 }
 
 // NgRx feature key
@@ -30,7 +29,6 @@ const actions = createActionGroup({
     setNegociosRurales: props<{ negocios: NegocioRural[] }>(),
 
     updateSize: props<{ negocio: NegocioRural, size: number }>(),
-    updateNegocioRural: props<{ negocio: NegocioRural, perWeek?: number }>(),
 
     persistNegociosRurales: emptyProps(),
     loadNegociosRurales: emptyProps(),
@@ -41,7 +39,6 @@ export const {
   addNegocioRural,
   removeNegocioRural,
   updateSize,
-  updateNegocioRural,
   loadNegociosRurales,
 } = actions;
 
@@ -66,14 +63,6 @@ const NEGOCIOS_RURALES_REDUCER = createReducer(
       size: p.size
     })
   }, state)),
-
-  on(actions.updateNegocioRural, (state: EntityState<NegocioRural>, p: { negocio: NegocioRural, perWeek?: number }): EntityState<NegocioRural> => adapter.mapOne({
-    id: p.negocio.name,
-    map: negocio => ({
-      ...negocio,
-      perWeek: p.perWeek ?? p.negocio.perWeek
-    })
-  }, state)),
 );
 
 // NgRx selectors
@@ -96,7 +85,6 @@ const negociosChangedEffect = createEffect(
       actions.addNegocioRural,
       actions.removeNegocioRural,
       actions.updateSize,
-      actions.updateNegocioRural,
     ),
     map(() => actions.persistNegociosRurales()),
   ),

@@ -19,6 +19,7 @@ import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provide
 import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
+import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
 
 type VM = {
 
@@ -51,6 +52,7 @@ type VM = {
     GameDateComponent,
     DirectLinesNgrxModule,
     DemandsNgrxModule,
+    NegociosNgrxModule,
   ]
 })
 export class DirectLinesComponent {
@@ -83,12 +85,14 @@ export class DirectLinesComponent {
       store.select(todosLosCiudades),
       store.select(allDemands),
       store.select(allIndustries),
+      store.select(todosLosNegocios),
       this.gameDate$,
-    ], (providers, lines, rurales, ciudades, demands, industries, gameDate) => {
+    ], (providers, lines, rurales, ciudades, demands, industries, negocios, gameDate) => {
       return providers
         .map(provider => {
 
-          const productionPerWeek = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good)?.perWeek ?? 0;
+          const rural = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good);
+          const productionPerWeek = rural ? (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0 : 0;
           const wagonsPerMillion = demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0;
           const ciudad = ciudades.find(it => it.name === provider.destinationCity);
           const businesses = ciudad?.businesses ?? [];
