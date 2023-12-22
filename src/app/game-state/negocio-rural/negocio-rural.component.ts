@@ -6,6 +6,7 @@ import { Store } from '@ngrx/store';
 import { NegocioRural, negocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { GameDateComponent } from '../game-date/game-date.component';
 import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
+import { DirectNegocioProviderComponent } from './direct-negocio-provider/direct-negocio-provider.component';
 
 @Component({
   selector: 'app-negocio-rural',
@@ -13,6 +14,7 @@ import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx
   imports: [
     CommonModule,
     ProviderConnectionsNgrxModule,
+    DirectNegocioProviderComponent,
     GameDateComponent
   ],
   templateUrl: './negocio-rural.component.html',
