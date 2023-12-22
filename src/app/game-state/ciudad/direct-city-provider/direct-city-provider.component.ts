@@ -128,6 +128,10 @@ export class DirectCityProviderComponent {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.nextRun?.getTime() ?? 0) - (b.nextRun?.getTime() ?? 0))));
   }
 
+  runningLate$(vm: VM): Observable<boolean> {
+    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() < gameDate.getTime() : false ));
+  }
+
   runNow(line: VM) {
     const destinationCity = this.ciudad?.name;
     if (destinationCity) {

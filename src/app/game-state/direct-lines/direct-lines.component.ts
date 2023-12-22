@@ -154,6 +154,10 @@ export class DirectLinesComponent {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.nextRun?.getTime() ?? 0) - (b.nextRun?.getTime() ?? 0))));
   }
 
+  runningLate$(vm: VM): Observable<boolean> {
+    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() < gameDate.getTime() : false ));
+  }
+
   runNow(line: ProviderConnection) {
     this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line, date })));
   }
