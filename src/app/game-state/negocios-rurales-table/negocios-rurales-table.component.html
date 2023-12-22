@@ -4,8 +4,8 @@
   <thead>
     <tr>
       <th class="clickable" (click)="sortByName()">Name</th>
-      <th>Size</th>
       <th class="clickable" (click)="sortByProduct()">Product</th>
+      <th>Size</th>
       <th>Weekly<br>Production</th>
       <th></th>
     </tr>
@@ -13,8 +13,10 @@
   <tbody>
     <tr *ngFor="let negocio of negociosSorted$ | async">
       <td>{{ negocio.name }}</td>
-      <td class="align-right">{{ negocio.size }}</td>
       <td>{{ negocio.product }}</td>
+      <td>
+        <input class="short-number" type="number" min="1" max="5" step="1" [ngModel]="negocio.size | number"
+        (ngModelChange)="updateSize(negocio, $event)">
       <td class="align-right">
         <input class="short-number" type="number" step="0.1" [ngModel]="negocio.perWeek | number:'.1-1'"
         (ngModelChange)="updateWeeklyProduction({ negocio, perWeek: $event})">
@@ -25,12 +27,12 @@
     </tr>
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
-      <td><input [(ngModel)]="newSize" placeholder="size" type="number"></td>
       <td>
         <select [(ngModel)]="newProduct">
           <option *ngFor="let good of goods$ | async" value="{{ good }}">{{ good }}</option>
         </select>
       </td>
+      <td><input class="short-number" [(ngModel)]="newSize" placeholder="size" type="number"></td>
       <td><input [(ngModel)]="newPerWeek" placeholder="perWeek" type="number"></td>
       <td>
         <button (click)="addNegocio({name: newName!, size: newSize!, product: newProduct!, perWeek: newPerWeek!})"

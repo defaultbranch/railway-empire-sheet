@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, NegociosRuralesNgrxModule } from '../ngrx/negocios-rurales.ngrx';
+import { NegocioRural, NegociosRuralesNgrxModule, updateSize } from '../ngrx/negocios-rurales.ngrx';
 import { addNegocioRural, removeNegocioRural, updateNegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
@@ -53,6 +53,10 @@ export class NegociosRuralesTableComponent {
 
   sortByProduct() {
     this.negociosSorted$ = this.negocios$.pipe(map(it => it.sort((a, b) => a.product.localeCompare(b.product))));
+  }
+
+  updateSize(negocio: NegocioRural, size: number) {
+    this.store.dispatch(updateSize({ negocio, size }));
   }
 
   updateWeeklyProduction(p: { negocio: NegocioRural, perWeek: number }) {

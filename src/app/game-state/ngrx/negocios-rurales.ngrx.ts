@@ -29,6 +29,7 @@ const actions = createActionGroup({
     removeNegocioRural: props<{ nombre: string }>(),
     setNegociosRurales: props<{ negocios: NegocioRural[] }>(),
 
+    updateSize: props<{ negocio: NegocioRural, size: number }>(),
     updateNegocioRural: props<{ negocio: NegocioRural, perWeek?: number }>(),
 
     persistNegociosRurales: emptyProps(),
@@ -39,6 +40,7 @@ const actions = createActionGroup({
 export const {
   addNegocioRural,
   removeNegocioRural,
+  updateSize,
   updateNegocioRural,
   loadNegociosRurales,
 } = actions;
@@ -57,13 +59,21 @@ const NEGOCIOS_RURALES_REDUCER = createReducer(
   on(actions.removeNegocioRural, (state: EntityState<NegocioRural>, p: { nombre: string }): EntityState<NegocioRural> => adapter.removeOne(p.nombre, state)),
   on(actions.setNegociosRurales, (state: EntityState<NegocioRural>, p: { negocios: NegocioRural[] }): EntityState<NegocioRural> => adapter.setAll(p.negocios, state)),
 
+  on(actions.updateSize, (state: EntityState<NegocioRural>, p: { negocio: NegocioRural, size: number }): EntityState<NegocioRural> => adapter.mapOne({
+    id: p.negocio.name,
+    map: negocio => ({
+      ...negocio,
+      size: p.size
+    })
+  }, state)),
+
   on(actions.updateNegocioRural, (state: EntityState<NegocioRural>, p: { negocio: NegocioRural, perWeek?: number }): EntityState<NegocioRural> => adapter.mapOne({
     id: p.negocio.name,
     map: negocio => ({
       ...negocio,
       perWeek: p.perWeek ?? p.negocio.perWeek
     })
-  }, state))
+  }, state)),
 );
 
 // NgRx selectors
@@ -85,6 +95,7 @@ const negociosChangedEffect = createEffect(
     ofType(
       actions.addNegocioRural,
       actions.removeNegocioRural,
+      actions.updateSize,
       actions.updateNegocioRural,
     ),
     map(() => actions.persistNegociosRurales()),
