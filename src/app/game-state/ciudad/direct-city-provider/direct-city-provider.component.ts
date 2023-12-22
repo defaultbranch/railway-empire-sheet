@@ -112,7 +112,9 @@ export class DirectCityProviderComponent {
           };
         })
     });
+
     this.itemsSorted$ = this.items$;
+    this.sortByNextRun();
   }
 
 

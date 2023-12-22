@@ -130,7 +130,9 @@ export class DirectLinesComponent {
           };
         })
     });
+
     this.itemsSorted$ = this.items$;
+    this.sortByNextRun();
   }
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {

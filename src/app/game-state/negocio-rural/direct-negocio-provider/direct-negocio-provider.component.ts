@@ -105,7 +105,9 @@ export class DirectNegocioProviderComponent {
           };
         })
     });
+
     this.itemsSorted$ = this.items$;
+    this.sortByNextRun();
   }
 
   sortByDestination() {
