@@ -10,7 +10,7 @@ import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
-import { ProviderConnection } from '../../ngrx/provider-connections.ngrx';
+import { ProviderConnection, updateDemandFactor, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
@@ -131,8 +131,22 @@ export class DirectCityProviderComponent {
     }
   }
 
+  updateProductionFactor(item: VM, factor: number) {
+    const destinationCity = this.ciudad?.name;
+    if (destinationCity) {
+      this.store.dispatch(updateProductionFactor({ line: { ...item, destinationCity }, factor }));
+    }
+  }
+
+  updateDemandFactor(item: VM, factor: number) {
+    const destinationCity = this.ciudad?.name;
+    if (destinationCity) {
+      this.store.dispatch(updateDemandFactor({ line: { ...item, destinationCity }, factor }));
+    }
+  }
+
   private nextRun(line: ProviderConnection, effectiveRate: number) {
-    if (line.lastRun) {
+    if (line.lastRun && effectiveRate > 0) {
       const nextRun = new Date(line.lastRun);
       nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
       return nextRun;

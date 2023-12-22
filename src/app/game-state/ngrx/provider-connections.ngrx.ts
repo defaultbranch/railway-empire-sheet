@@ -35,6 +35,9 @@ const actions = createActionGroup({
     setProviderConnections: props<{ lines: ProviderConnection[] }>(),
     runProviderConnectionNow: props<{ line: ProviderConnection, date: Date }>(),
 
+    updateProductionFactor: props<{ line: ProviderConnection, factor: number }>(),
+    updateDemandFactor: props<{ line: ProviderConnection, factor: number }>(),
+
     persistProviderConnections: emptyProps(),
     loadProviderConnections: emptyProps(),
   }
@@ -45,6 +48,9 @@ export const {
   addProviderConnection,
   removeProviderConnection,
   loadProviderConnections,
+
+  updateProductionFactor,
+  updateDemandFactor,
 
   runProviderConnectionNow,
 
@@ -65,6 +71,9 @@ const PROVIDER_CONNECTIONS_REDUCER = createReducer(
   on(actions.addProviderConnection, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection }): EntityState<ProviderConnection> => adapter.addOne(p.line, state)),
   on(actions.removeProviderConnection, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection }): EntityState<ProviderConnection> => adapter.removeOne(toId(p.line), state)),
   on(actions.setProviderConnections, (state: EntityState<ProviderConnection>, p: { lines: ProviderConnection[] }): EntityState<ProviderConnection> => adapter.setAll(p.lines, state)),
+
+  on(actions.updateDemandFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: toId(p.line), map: it => ({ ...it, demandFactor: p.factor }) }, state)),
+  on(actions.updateProductionFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: toId(p.line), map: it => ({ ...it, productionFactor: p.factor }) }, state)),
 
   on(actions.runProviderConnectionNow, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, date: Date }): EntityState<ProviderConnection> => adapter.mapOne({
     id: toId(p.line),
@@ -94,6 +103,8 @@ const providerConnectionsChangedEffect = createEffect(
     ofType(
       actions.addProviderConnection,
       actions.removeProviderConnection,
+      actions.updateDemandFactor,
+      actions.updateProductionFactor,
       actions.runProviderConnectionNow,
     ),
     map(() => actions.persistProviderConnections()),
