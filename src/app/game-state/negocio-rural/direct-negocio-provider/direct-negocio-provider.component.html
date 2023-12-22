@@ -19,7 +19,7 @@
       <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{ item.destinationCity }}</a></td>
       <td class="align-right">{{ item.productionPerWeek | number:'.1-1' }}</td>
       <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
-      <td class="align-right">{{ item.productionFactor ?? 1.0 | number:'.2-2' }}</td>
+      <td class="align-right"><input class="short-number" type="number" min="0.0" max="1.0" step="0.1" [ngModel]="item.productionFactor ?? 1.0 | number:'.1-1'" (ngModelChange)="updateProductionFactor(item, $event)"></td>
       <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ item.effectiveRate | number:'.1-1' }}</td>
       <td>{{ item.lastRun | date:'yyyy-MM-dd' }}</td>

@@ -7,11 +7,12 @@ import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
-import { ProviderConnection, allProviderConnections, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
+import { ProviderConnection, allProviderConnections, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 type VM = {
 
@@ -33,6 +34,7 @@ type VM = {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     DemandsNgrxModule,
   ],
@@ -122,6 +124,13 @@ export class DirectNegocioProviderComponent {
     const ruralProducer = this.rural?.name;
     if (ruralProducer) {
       this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line: { ...line, ruralProducer }, date })));
+    }
+  }
+
+  updateProductionFactor(item: VM, factor: number) {
+    const ruralProducer = this.rural?.name;
+    if (ruralProducer) {
+      this.store.dispatch(updateProductionFactor({ line: { ...item, ruralProducer }, factor }));
     }
   }
 
