@@ -74,6 +74,7 @@ const {
 } = adapter.getSelectors();
 
 export const todosLosNegociosRurales = createSelector(selectFeature, selectAll);
+export const negocioRural = (name: string) => createSelector(selectFeature, (feature) => feature.entities[name]);
 
 // NgRx effects
 

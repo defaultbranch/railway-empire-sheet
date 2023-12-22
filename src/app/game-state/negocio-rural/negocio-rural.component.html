@@ -1,0 +1,7 @@
+<app-game-date></app-game-date>
+
+<ng-container *ngIf="negocioRural$ | async as negocioRural">
+
+  <h1>{{ negocioRural.name }}</h1>
+
+</ng-container>

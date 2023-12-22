@@ -12,7 +12,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let negocio of itemsSorted$ | async">
-      <td>{{ negocio.name }}</td>
+      <td><a [routerLink]="['/', 'game-state','negocio-rural']" [queryParams]="{name: negocio.name}">{{ negocio.name }}</a></td>
       <td>{{ negocio.product }}</td>
       <td>
         <input class="short-number" type="number" min="1" max="5" step="1" [ngModel]="negocio.size | number"

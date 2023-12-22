@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Observable, combineLatest, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
@@ -26,6 +27,7 @@ type VM = {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     GameDateComponent,
     NegociosRuralesNgrxModule,
     NegociosNgrxModule,

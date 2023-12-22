@@ -16,7 +16,7 @@
     <!-- existing -->
     <tr *ngFor="let item of itemsSorted$ | async" [ngClass]="{'running-late': runningLate$(item) | async}">
       <td>{{ item.good }}</td>
-      <td>{{ item.ruralProducer }}</td>
+      <td><a [routerLink]="['/','game-state','negocio-rural']" [queryParams]="{name: item.ruralProducer}">{{ item.ruralProducer }}</a></td>
       <td class="align-right">{{ item.productionPerWeek | number:'.1-1' }}</td>
       <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
       <td class="align-right">{{ item.productionFactor ?? 1.0 | number:'.2-2' }}</td>

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'direct-lines', loadComponent: () => import('./direct-lines/direct-lines.component').then(c => c.DirectLinesComponent) },
 
   { path: 'ciudad', loadComponent: () => import('./ciudad/ciudad.component').then(c => c.CiudadComponent) },
+  { path: 'negocio-rural', loadComponent: () => import('./negocio-rural/negocio-rural.component').then(c => c.NegocioRuralComponent) },
 ];
 
 @NgModule({
@@ -17,4 +18,4 @@ export class GameStateRoutesModule {
   constructor() {
     console.log('GameStateRoutesModule initializing');
   }
- }
+}
