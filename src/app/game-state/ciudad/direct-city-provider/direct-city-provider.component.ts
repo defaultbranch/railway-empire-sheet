@@ -10,7 +10,7 @@ import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
-import { ProviderConnection, updateDemandFactor, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
+import { ProviderConnection, updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
@@ -128,13 +128,6 @@ export class DirectCityProviderComponent {
     const destinationCity = this.ciudad?.name;
     if (destinationCity) {
       this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line: { ...line, destinationCity }, date })));
-    }
-  }
-
-  updateProductionFactor(item: VM, factor: number) {
-    const destinationCity = this.ciudad?.name;
-    if (destinationCity) {
-      this.store.dispatch(updateProductionFactor({ line: { ...item, destinationCity }, factor }));
     }
   }
 
