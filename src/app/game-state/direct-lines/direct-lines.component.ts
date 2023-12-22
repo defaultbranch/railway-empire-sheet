@@ -131,7 +131,7 @@ export class DirectLinesComponent {
         })
     });
 
-    this.itemsSorted$ = this.items$;
+    this.itemsSorted$ = this.items$.pipe(map(it => ([...it])));
     this.sortByNextRun();
   }
 
@@ -153,7 +153,11 @@ export class DirectLinesComponent {
   }
 
   sortByNextRun() {
-    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.nextRun?.getTime() ?? 0) - (b.nextRun?.getTime() ?? 0))));
+    this.itemsSorted$ = this.items$.pipe(map(it => [...it].sort((a, b) =>
+      (a.nextRun && a.effectiveRate > 0)
+        ? ((b.nextRun && b.effectiveRate > 0) ? a.nextRun.getTime() - b.nextRun.getTime() : -1)
+        : ((b.nextRun && b.effectiveRate > 0) ? 1 : 0)
+    )));
   }
 
   runningLate$(vm: VM): Observable<boolean> {
