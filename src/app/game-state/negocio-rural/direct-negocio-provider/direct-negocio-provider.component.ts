@@ -140,6 +140,17 @@ export class DirectNegocioProviderComponent {
     }
   }
 
+  balance() {
+    this.items$.pipe(
+      take(1)
+    ).subscribe(items => {
+      const total = items.reduce((total, it) => total + it.effectiveRate, 0);
+      for(const item of items) {
+        this.updateProductionFactor(item, total > 0 ? item.effectiveRate/total : 1/items.length);
+      }
+    });
+  }
+
   private nextRun(line: ProviderConnection, effectiveRate: number) {
     if (line.lastRun) {
       const nextRun = new Date(line.lastRun);
