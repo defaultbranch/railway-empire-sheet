@@ -1,4 +1,4 @@
-<table>
+<table *ngIf="rural">
   <thead>
     <th>Good</th>
     <th class="clickable" (click)="sortByDestination()">Destination</th>
@@ -16,10 +16,13 @@
     <!-- existing -->
     <tr *ngFor="let item of itemsSorted$ | async" [ngClass]="{'running-late': runningLate$(item) | async}">
       <td>{{ item.good }}</td>
-      <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{ item.destinationCity }}</a></td>
+      <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{
+          item.destinationCity }}</a></td>
       <td class="align-right">{{ item.productionPerWeek | number:'.1-1' }}</td>
       <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
-      <td class="align-right"><input class="short-number" type="number" min="0.0" max="1.0" step="0.1" [ngModel]="item.productionFactor ?? 1.0 | number:'.1-1'" (ngModelChange)="updateProductionFactor(item, $event)"></td>
+      <td class="align-right"><input class="short-number" type="number" min="0.0" max="1.0" step="0.1"
+          [ngModel]="item.productionFactor ?? 1.0 | number:'.1-1'"
+          (ngModelChange)="updateProductionFactor(item, $event)"></td>
       <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ item.effectiveRate | number:'.1-1' }}</td>
       <td>{{ item.lastRun | date:'yyyy-MM-dd' }}</td>
@@ -31,15 +34,25 @@
   </tbody>
 
   <tfoot>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th><button (click)="balance()">balance</button></th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <tr>
+      <td>{{ rural.product }}</td>
+      <td>
+        <select [(ngModel)]="newDestinationCity">
+          <option disabled></option>
+          <option *ngFor="let ciudad of ciudades$ | async" [ngValue]="ciudad">{{ ciudad.name }}</option>
+        </select>
+      </td>
+      <td class="align-right">
+        <button (click)="addLine({ruralProducer: rural, good: rural.product, destinationCity: newDestinationCity! })"
+          [disabled]="!newDestinationCity">Add</button>
+      </td>
+      <td></td>
+      <td class="align-right"><button (click)="balance()">balance</button></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
   </tfoot>
 </table>

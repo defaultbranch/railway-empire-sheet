@@ -7,7 +7,7 @@ import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
-import { ProviderConnection, allProviderConnections, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
+import { ProviderConnection, addProviderConnection, allProviderConnections, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
@@ -51,6 +51,8 @@ export class DirectNegocioProviderComponent {
   goods$: Observable<string[]>;
   ciudades$: Observable<Ciudad[]>;
   gameDate$: Observable<Date>;
+
+  newDestinationCity?: Ciudad;
 
   constructor(private store: Store) {
 
@@ -110,6 +112,10 @@ export class DirectNegocioProviderComponent {
     this.sortByNextRun();
   }
 
+  addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
+    this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
+  }
+
   sortByDestination() {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
   }
@@ -145,8 +151,8 @@ export class DirectNegocioProviderComponent {
       take(1)
     ).subscribe(items => {
       const total = items.reduce((total, it) => total + it.effectiveRate, 0);
-      for(const item of items) {
-        this.updateProductionFactor(item, total > 0 ? item.effectiveRate/total : 1/items.length);
+      for (const item of items) {
+        this.updateProductionFactor(item, total > 0 ? item.effectiveRate / total : 1 / items.length);
       }
     });
   }
