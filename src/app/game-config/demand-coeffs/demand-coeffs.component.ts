@@ -7,6 +7,12 @@ import { Store } from '@ngrx/store';
 import { Good, GoodsNgrxModule, allGoods } from '../ngrx/goods.ngrx';
 import { DemandsNgrxModule, allDemands, upsertDemand } from '../ngrx/demands.ngrx';
 
+type VM = {
+  good: string,
+  minCitySize?: number,
+  wagonsPerMillion?: number,
+};
+
 @Component({
   selector: 'app-demand-coeffs',
   standalone: true,
@@ -21,10 +27,7 @@ import { DemandsNgrxModule, allDemands, upsertDemand } from '../ngrx/demands.ngr
 })
 export class DemandCoeffsComponent {
 
-  items$: Observable<{
-    good: string,
-    wagonsPerMillion?: number,
-  }[]>;
+  items$: Observable<VM[]>;
 
   constructor(private store: Store) {
     this.items$ = combineLatest([
@@ -35,13 +38,30 @@ export class DemandCoeffsComponent {
         const demand = demands.find(demand => demand.good === good);
         return {
           good: good,
+          minCitySize: demand?.minCitySize,
           wagonsPerMillion: demand?.wagonsPerMillion
-        };
+        } satisfies VM;
       })
     }));
   }
 
-  setDemand(good: Good, wagonsPerMillion: number) {
-    this.store.dispatch(upsertDemand({ demand: { good, wagonsPerMillion } }));
+  setMinCitySize(item: VM, minCitySize: number) {
+    this.store.dispatch(upsertDemand({
+      demand: {
+        good: item.good,
+        minCitySize,
+        wagonsPerMillion: item.wagonsPerMillion ?? 0,
+      }
+    }));
+  }
+
+  setDemand(item: VM, wagonsPerMillion: number) {
+    this.store.dispatch(upsertDemand({
+      demand: {
+        good: item.good,
+        minCitySize: item.minCitySize ?? 0,
+        wagonsPerMillion,
+      }
+    }));
   }
 }

@@ -11,8 +11,9 @@ import { Good, GoodsNgrxModule } from "./goods.ngrx";
 // entity
 
 export type Demand = {
-  good: Good;
-  wagonsPerMillion: number
+  good: Good,
+  minCitySize: number,
+  wagonsPerMillion: number,
 }
 
 // NgRx feature key
