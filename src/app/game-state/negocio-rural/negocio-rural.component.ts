@@ -1,9 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { NegocioRural, negocioRural } from '../ngrx/negocios-rurales.ngrx';
+
+import { NegocioRural, negocioRural, updateSize } from '../ngrx/negocios-rurales.ngrx';
 import { GameDateComponent } from '../game-date/game-date.component';
 import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
 import { DirectNegocioProviderComponent } from './direct-negocio-provider/direct-negocio-provider.component';
@@ -13,6 +15,7 @@ import { DirectNegocioProviderComponent } from './direct-negocio-provider/direct
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ProviderConnectionsNgrxModule,
     DirectNegocioProviderComponent,
     GameDateComponent
@@ -39,6 +42,10 @@ export class NegocioRuralComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.disposing$.next(void 0);
+  }
+
+  updateSize(negocio: NegocioRural, size: number) {
+    this.store.dispatch(updateSize({ negocio, size }));
   }
 
 }

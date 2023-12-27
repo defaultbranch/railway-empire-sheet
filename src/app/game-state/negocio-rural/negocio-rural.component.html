@@ -4,6 +4,12 @@
 
   <h1>{{ negocioRural.name }}</h1>
 
+  <div>
+    <label>Size:</label>
+    <input class="short-number" type="number" min="1" max="5" step="1" [ngModel]="negocioRural.size | number"
+      (ngModelChange)="updateSize(negocioRural, $event)">
+  </div>
+
   <h2>Direct Lines from {{ negocioRural.name }}</h2>
 
   <app-direct-negocio-provider [rural]="negocioRural"></app-direct-negocio-provider>
