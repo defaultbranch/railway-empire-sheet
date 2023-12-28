@@ -66,7 +66,8 @@ const {
   selectAll,
 } = adapter.getSelectors();
 
-export const allDemandKeys = createSelector(selectFeature, selectIds);
+const allKeys = createSelector(selectFeature, selectIds);
+export const allDemandKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allDemands = createSelector(selectFeature, selectAll);
 export const demand = (good: Good) => createSelector(selectFeature, (feature) => feature.entities[good]);
 

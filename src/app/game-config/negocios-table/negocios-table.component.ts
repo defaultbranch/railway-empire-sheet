@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Negocio, NegociosNgrxModule, allNegocioKeys, negocio } from '../ngrx/negocios.ngrx';
-import { todosLosNegocios } from '../ngrx/negocios.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngrx/negocios.ngrx';
 
@@ -22,7 +21,7 @@ import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngr
 })
 export class NegociosTableComponent {
 
-  keys$: Observable<(string|number)[]>;
+  keys$: Observable<string[]>;
   goods$: Observable<string[]>;
 
   newName?: string;
@@ -32,7 +31,7 @@ export class NegociosTableComponent {
     this.goods$ = store.select(allGoods);
   }
 
-  negocio$(key: string|number) {
+  negocio$(key: string) {
     return this.store.select(negocio(key));
   }
 

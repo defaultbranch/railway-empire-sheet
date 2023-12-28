@@ -99,7 +99,8 @@ const {
   selectAll,
 } = adapter.getSelectors();
 
-export const allNegocioKeys = createSelector(selectFeature, selectIds);
+const allKeys = createSelector(selectFeature, selectIds);
+export const allNegocioKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const todosLosNegocios = createSelector(selectFeature, selectAll);
 export const negocio = (key: string | number) => createSelector(selectFeature, (feature) => feature.entities[key]);
 

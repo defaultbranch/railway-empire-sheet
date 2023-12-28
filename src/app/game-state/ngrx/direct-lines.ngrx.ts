@@ -71,7 +71,8 @@ const {
   selectAll,
 } = adapter.getSelectors();
 
-export const allDirectLineKeys = createSelector(selectFeature, selectIds)
+const allKeys = createSelector(selectFeature, selectIds);
+export const allDirectLineKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allLines = createSelector(selectFeature, selectAll);
 
 // NgRx effects

@@ -93,7 +93,8 @@ const {
   selectAll,
 } = adapter.getSelectors();
 
-export const allProviderConnectionKeys = createSelector(selectFeature, selectIds)
+const allKeys = createSelector(selectFeature, selectIds);
+export const allProviderConnectionKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allProviderConnections = createSelector(selectFeature, selectAll);
 
 // NgRx effects
