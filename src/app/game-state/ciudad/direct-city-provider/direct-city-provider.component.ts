@@ -10,13 +10,13 @@ import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
-import { ProviderConnection, updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
+import { updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek, ruralProductionPerWeek } from '../../util';
+import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
 
 type VM = {
 
@@ -102,7 +102,7 @@ export class DirectCityProviderComponent {
             effectiveRate,
 
             lastRun: provider.lastRun,
-            nextRun: this.nextRun(provider, effectiveRate),
+            nextRun: provider.lastRun ? nextRun(provider.lastRun, effectiveRate) : undefined,
           };
         })
     });
@@ -143,16 +143,6 @@ export class DirectCityProviderComponent {
     const destinationCity = this.ciudad?.name;
     if (destinationCity) {
       this.store.dispatch(updateDemandFactor({ line: { ...item, destinationCity }, factor }));
-    }
-  }
-
-  private nextRun(line: ProviderConnection, effectiveRate: number) {
-    if (line.lastRun && effectiveRate > 0) {
-      const nextRun = new Date(line.lastRun);
-      nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
-      return nextRun;
-    } else {
-      return undefined;
     }
   }
 }

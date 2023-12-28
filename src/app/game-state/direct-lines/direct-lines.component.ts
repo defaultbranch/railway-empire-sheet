@@ -20,7 +20,7 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek, ruralProductionPerWeek } from '../util';
+import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../util';
 
 type VM = {
 
@@ -116,7 +116,7 @@ export class DirectLinesComponent {
             effectiveRate,
 
             lastRun: provider.lastRun,
-            nextRun: this.nextRun(provider, effectiveRate),
+            nextRun: provider.lastRun ? nextRun(provider.lastRun, effectiveRate) : undefined,
 
             miles: line?.miles,
             cost: line?.cost,
@@ -159,15 +159,5 @@ export class DirectLinesComponent {
 
   runNow(line: ProviderConnection) {
     this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line, date })));
-  }
-
-  private nextRun(line: ProviderConnection, effectiveRate: number) {
-    if (line.lastRun) {
-      const nextRun = new Date(line.lastRun);
-      nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
-      return nextRun;
-    } else {
-      return undefined;
-    }
   }
 }
