@@ -4,11 +4,13 @@
     <th>minimum<br>city size</th>
     <th>wagon loads<br>per million</th>
   </tr>
-  <tr *ngFor="let item of items$ | async">
-    <td>{{ item.good }}</td>
-    <td><input class="medium-number" type="number" min="0" step="5000" [ngModel]="item.minCitySize"
-        (ngModelChange)="setMinCitySize(item, $event)"></td>
-    <td><input class="short-number" type="number" min="0" step="0.1" [ngModel]="item.wagonsPerMillion"
-        (ngModelChange)="setDemand(item, $event)"></td>
+  <tr *ngFor="let good of goods$ | async">
+    <ng-container *ngIf="item$(good) | async as item">
+      <td>{{ item.good }}</td>
+      <td><input class="medium-number" type="number" min="0" step="5000" [ngModel]="item.minCitySize"
+          (ngModelChange)="setMinCitySize(item, $event)"></td>
+      <td><input class="short-number" type="number" min="0" step="0.1" [ngModel]="item.wagonsPerMillion"
+          (ngModelChange)="setDemand(item, $event)"></td>
+    </ng-container>
   </tr>
 </table>

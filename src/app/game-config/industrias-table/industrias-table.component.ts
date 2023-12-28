@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { IndustriasNgrxModule, addIndustria, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../ngrx/industrias.ngrx';
-import { allIndustries } from '../ngrx/industrias.ngrx';
+import { IndustriasNgrxModule, addIndustria, allIndustryKeys, industry, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../ngrx/industrias.ngrx';
 import { Industria } from '../ngrx/industrias.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 
@@ -22,14 +21,18 @@ import { allGoods } from '../ngrx/goods.ngrx';
 })
 export class IndustriasTableComponent {
 
-  industrias$: Observable<Industria[]>;
+  keys$: Observable<string[]>;
   goods$: Observable<string[]>;
 
   newName?: string;
 
   constructor(private store: Store) {
-    this.industrias$ = store.select(allIndustries);
+    this.keys$ = store.select(allIndustryKeys);
     this.goods$ = store.select(allGoods);
+  }
+
+  industria$(key: string) {
+    return this.store.select(industry(key));
   }
 
   addIndustria(name: string) {

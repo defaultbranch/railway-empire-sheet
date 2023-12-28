@@ -67,9 +67,11 @@ const DIRECT_LINES_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<DirectLine>>(DIRECT_LINES_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+export const allDirectLineKeys = createSelector(selectFeature, selectIds)
 export const allLines = createSelector(selectFeature, selectAll);
 
 // NgRx effects

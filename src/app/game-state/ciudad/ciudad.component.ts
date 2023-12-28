@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
-import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
+import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
@@ -44,7 +44,7 @@ export class CiudadComponent implements OnDestroy {
       switchMap(name => store.select(ciudad(name))),
       takeUntil(this.disposing$)
     );
-    this.industrias$ = store.select(allIndustrieNames);
+    this.industrias$ = store.select(allIndustryKeys);
     this.goods$ = store.select(allGoods);
   }
 

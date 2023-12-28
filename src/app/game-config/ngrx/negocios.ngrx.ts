@@ -95,10 +95,13 @@ const NEGOCIOS_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<Negocio>>(NEGOCIOS_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+export const allNegocioKeys = createSelector(selectFeature, selectIds);
 export const todosLosNegocios = createSelector(selectFeature, selectAll);
+export const negocio = (key: string | number) => createSelector(selectFeature, (feature) => feature.entities[key]);
 
 // NgRx effects
 

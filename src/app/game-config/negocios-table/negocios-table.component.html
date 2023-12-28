@@ -8,8 +8,8 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngFor="let industria of negocios$ | async">
-      <tr>
+    <tr *ngFor="let key of keys$ | async">
+      <ng-container *ngIf="negocio$(key) | async as industria">
         <td>{{ industria.name }}</td>
         <td>
           <button (click)="removeNegocio(industria.name)">Remove</button>
@@ -28,8 +28,8 @@
               (ngModelChange)="setProductosPerWeek(industria, 0, nivel, $event )">
           </td>
         </ng-container>
-      </tr>
-    </ng-container>
+      </ng-container>
+    </tr>
     <tr>
       <td><input [(ngModel)]="newName" placeholder="name" type="text"></td>
       <td>

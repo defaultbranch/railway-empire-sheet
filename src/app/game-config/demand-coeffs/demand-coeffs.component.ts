@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Good, GoodsNgrxModule, allGoods } from '../ngrx/goods.ngrx';
-import { DemandsNgrxModule, allDemands, upsertDemand } from '../ngrx/demands.ngrx';
+import { DemandsNgrxModule, demand, upsertDemand } from '../ngrx/demands.ngrx';
 
 type VM = {
   good: string,
@@ -27,22 +27,18 @@ type VM = {
 })
 export class DemandCoeffsComponent {
 
-  items$: Observable<VM[]>;
+  goods$: Observable<Good[]>;
 
   constructor(private store: Store) {
-    this.items$ = combineLatest([
-      store.select(allGoods),
-      store.select(allDemands)
-    ]).pipe(map(([goods, demands]) => {
-      return goods.map(good => {
-        const demand = demands.find(demand => demand.good === good);
-        return {
-          good: good,
-          minCitySize: demand?.minCitySize,
-          wagonsPerMillion: demand?.wagonsPerMillion
-        } satisfies VM;
-      })
-    }));
+    this.goods$ = store.select(allGoods);
+  }
+
+  item$(good: Good) {
+    return this.store.select(demand(good)).pipe(map(demand => ({
+      good: good,
+      minCitySize: demand?.minCitySize,
+      wagonsPerMillion: demand?.wagonsPerMillion
+    } satisfies VM)));
   }
 
   setMinCitySize(item: VM, minCitySize: number) {

@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { allIndustrieNames } from '../../game-config/ngrx/industrias.ngrx';
+import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 
 @Component({
@@ -37,7 +37,7 @@ export class CiudadesTableComponent {
   constructor(private store: Store) {
     this.ciudades$ = store.select(todosLosCiudades);
     this.ciudadesSorted$ = this.ciudades$;
-    this.industrias$ = store.select(allIndustrieNames);
+    this.industrias$ = store.select(allIndustryKeys);
   }
 
   addCity(p: { name: string, population: number }) {

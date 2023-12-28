@@ -131,11 +131,14 @@ const INDUSTRIAS_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<Industria>>(INDUSTRIAS_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+const allKeys = createSelector(selectFeature, selectIds);
+export const allIndustryKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allIndustries = createSelector(selectFeature, selectAll);
-export const allIndustrieNames = createSelector(allIndustries, industry => industry.map(it => it.name));
+export const industry = (key: string) => createSelector(selectFeature, (feature) => feature.entities[key]);
 
 // NgRx effects
 

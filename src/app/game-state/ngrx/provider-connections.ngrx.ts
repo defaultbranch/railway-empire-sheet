@@ -89,9 +89,11 @@ const PROVIDER_CONNECTIONS_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<ProviderConnection>>(PROVIDER_CONNECTIONS_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+export const allProviderConnectionKeys = createSelector(selectFeature, selectIds)
 export const allProviderConnections = createSelector(selectFeature, selectAll);
 
 // NgRx effects

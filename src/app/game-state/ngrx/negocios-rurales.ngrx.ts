@@ -70,9 +70,11 @@ const NEGOCIOS_RURALES_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<NegocioRural>>(NEGOCIOS_RURALES_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+export const allLocalBusinessKeys = createSelector(selectFeature, selectIds)
 export const todosLosNegociosRurales = createSelector(selectFeature, selectAll);
 export const negocioRural = (name: string) => createSelector(selectFeature, (feature) => feature.entities[name]);
 

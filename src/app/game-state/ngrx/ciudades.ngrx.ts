@@ -82,9 +82,11 @@ const CIUDAD_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<EntityState<Ciudad>>(CIUDADES_FEATURE_KEY);
 
 const {
+  selectIds,
   selectAll,
 } = adapter.getSelectors();
 
+export const allCityKeys = createSelector(selectFeature, selectIds)
 export const todosLosCiudades = createSelector(selectFeature, selectAll);
 export const ciudad = (name: string) => createSelector(selectFeature, (feature) => feature.entities[name]);
 
