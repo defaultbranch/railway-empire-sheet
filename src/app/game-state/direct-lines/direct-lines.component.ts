@@ -20,6 +20,7 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
+import { businessDemandPerWeek, ruralProductionPerWeek } from '../util';
 
 type VM = {
 
@@ -86,24 +87,17 @@ export class DirectLinesComponent {
       store.select(allDemands),
       store.select(allIndustries),
       store.select(todosLosNegocios),
-      this.gameDate$,
-    ], (providers, lines, rurales, ciudades, demands, industries, negocios, gameDate) => {
+    ], (providers, lines, rurales, ciudades, demands, industries, negocios) => {
       return providers
         .map(provider => {
 
           const rural = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good);
-          const productionPerWeek = rural ? (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0 : 0;
+          const productionPerWeek = rural ? ruralProductionPerWeek(rural, negocios) : 0;
           const wagonsPerMillion = demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0;
           const ciudad = ciudades.find(it => it.name === provider.destinationCity);
           const businesses = ciudad?.businesses ?? [];
-          const businessDemandPerWeek = businesses.reduce((total, business) => {
-            if (!business) throw Error('no business');
-            const industrie = industries.find(it => it.name === business.business);
-            const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
-            return total + perWeek;
-          }, 0);
           const citizenDemandPerWeek = (ciudad?.population ?? 0) / 1e6 * wagonsPerMillion;
-          const demandPerWeek = businessDemandPerWeek + citizenDemandPerWeek;
+          const demandPerWeek = businessDemandPerWeek(provider, businesses, industries) + citizenDemandPerWeek;
           const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
 
           const line = lines.find(line => line.ruralProducer == provider.ruralProducer && line.destinationCity == provider.destinationCity);
@@ -161,7 +155,7 @@ export class DirectLinesComponent {
   }
 
   runningLate$(vm: VM): Observable<boolean> {
-    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() < gameDate.getTime() : false ));
+    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() < gameDate.getTime() : false));
   }
 
   runNow(line: ProviderConnection) {

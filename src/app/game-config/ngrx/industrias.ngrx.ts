@@ -9,7 +9,7 @@ import { Good, GoodsNgrxModule } from "./goods.ngrx";
 // entity
 
 export type Industria = {
-  name: string;
+  name: IndustryName;
   materiasPrimas?: {
     name: Good;
     perWeek?: number[];
@@ -19,6 +19,8 @@ export type Industria = {
     perWeek?: number[];
   }[];
 };
+
+export type IndustryName = string;
 
 // NgRx feature key
 

@@ -13,6 +13,7 @@ import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { businessDemandPerWeek, ruralProductionPerWeek } from '../../util';
 
 type VM = {
 
@@ -68,23 +69,16 @@ export class DirectNegocioProviderComponent {
       store.select(allDemands),
       store.select(allIndustries),
       store.select(todosLosNegocios),
-      this.gameDate$,
-    ], (providers, ciudades, demands, industries, negocios, gameDate) => {
+    ], (providers, ciudades, demands, industries, negocios) => {
       return providers
         .map(provider => {
 
-          const productionPerWeek = this.rural ? (negocios.find(it => it.name === this.rural?.product)?.productos?.find(it => it.name === this.rural?.product)?.perWeek ?? [])[this.rural.size - 1] ?? 0 : 0;
+          const productionPerWeek = this.rural ? ruralProductionPerWeek(this.rural, negocios) : 0;
           const wagonsPerMillion = demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0;
           const ciudad = ciudades.find(it => it.name === provider.destinationCity);
           const businesses = ciudad?.businesses ?? [];
-          const businessDemandPerWeek = businesses.reduce((total, business) => {
-            if (!business) throw Error('no business');
-            const industrie = industries.find(it => it.name === business.business);
-            const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
-            return total + perWeek;
-          }, 0);
           const citizenDemandPerWeek = (ciudad?.population ?? 0) / 1e6 * wagonsPerMillion;
-          const demandPerWeek = businessDemandPerWeek + citizenDemandPerWeek;
+          const demandPerWeek = businessDemandPerWeek(provider, businesses, industries) + citizenDemandPerWeek;
 
           const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
 
