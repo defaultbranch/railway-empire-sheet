@@ -81,9 +81,8 @@ export class DirectCityProviderComponent {
           const rural = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good);
           const productionPerWeek = rural ? ruralProductionPerWeek(rural, negocios) : 0;
           const ciudad = this.ciudad ?? (() => { throw Error('no ciudad') })();
-          const businesses = ciudad.businesses;
           const demandPerWeek
-            = businessDemandPerWeek(provider, businesses, industries)
+            = businessDemandPerWeek(provider, ciudad, industries)
             + citizenDemandPerWeek(provider, ciudad, demands);
 
           const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));

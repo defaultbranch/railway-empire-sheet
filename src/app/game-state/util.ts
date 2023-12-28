@@ -1,7 +1,7 @@
 import { Demand } from "../game-config/ngrx/demands.ngrx";
 import { Industria } from "../game-config/ngrx/industrias.ngrx";
 import { Negocio } from "../game-config/ngrx/negocios.ngrx";
-import { Business, Ciudad } from "./ngrx/ciudades.ngrx";
+import { Ciudad } from "./ngrx/ciudades.ngrx";
 import { NegocioRural } from "./ngrx/negocios-rurales.ngrx";
 import { ProviderConnection } from "./ngrx/provider-connections.ngrx";
 
@@ -16,9 +16,9 @@ export const ruralProductionPerWeek
   = (rural, negocios) => (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0;
 
 export const businessDemandPerWeek
-  : (provider: ProviderConnection, businesses: [Business?, Business?, Business?], industries: Industria[]) => number
-  = (provider, businesses, industries) => businesses.reduce((total, business) => {
-    if (!business) throw Error('no business');
+  : (provider: ProviderConnection, ciudad: Ciudad, industries: Industria[]) => number
+  = (provider, ciudad, industries) => ciudad.businesses.reduce((total, business) => {
+    if (!business) return total;
     const industrie = industries.find(it => it.name === business.business);
     const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
     return total + perWeek;
