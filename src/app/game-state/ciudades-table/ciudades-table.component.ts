@@ -2,32 +2,32 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, CiudadesNgrxModule } from '../ngrx/ciudades.ngrx';
+import { Ciudad, CiudadesNgrxModule, allCityKeys, ciudad } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 
 @Component({
-    selector: 'app-ciudades-table',
-    standalone: true,
-    templateUrl: './ciudades-table.component.html',
-    styleUrl: './ciudades-table.component.scss',
-    imports: [
-        CommonModule,
-        FormsModule,
-        RouterLink,
-        GameDateComponent,
-        CiudadesNgrxModule,
-    ]
+  selector: 'app-ciudades-table',
+  standalone: true,
+  templateUrl: './ciudades-table.component.html',
+  styleUrl: './ciudades-table.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    GameDateComponent,
+    CiudadesNgrxModule,
+  ]
 })
 export class CiudadesTableComponent {
 
-  ciudades$: Observable<Ciudad[]>;
-  ciudadesSorted$: Observable<Ciudad[]>;
+  keys$: Observable<string[]>;
+  keysSorted$: Observable<string[]>;
 
   industrias$: Observable<string[]>;
 
@@ -35,9 +35,15 @@ export class CiudadesTableComponent {
   newPopulation?: number;
 
   constructor(private store: Store) {
-    this.ciudades$ = store.select(todosLosCiudades);
-    this.ciudadesSorted$ = this.ciudades$;
+
+    this.keys$ = store.select(allCityKeys);
+    this.keysSorted$ = this.keys$;
+
     this.industrias$ = store.select(allIndustryKeys);
+  }
+
+  ciudad$(key: string) {
+    return this.store.select(ciudad(key));
   }
 
   addCity(p: { name: string, population: number }) {
@@ -60,10 +66,28 @@ export class CiudadesTableComponent {
   }
 
   sortByName() {
-    this.ciudadesSorted$ = this.ciudades$.pipe(map(it => it.sort((a, b) => a.name.localeCompare(b.name))));
+    this.keysSorted$ = combineLatest([
+      this.keys$,
+      this.store.select(todosLosCiudades).pipe(take(1))
+    ], (keys, cities) => {
+      return [...keys].sort((a, b) => {
+        const aName = cities.find(it => it.name === a)?.name;
+        const bName = cities.find(it => it.name === b)?.name;
+        return aName ? bName ? aName.localeCompare(bName) : -1 : bName ? 1 : 0;
+      })
+    });
   }
 
-  sortByPopulation() {
-    this.ciudadesSorted$ = this.ciudades$.pipe(map(it => it.sort((a, b) => b.population - a.population)));
+  sortOnceByPopulationDesc() {
+    this.keysSorted$ = combineLatest([
+      this.keys$,
+      this.store.select(todosLosCiudades).pipe(take(1))
+    ], (keys, cities) => {
+      return [...keys].sort((a, b) => {
+        const aName = cities.find(it => it.name === a)?.population;
+        const bName = cities.find(it => it.name === b)?.population;
+        return -(aName ? bName ? aName - bName : -1 : bName ? 1 : 0);
+      })
+    });
   }
 }
