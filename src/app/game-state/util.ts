@@ -26,7 +26,12 @@ export const businessDemandPerWeek
 
 export const citizenDemandPerWeek
   : (provider: ProviderConnection, ciudad: Ciudad, demands: Demand[]) => number
-  = (provider, ciudad, demands) => ciudad.population * (demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0) / 1e6;
+  = (provider, ciudad, demands) => {
+    const demand = demands.find(it => it.good === provider.good);
+    if (!demand) return 0;
+    if (ciudad.population < demand.minCitySize) return 0;
+    return ciudad.population * (demand.wagonsPerMillion ?? 0) / 1e6;
+  };
 
 export const nextRun
   : (lastRun: Date, effectiveRate: number) => Date
