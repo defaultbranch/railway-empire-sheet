@@ -94,7 +94,7 @@ export class DirectLinesComponent {
           const rural = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good);
           const productionPerWeek = rural ? ruralProductionPerWeek(rural, negocios) : 0;
           const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? (() => { throw Error('no ciudad') })();
-          const businesses = ciudad.businesses ?? [];
+          const businesses = ciudad.businesses;
           const demandPerWeek
             = businessDemandPerWeek(provider, businesses, industries)
             + citizenDemandPerWeek(provider, ciudad, demands);

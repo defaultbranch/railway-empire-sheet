@@ -16,7 +16,7 @@ export const ruralProductionPerWeek
   = (rural, negocios) => (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0;
 
 export const businessDemandPerWeek
-  : (provider: ProviderConnection, businesses: Business[], industries: Industria[]) => number
+  : (provider: ProviderConnection, businesses: [Business?, Business?, Business?], industries: Industria[]) => number
   = (provider, businesses, industries) => businesses.reduce((total, business) => {
     if (!business) throw Error('no business');
     const industrie = industries.find(it => it.name === business.business);

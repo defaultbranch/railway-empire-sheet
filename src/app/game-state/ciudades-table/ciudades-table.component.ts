@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, CiudadesNgrxModule, allCityKeys, ciudad } from '../ngrx/ciudades.ngrx';
+import { CiudadesNgrxModule, allCityKeys, ciudad } from '../ngrx/ciudades.ngrx';
 import { addCiudad, removeCiudad, updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
@@ -47,7 +47,7 @@ export class CiudadesTableComponent {
   }
 
   addCity(p: { name: string, population: number }) {
-    this.store.dispatch(addCiudad({ ciudad: { name: p.name, population: p.population } }));
+    this.store.dispatch(addCiudad({ ciudad: { name: p.name, population: p.population, businesses: [,,] } }));
   }
 
   updatePopulation(p: { name: string, population: number }) {

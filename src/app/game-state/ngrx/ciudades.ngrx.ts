@@ -11,7 +11,7 @@ import { IndustriasNgrxModule, IndustryName } from "../../game-config/ngrx/indus
 export type Ciudad = {
   name: string;
   population: number;
-  businesses?: Business[];
+  businesses: [Business?, Business?, Business?];
 }
 
 export type Business = {
@@ -70,10 +70,10 @@ const CIUDAD_REDUCER = createReducer(
   on(actions.updateBusiness, (state: EntityState<Ciudad>, p: { name: string, index: number, business: string, size: number }): EntityState<Ciudad> => adapter.mapOne({
     id: p.name, map: ciudad => ({
       ...ciudad,
-      businesses: (businesses => {
+      businesses: ((businesses: [Business?, Business?, Business?]): [Business?, Business?, Business?] => {
         businesses[p.index] = { business: p.business, size: p.size };
         return businesses;
-      })([...ciudad.businesses ?? []])
+      })([...ciudad.businesses])
     })
   }, state)),
 
