@@ -11,6 +11,7 @@ import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
+import { ruralWithPerWeek } from '../util';
 
 type VM = {
   name: string,
@@ -51,17 +52,7 @@ export class NegociosRuralesTableComponent {
     this.items$ = combineLatest([
       store.select(todosLosNegociosRurales),
       store.select(todosLosNegocios),
-    ], (rurales, negocios) => {
-      return rurales.map(rural => {
-        const perWeek = (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0;
-        return {
-          name: rural.name,
-          product: rural.product,
-          size: rural.size,
-          perWeek: perWeek,
-        }
-      })
-    });
+    ], (rurales, negocios) => rurales.map(rural => ruralWithPerWeek(rural, negocios)));
     this.itemsSorted$ = this.items$;
   }
 
