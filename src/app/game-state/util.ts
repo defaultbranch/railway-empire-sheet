@@ -1,6 +1,7 @@
+import { Demand } from "../game-config/ngrx/demands.ngrx";
 import { Industria } from "../game-config/ngrx/industrias.ngrx";
 import { Negocio } from "../game-config/ngrx/negocios.ngrx";
-import { Business } from "./ngrx/ciudades.ngrx";
+import { Business, Ciudad } from "./ngrx/ciudades.ngrx";
 import { NegocioRural } from "./ngrx/negocios-rurales.ngrx";
 import { ProviderConnection } from "./ngrx/provider-connections.ngrx";
 
@@ -22,3 +23,7 @@ export const businessDemandPerWeek
     const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
     return total + perWeek;
   }, 0);
+
+export const citizenDemandPerWeek
+  : (provider: ProviderConnection, ciudad: Ciudad, demands: Demand[]) => number
+  = (provider, ciudad, demands) => ciudad.population * (demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0) / 1e6;

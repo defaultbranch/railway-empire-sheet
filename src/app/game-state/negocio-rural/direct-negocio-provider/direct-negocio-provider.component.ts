@@ -13,7 +13,7 @@ import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { businessDemandPerWeek, ruralProductionPerWeek } from '../../util';
+import { businessDemandPerWeek, citizenDemandPerWeek, ruralProductionPerWeek } from '../../util';
 
 type VM = {
 
@@ -74,11 +74,11 @@ export class DirectNegocioProviderComponent {
         .map(provider => {
 
           const productionPerWeek = this.rural ? ruralProductionPerWeek(this.rural, negocios) : 0;
-          const wagonsPerMillion = demands.find(it => it.good === provider.good)?.wagonsPerMillion ?? 0;
-          const ciudad = ciudades.find(it => it.name === provider.destinationCity);
-          const businesses = ciudad?.businesses ?? [];
-          const citizenDemandPerWeek = (ciudad?.population ?? 0) / 1e6 * wagonsPerMillion;
-          const demandPerWeek = businessDemandPerWeek(provider, businesses, industries) + citizenDemandPerWeek;
+          const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? (() => { throw Error('no ciudad') })();;
+          const businesses = ciudad.businesses ?? [];
+          const demandPerWeek
+            = businessDemandPerWeek(provider, businesses, industries)
+            + citizenDemandPerWeek(provider, ciudad, demands);
 
           const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
 
