@@ -122,7 +122,7 @@ export class DirectNegocioProviderComponent {
   }
 
   runningLate$(vm: VM): Observable<boolean> {
-    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() < gameDate.getTime() : false));
+    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() <= gameDate.getTime() : false));
   }
 
   runNow(line: VM) {
