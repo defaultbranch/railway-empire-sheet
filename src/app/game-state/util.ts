@@ -19,7 +19,7 @@ export const businessDemandPerWeek
   : (provider: ProviderConnection, ciudad: Ciudad, industries: Industria[]) => number
   = (provider, ciudad, industries) => ciudad.businesses.reduce((total, business) => {
     if (!business) return total;
-    const industrie = industries.find(it => it.name === business.business);
+    const industrie = industries.find(it => it.name === business.name);
     const perWeek = (industrie?.materiasPrimas?.find(it => it.name === provider.good)?.perWeek ?? [])[business.size - 1] ?? 0;
     return total + perWeek;
   }, 0);

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, combineLatest, map, take } from 'rxjs';
+import { Observable, combineLatest, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { CiudadesNgrxModule, allCityKeys, ciudad } from '../ngrx/ciudades.ngrx';

@@ -15,7 +15,7 @@ export type Ciudad = {
 }
 
 export type Business = {
-  business: IndustryName,
+  name: IndustryName,
   size: number,
 }
 
@@ -34,7 +34,7 @@ const actions = createActionGroup({
     setCiudades: props<{ ciudades: Ciudad[] }>(),
 
     updatePopulation: props<{ name: string, population: number }>(),
-    updateBusiness: props<{ name: string, index: number, business: string, size: number}>(),
+    updateBusiness: props<{ name: string, index: number, business: IndustryName, size: number}>(),
 
     persistCiudades: emptyProps(),
     loadCiudades: emptyProps(),
@@ -67,11 +67,11 @@ const CIUDAD_REDUCER = createReducer(
   on(actions.setCiudades, (state: EntityState<Ciudad>, p: { ciudades: Ciudad[] }): EntityState<Ciudad> => adapter.setAll(p.ciudades, state)),
 
   on(actions.updatePopulation, (state: EntityState<Ciudad>, p: { name: string, population: number }): EntityState<Ciudad> => adapter.mapOne({ id: p.name, map: ciudad => ({ ...ciudad, population: p.population }) }, state)),
-  on(actions.updateBusiness, (state: EntityState<Ciudad>, p: { name: string, index: number, business: string, size: number }): EntityState<Ciudad> => adapter.mapOne({
+  on(actions.updateBusiness, (state: EntityState<Ciudad>, p: { name: string, index: number, business: IndustryName, size: number }): EntityState<Ciudad> => adapter.mapOne({
     id: p.name, map: ciudad => ({
       ...ciudad,
       businesses: ((businesses: [Business?, Business?, Business?]): [Business?, Business?, Business?] => {
-        businesses[p.index] = { business: p.business, size: p.size };
+        businesses[p.index] = { name: p.business, size: p.size };
         return businesses;
       })([...ciudad.businesses])
     })

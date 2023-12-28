@@ -20,7 +20,7 @@
     <tr *ngFor="let index of [0,1,2]">
       <th style="text-align: left;">Industria {{ index + 1 }}</th>
       <td>
-        <select [ngModel]="ciudad.businesses[index]?.business"
+        <select [ngModel]="ciudad.businesses[index]?.name"
           (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses[index]?.size})">
           <option></option>
           <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
@@ -28,7 +28,7 @@
       </td>
       <td>
         <input class="short-number" type="number" [ngModel]="ciudad.businesses[index]?.size"
-          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses[index]?.business, size: $event})">
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: ciudad.businesses[index]?.name, size: $event})">
       </td>
     </tr>
   </table>
