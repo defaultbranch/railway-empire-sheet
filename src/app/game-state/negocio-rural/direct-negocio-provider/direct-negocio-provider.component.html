@@ -18,7 +18,7 @@
       <td>{{ item.good }}</td>
       <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{
           item.destinationCity }}</a></td>
-      <td class="align-right">{{ item.productionPerWeek | number:'.1-1' }}</td>
+      <td class="align-right">{{ productionPerWeek$(rural.name, item.good) | async | number:'.1-1' }}</td>
       <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
       <td class="align-right"><input class="short-number" type="number" min="0.0" max="1.0" step="0.1"
           [ngModel]="item.productionFactor ?? 1.0 | number:'.1-1'"

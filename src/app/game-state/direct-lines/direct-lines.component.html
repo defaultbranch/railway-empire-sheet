@@ -25,7 +25,7 @@
       <td><a [routerLink]="['/','game-state','ciudad']" [queryParams]="{name: item.destinationCity}">{{ item.destinationCity }}</a></td>
       <td class="align-right">{{ item.miles }}</td>
       <td class="align-right">{{ item.cost }}</td>
-      <td class="align-right">{{ item.productionPerWeek | number:'.1-1' }}</td>
+      <td class="align-right">{{ productionPerWeek$(item.ruralProducer, item.good) | async | number:'.1-1' }}</td>
       <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
       <td class="align-right">{{ item.productionFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>

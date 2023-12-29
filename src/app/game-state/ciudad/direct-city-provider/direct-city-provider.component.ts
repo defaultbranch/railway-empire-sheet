@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
-import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
+import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
 import { updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
@@ -23,7 +23,6 @@ type VM = {
   ruralProducer: string;
   good: string;
 
-  productionPerWeek: number;
   demandPerWeek: number;
 
   productionFactor?: number;
@@ -93,7 +92,6 @@ export class DirectCityProviderComponent {
             good: provider.good,
             destinationCity: provider.destinationCity,
 
-            productionPerWeek,
             demandPerWeek,
 
             productionFactor: provider.productionFactor,
@@ -111,6 +109,16 @@ export class DirectCityProviderComponent {
     this.sortByNextRun();
   }
 
+  productionPerWeek$(producerName: string, good: Good): Observable<number> {
+    return combineLatest([
+      this.store.select(todosLosNegociosRurales),
+      this.store.select(todosLosNegocios)
+    ], (rurales, negocios) => {
+        const rural = rurales.find(it => it.name === producerName && it.product === good);
+        return rural ? ruralProductionPerWeek(rural, negocios) : 0;
+      }
+    )
+  }
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
