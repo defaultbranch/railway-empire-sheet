@@ -79,6 +79,7 @@ const allKeys = createSelector(selectFeature, selectIds);
 export const allLocalBusinessKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const todosLosNegociosRurales = createSelector(selectFeature, selectAll);
 export const negocioRural = (name: string) => createSelector(selectFeature, (feature) => feature.entities[name]);
+export const negocioRuralByNameAndProduct = (name: string, product: Good) => createSelector(negocioRural(name), (negocio) => negocio?.product === product ? negocio: undefined);
 
 // NgRx effects
 

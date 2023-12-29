@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
+import { NegocioRural, negocioRuralByNameAndProduct, todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
 import { noValueError } from '../../../no-value-error';
+import { productionPerWeek } from '../../ngrx/production-per-week';
 
 type VM = {
 
@@ -104,14 +105,7 @@ export class DirectNegocioProviderComponent implements OnInit {
   }
 
   productionPerWeek$(producerName: string, good: Good): Observable<number> {
-    return combineLatest([
-      this.store.select(todosLosNegociosRurales),
-      this.store.select(todosLosNegocios)
-    ], (rurales, negocios) => {
-        const rural = rurales.find(it => it.name === producerName && it.product === good);
-        return rural ? ruralProductionPerWeek(rural, negocios) : 0;
-      }
-    )
+    return this.store.select(productionPerWeek(producerName, good));
   }
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
