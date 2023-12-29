@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, combineLatest, map, take } from 'rxjs';
+import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
@@ -55,10 +55,10 @@ type VM = {
     NegociosNgrxModule,
   ]
 })
-export class DirectLinesComponent {
+export class DirectLinesComponent implements OnInit {
 
-  items$: Observable<VM[]>;
-  itemsSorted$: Observable<VM[]>;
+  items$: Observable<VM[]> = NEVER;
+  itemsSorted$: Observable<VM[]> = NEVER;
 
   rurales$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
@@ -72,20 +72,21 @@ export class DirectLinesComponent {
   newCost?: number;
 
   constructor(private store: Store) {
-
     this.rurales$ = store.select(todosLosNegociosRurales);
     this.goods$ = store.select(allGoods);
     this.ciudades$ = store.select(todosLosCiudades);
     this.gameDate$ = store.select(gameDate).pipe(map(it => new Date(`${it}T00:00:00Z`)));
+  }
 
+  ngOnInit() {
     this.items$ = combineLatest([
-      store.select(allProviderConnections),
-      store.select(allLines),
-      store.select(todosLosNegociosRurales),
-      store.select(todosLosCiudades),
-      store.select(allDemands),
-      store.select(allIndustries),
-      store.select(todosLosNegocios),
+      this.store.select(allProviderConnections),
+      this.store.select(allLines),
+      this.store.select(todosLosNegociosRurales),
+      this.store.select(todosLosCiudades),
+      this.store.select(allDemands),
+      this.store.select(allIndustries),
+      this.store.select(todosLosNegocios),
     ], (providers, lines, rurales, ciudades, demands, industries, negocios) => {
       return providers
         .map(provider => {

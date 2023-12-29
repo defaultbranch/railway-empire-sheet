@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, combineLatest, map, take } from 'rxjs';
+import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
@@ -45,12 +45,12 @@ type VM = {
   templateUrl: './direct-city-provider.component.html',
   styleUrl: './direct-city-provider.component.scss'
 })
-export class DirectCityProviderComponent {
+export class DirectCityProviderComponent implements OnInit {
 
   @Input() ciudad?: Ciudad;
 
-  items$: Observable<VM[]>;
-  itemsSorted$: Observable<VM[]>;
+  items$: Observable<VM[]> = NEVER;
+  itemsSorted$: Observable<VM[]> = NEVER;
 
   rurales$: Observable<NegocioRural[]>;
   goods$: Observable<string[]>;
@@ -60,19 +60,20 @@ export class DirectCityProviderComponent {
   newGood?: string;
 
   constructor(private store: Store) {
-
     this.rurales$ = store.select(todosLosNegociosRurales);
     this.goods$ = store.select(allGoods);
     this.gameDate$ = store.select(gameDate).pipe(map(it => new Date(`${it}T00:00:00Z`)));
+  }
 
+  ngOnInit() {
     this.items$ = combineLatest([
-      store.select(allProviderConnections).pipe(
+      this.store.select(allProviderConnections).pipe(
         map(providers => providers.filter(it => it.destinationCity === this.ciudad?.name))
       ),
-      store.select(todosLosNegociosRurales),
-      store.select(allDemands),
-      store.select(allIndustries),
-      store.select(todosLosNegocios),
+      this.store.select(todosLosNegociosRurales),
+      this.store.select(allDemands),
+      this.store.select(allIndustries),
+      this.store.select(todosLosNegocios),
     ], (providers, rurales, demands, industries, negocios) => {
       return providers
         .map(provider => {
