@@ -129,9 +129,7 @@ export class DirectLinesComponent implements OnInit {
     this.sortByNextRun();
   }
 
-  productionPerWeek$(producerName: string, good: Good): Observable<number> {
-    return this.store.select(productionPerWeek(producerName, good));
-  }
+  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
