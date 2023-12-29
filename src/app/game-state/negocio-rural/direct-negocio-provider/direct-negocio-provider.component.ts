@@ -7,7 +7,7 @@ import { NegocioRural, todosLosNegociosRurales } from '../../ngrx/negocios-rural
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
-import { addProviderConnection, allProviderConnections, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
+import { addProviderConnection, providerForRuralProducer, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
@@ -63,9 +63,7 @@ export class DirectNegocioProviderComponent implements OnInit {
 
   ngOnInit() {
     this.items$ = combineLatest([
-      this.store.select(allProviderConnections).pipe(
-        map(providers => providers.filter(it => it.ruralProducer === this.rural?.name))
-      ),
+      this.store.select(providerForRuralProducer(this.rural?.name ?? noValueError('no rural'))),
       this.store.select(todosLosCiudades),
       this.store.select(allDemands),
       this.store.select(allIndustries),

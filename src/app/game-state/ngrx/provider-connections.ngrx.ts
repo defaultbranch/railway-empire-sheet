@@ -96,7 +96,8 @@ const {
 const allKeys = createSelector(selectFeature, selectIds);
 export const allProviderConnectionKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allProviderConnections = createSelector(selectFeature, selectAll);
-export const providerForDestinationCity = (destinationCity?: string) => createSelector(allProviderConnections, providers => providers.filter(it => it.destinationCity === destinationCity));
+export const providerForDestinationCity = (destinationCity: string) => createSelector(allProviderConnections, providers => providers.filter(it => it.destinationCity === destinationCity));
+export const providerForRuralProducer = (ruralProducer: string) => createSelector(allProviderConnections, providers => providers.filter(it => it.ruralProducer === ruralProducer));
 
 // NgRx effects
 
