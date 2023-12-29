@@ -14,6 +14,7 @@ import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
+import { noValueError } from '../../../no-value-error';
 
 type VM = {
 
@@ -74,7 +75,7 @@ export class DirectNegocioProviderComponent implements OnInit {
         .map(provider => {
 
           const productionPerWeek = this.rural ? ruralProductionPerWeek(this.rural, negocios) : 0;
-          const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? (() => { throw Error('no ciudad') })();;
+          const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? noValueError('no ciudad');
           const demandPerWeek
             = businessDemandPerWeek(provider, ciudad, industries)
             + citizenDemandPerWeek(provider, ciudad, demands);
