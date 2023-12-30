@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural, NegociosRuralesNgrxModule, updateSize } from '../ngrx/negocios-rurales.ngrx';
@@ -10,15 +10,8 @@ import { addNegocioRural, removeNegocioRural } from '../ngrx/negocios-rurales.ng
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
-import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
-import { ruralWithProductionPerWeek } from '../util';
-
-type VM = {
-  name: string,
-  product: Good,
-  size: number,
-  perWeek: number,
-};
+import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
+import { productionPerWeek } from '../ngrx/production-per-week';
 
 @Component({
   selector: 'app-negocios-rurales-table',
@@ -36,8 +29,8 @@ type VM = {
 })
 export class NegociosRuralesTableComponent {
 
-  items$: Observable<VM[]>;
-  itemsSorted$: Observable<VM[]>;
+  items$: Observable<NegocioRural[]>;
+  itemsSorted$: Observable<NegocioRural[]>;
 
   goods$: Observable<string[]>;
 
@@ -49,12 +42,11 @@ export class NegociosRuralesTableComponent {
 
     this.goods$ = store.select(allGoods);
 
-    this.items$ = combineLatest([
-      store.select(todosLosNegociosRurales),
-      store.select(todosLosNegocios),
-    ], (rurales, negocios) => rurales.map(rural => ruralWithProductionPerWeek(rural, negocios)));
+    this.items$ = store.select(todosLosNegociosRurales);
     this.itemsSorted$ = this.items$;
   }
+
+  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
 
   addNegocio(p: { name: string, size: number, product: string }) {
     this.store.dispatch(addNegocioRural({ negocio: { name: p.name, size: p.size, product: p.product } }));

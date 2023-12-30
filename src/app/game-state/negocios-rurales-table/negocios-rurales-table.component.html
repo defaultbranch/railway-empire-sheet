@@ -18,7 +18,7 @@
         <input class="short-number" type="number" min="1" max="5" step="1" [ngModel]="negocio.size | number"
         (ngModelChange)="updateSize(negocio, $event)">
       <td class="align-right">
-        {{ negocio.perWeek }}
+        {{ productionPerWeek$(negocio.name, negocio.product) | async | number:'.1-1' }}
       </td>
       <td>
         <button (click)="removeNegocio(negocio.name)">Remove</button>

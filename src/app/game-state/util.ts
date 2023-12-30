@@ -7,10 +7,6 @@ import { ProviderConnection } from "./ngrx/provider-connections.ngrx";
 
 // 'util.ts' is a collection of loose code snippets; this should be cleaned up eventually
 
-export const ruralWithProductionPerWeek
-  : (rural: NegocioRural, negocios: Negocio[]) => NegocioRural & { perWeek: number }
-  = (rural, negocios) => ({ ...rural, perWeek: ruralProductionPerWeek(rural, negocios) });
-
 export const ruralProductionPerWeek
   : (rural: NegocioRural, negocios: Negocio[]) => number
   = (rural, negocios) => (negocios.find(it => it.name === rural.product)?.productos?.find(it => it.name === rural.product)?.perWeek ?? [])[rural.size - 1] ?? 0;

@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, negocioRuralByNameAndProduct, todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
+import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';

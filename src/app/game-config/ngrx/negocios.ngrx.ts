@@ -103,6 +103,8 @@ const allKeys = createSelector(selectFeature, selectIds);
 export const allNegocioKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const todosLosNegocios = createSelector(selectFeature, selectAll);
 export const negocio = (key: string | number) => createSelector(selectFeature, (feature) => feature.entities[key]);
+export const negocioProductionPerWeek = (name: string, product: Good) => createSelector(negocio(name), (negocio) => (negocio?.productos?.find(it => it.name === product)?.perWeek) ?? []);
+
 
 // NgRx effects
 
