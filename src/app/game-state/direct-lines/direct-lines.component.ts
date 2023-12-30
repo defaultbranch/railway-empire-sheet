@@ -154,16 +154,17 @@ export class DirectLinesComponent implements OnInit {
       switchMap(items => from(items).pipe(
         concatMap(item =>
           this.store.select(nextRun_(item)).pipe(
-            map(date => ({ ...item, nextRun: date })),
+            map(date => ([date, item] as const)),
             take(1),
           )
         ),
         toArray(),
         map(items => [...items].sort((a, b) =>
-          (a.nextRun && a.effectiveRate > 0)
-            ? ((b.nextRun && b.effectiveRate > 0) ? a.nextRun.getTime() - b.nextRun.getTime() : -1)
-            : ((b.nextRun && b.effectiveRate > 0) ? 1 : 0)
-        ))
+          a[0]
+            ? (b[0] ? a[0].getTime() - b[0].getTime() : -1)
+            : (b[0] ? 1 : 0)
+        )),
+        map(items => items.map(item => item[1])),
       ))
     )
   }
