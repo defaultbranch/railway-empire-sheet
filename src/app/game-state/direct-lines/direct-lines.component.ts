@@ -17,12 +17,10 @@ import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
-import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
-import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
-import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek, ruralProductionPerWeek, sortObservableStream } from '../util';
-import { noValueError } from '../../no-value-error';
-import { nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
+import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
+import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
+import { sortObservableStream } from '../util';
+import { demandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
 
 type VM = {
 
@@ -30,11 +28,8 @@ type VM = {
   good: string;
   destinationCity: string;
 
-  demandPerWeek: number;
-
   productionFactor?: number;
   demandFactor?: number;
-  effectiveRate: number;
   lastRun?: Date;
 
   miles?: number;
@@ -83,22 +78,9 @@ export class DirectLinesComponent implements OnInit {
     this.items$ = combineLatest([
       this.store.select(allProviderConnections),
       this.store.select(allLines),
-      this.store.select(todosLosNegociosRurales),
-      this.store.select(todosLosCiudades),
-      this.store.select(allDemands),
-      this.store.select(allIndustries),
-      this.store.select(todosLosNegocios),
-    ], (providers, lines, rurales, ciudades, demands, industries, negocios) => {
+    ], (providers, lines) => {
       return providers
         .map(provider => {
-
-          const rural = rurales.find(it => it.name === provider.ruralProducer && it.product === provider.good);
-          const productionPerWeek = rural ? ruralProductionPerWeek(rural, negocios) : 0;
-          const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? noValueError('no ciudad');
-          const demandPerWeek
-            = businessDemandPerWeek(provider, ciudad, industries)
-            + citizenDemandPerWeek(provider, ciudad, demands);
-          const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
 
           const line = lines.find(line => line.ruralProducer == provider.ruralProducer && line.destinationCity == provider.destinationCity);
 
@@ -108,12 +90,8 @@ export class DirectLinesComponent implements OnInit {
             good: provider.good,
             destinationCity: provider.destinationCity,
 
-            demandPerWeek,
-
             productionFactor: provider.productionFactor,
             demandFactor: provider.demandFactor,
-
-            effectiveRate,
 
             lastRun: provider.lastRun,
 
@@ -129,6 +107,8 @@ export class DirectLinesComponent implements OnInit {
 
   readonly runningLate$ = (provider: ProviderConnection) => this.store.select(runningLate(provider));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
+  readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(demandPerWeek(provider));
+  readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(effectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {

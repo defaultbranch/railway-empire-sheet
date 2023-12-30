@@ -26,10 +26,10 @@
       <td class="align-right">{{ item.miles }}</td>
       <td class="align-right">{{ item.cost }}</td>
       <td class="align-right">{{ productionPerWeek$(item.ruralProducer, item.good) | async | number:'.1-1' }}</td>
-      <td class="align-right">{{ item.demandPerWeek | number:'.1-1' }}</td>
+      <td class="align-right">{{ demandPerWeek$(item) | async | number:'.1-1' }}</td>
       <td class="align-right">{{ item.productionFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>
-      <td class="align-right">{{ item.effectiveRate | number:'.1-1' }}</td>
+      <td class="align-right">{{ effectiveRate$(item) | async | number:'.1-1' }}</td>
       <td>{{ item.lastRun | date:'yyyy-MM-dd' }}</td>
       <td>{{ nextRun$(item) | async | date:'yyyy-MM-dd' }}</td>
       <td>
