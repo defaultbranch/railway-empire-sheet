@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
 import { noValueError } from '../../../no-value-error';
-import { productionPerWeek } from '../../ngrx/production-per-week';
+import { productionPerWeek } from '../../ngrx/computations';
 
 type VM = {
 

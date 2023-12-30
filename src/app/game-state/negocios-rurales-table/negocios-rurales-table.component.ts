@@ -11,7 +11,7 @@ import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
-import { productionPerWeek } from '../ngrx/production-per-week';
+import { productionPerWeek } from '../ngrx/computations';
 
 @Component({
   selector: 'app-negocios-rurales-table',

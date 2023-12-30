@@ -22,7 +22,7 @@ import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../util';
 import { noValueError } from '../../no-value-error';
-import { productionPerWeek } from '../ngrx/production-per-week';
+import { productionPerWeek } from '../ngrx/computations';
 
 type VM = {
 

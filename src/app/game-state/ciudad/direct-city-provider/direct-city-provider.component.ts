@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, negocioRuralByNameAndProduct } from '../../ngrx/negocios-rurales.ngrx';
+import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../../ngrx/ciudades.ngrx';
@@ -17,7 +17,7 @@ import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
 import { noValueError } from '../../../no-value-error';
-import { productionPerWeek } from '../../ngrx/production-per-week';
+import { productionPerWeek } from '../../ngrx/computations';
 
 type VM = {
 
