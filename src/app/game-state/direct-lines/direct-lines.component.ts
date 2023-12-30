@@ -10,7 +10,7 @@ import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { DirectLinesNgrxModule, allLines } from '../ngrx/direct-lines.ngrx';
+import { DirectLinesNgrxModule, allLines, cost, miles } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';
 import { gameDate } from '../../game-state/ngrx/game-date.ngrx';
 import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
@@ -21,20 +21,6 @@ import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
 import { sortObservableStream } from '../util';
 import { demandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
-
-type VM = {
-
-  ruralProducer: string;
-  good: string;
-  destinationCity: string;
-
-  productionFactor?: number;
-  demandFactor?: number;
-  lastRun?: Date;
-
-  miles?: number;
-  cost?: number;
-};
 
 @Component({
   selector: 'app-direct-trains',
@@ -53,16 +39,16 @@ type VM = {
 })
 export class DirectLinesComponent implements OnInit {
 
-  items$: Observable<VM[]> = NEVER;
-  itemsSorted$: Observable<VM[]> = NEVER;
+  items$: Observable<ProviderConnection[]> = NEVER;
+  itemsSorted$: Observable<ProviderConnection[]> = NEVER;
 
   rurales$: Observable<NegocioRural[]>;
-  goods$: Observable<string[]>;
+  goods$: Observable<Good[]>;
   ciudades$: Observable<Ciudad[]>;
   gameDate$: Observable<Date>;
 
   newRuralProducer?: NegocioRural;
-  newGood?: string;
+  newGood?: Good;
   newDestinationCity?: Ciudad;
   newMiles?: number;
   newCost?: number;
@@ -75,37 +61,14 @@ export class DirectLinesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.items$ = combineLatest([
-      this.store.select(allProviderConnections),
-      this.store.select(allLines),
-    ], (providers, lines) => {
-      return providers
-        .map(provider => {
-
-          const line = lines.find(line => line.ruralProducer == provider.ruralProducer && line.destinationCity == provider.destinationCity);
-
-          return {
-
-            ruralProducer: provider.ruralProducer,
-            good: provider.good,
-            destinationCity: provider.destinationCity,
-
-            productionFactor: provider.productionFactor,
-            demandFactor: provider.demandFactor,
-
-            lastRun: provider.lastRun,
-
-            miles: line?.miles,
-            cost: line?.cost,
-          };
-        })
-    });
-
+    this.items$ = this.store.select(allProviderConnections);
     this.itemsSorted$ = this.items$.pipe(map(it => ([...it])));
     this.sortItemsByNextRun();
   }
 
   readonly runningLate$ = (provider: ProviderConnection) => this.store.select(runningLate(provider));
+  readonly miles$ = (provider: ProviderConnection) => this.store.select(miles(provider.ruralProducer, provider.destinationCity));
+  readonly cost$ = (provider: ProviderConnection) => this.store.select(cost(provider.ruralProducer, provider.destinationCity));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
   readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(demandPerWeek(provider));
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(effectiveRate(provider));
@@ -117,11 +80,11 @@ export class DirectLinesComponent implements OnInit {
   }
 
   sortByCost() {
-    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.cost ?? 1e9) - (b.cost ?? 1e9))));
+    this.itemsSorted$ = this.itemsSorted(this.cost$, (a, b) => (a ?? 1e9) - (b ?? 1e9));
   }
 
   sortByMiles() {
-    this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => (a.miles ?? 1e9) - (b.miles ?? 1e9))));
+    this.itemsSorted$ = this.itemsSorted(this.miles$, (a, b) => (a ?? 1e9) - (b ?? 1e9));
   }
 
   sortByDestination() {
@@ -133,7 +96,7 @@ export class DirectLinesComponent implements OnInit {
   }
 
   private itemsSorted<C>(
-    lookup: (item: VM) => Observable<C>,
+    lookup: (item: ProviderConnection) => Observable<C>,
     compare: (a: C, b: C) => number,
   ) {
     return sortObservableStream(this.items$, lookup, compare);

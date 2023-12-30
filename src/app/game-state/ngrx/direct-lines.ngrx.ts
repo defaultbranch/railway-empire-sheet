@@ -74,6 +74,9 @@ const {
 const allKeys = createSelector(selectFeature, selectIds);
 export const allDirectLineKeys = createSelector(allKeys, keys => keys.filter((key): key is string => true));
 export const allLines = createSelector(selectFeature, selectAll);
+const line = (ruralProducer: string, destinationCity: string) => createSelector(selectFeature, (feature) => feature.entities[`${ruralProducer}---${destinationCity}`]);
+export const miles = (ruralProducer: string, destinationCity: string) => createSelector(line(ruralProducer, destinationCity), (line) => line?.miles);
+export const cost = (ruralProducer: string, destinationCity: string) => createSelector(line(ruralProducer, destinationCity), (line) => line?.cost);
 
 // NgRx effects
 
