@@ -1,35 +1,20 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
+import { NEVER, Observable, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { Good, allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
-import { addProviderConnection, providerForRuralProducer, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
-import { DemandsNgrxModule, allDemands } from '../../../game-config/ngrx/demands.ngrx';
-import { allIndustries } from '../../../game-config/ngrx/industrias.ngrx';
-import { todosLosNegocios } from '../../../game-config/ngrx/negocios.ngrx';
+import { ProviderConnection, addProviderConnection, providerForRuralProducer, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
+import { DemandsNgrxModule } from '../../../game-config/ngrx/demands.ngrx';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../../util';
 import { noValueError } from '../../../no-value-error';
-import { productionPerWeek } from '../../ngrx/computations';
-
-type VM = {
-
-  good: string;
-  destinationCity: string;
-
-  demandPerWeek: number;
-
-  productionFactor?: number;
-  demandFactor?: number;
-  effectiveRate: number;
-  lastRun?: Date;
-  nextRun?: Date;
-};
+import { demandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../../ngrx/computations';
+import { cost, miles } from '../../ngrx/direct-lines.ngrx';
+import { sortObservableStream } from '../../util';
 
 @Component({
   selector: 'app-direct-negocio-provider',
@@ -47,8 +32,8 @@ export class DirectNegocioProviderComponent implements OnInit {
 
   @Input() rural?: NegocioRural;
 
-  items$: Observable<VM[]> = NEVER;
-  itemsSorted$: Observable<VM[]> = NEVER;
+  items$: Observable<ProviderConnection[]> = NEVER;
+  itemsSorted$: Observable<ProviderConnection[]> = NEVER;
 
   goods$: Observable<string[]>;
   ciudades$: Observable<Ciudad[]>;
@@ -63,48 +48,18 @@ export class DirectNegocioProviderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.items$ = combineLatest([
-      this.store.select(providerForRuralProducer(this.rural?.name ?? noValueError('no rural'))),
-      this.store.select(todosLosCiudades),
-      this.store.select(allDemands),
-      this.store.select(allIndustries),
-      this.store.select(todosLosNegocios),
-    ], (providers, ciudades, demands, industries, negocios) => {
-      return providers
-        .map(provider => {
-
-          const productionPerWeek = this.rural ? ruralProductionPerWeek(this.rural, negocios) : 0;
-          const ciudad = ciudades.find(it => it.name === provider.destinationCity) ?? noValueError('no ciudad');
-          const demandPerWeek
-            = businessDemandPerWeek(provider, ciudad, industries)
-            + citizenDemandPerWeek(provider, ciudad, demands);
-
-          const effectiveRate = Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0));
-
-          return {
-
-            ruralProducer: provider.ruralProducer,
-            good: provider.good,
-            destinationCity: provider.destinationCity,
-
-            demandPerWeek,
-
-            productionFactor: provider.productionFactor,
-            demandFactor: provider.demandFactor,
-
-            effectiveRate,
-
-            lastRun: provider.lastRun,
-            nextRun: provider.lastRun ? nextRun(provider.lastRun, effectiveRate) : undefined,
-          };
-        })
-    });
-
+    this.items$ = this.store.select(providerForRuralProducer(this.rural?.name ?? noValueError('no rural')));
     this.itemsSorted$ = this.items$.pipe(map(it => ([...it])));
-    this.sortByNextRun();
+    this.sortItemsByNextRun();
   }
 
+  readonly runningLate$ = (provider: ProviderConnection) => this.store.select(runningLate(provider));
+  readonly miles$ = (provider: ProviderConnection) => this.store.select(miles(provider.ruralProducer, provider.destinationCity));
+  readonly cost$ = (provider: ProviderConnection) => this.store.select(cost(provider.ruralProducer, provider.destinationCity));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
+  readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(demandPerWeek(provider));
+  readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(effectiveRate(provider));
+  readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
@@ -114,26 +69,25 @@ export class DirectNegocioProviderComponent implements OnInit {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
   }
 
-  sortByNextRun() {
-    this.itemsSorted$ = this.items$.pipe(map(it => [...it].sort((a, b) =>
-      (a.nextRun && a.effectiveRate > 0)
-        ? ((b.nextRun && b.effectiveRate > 0) ? a.nextRun.getTime() - b.nextRun.getTime() : -1)
-        : ((b.nextRun && b.effectiveRate > 0) ? 1 : 0)
-    )));
+  sortItemsByNextRun() {
+    this.itemsSorted$ = this.itemsSorted(this.nextRun$, (a, b) => a ? (b ? a.getTime() - b.getTime() : -1) : (b ? 1 : 0));
   }
 
-  runningLate$(vm: VM): Observable<boolean> {
-    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() <= gameDate.getTime() : false));
+  private itemsSorted<C>(
+    lookup: (item: ProviderConnection) => Observable<C>,
+    compare: (a: C, b: C) => number,
+  ) {
+    return sortObservableStream(this.items$, lookup, compare);
   }
 
-  runNow(line: VM) {
+  runNow(line: ProviderConnection) {
     const ruralProducer = this.rural?.name;
     if (ruralProducer) {
       this.gameDate$.pipe(take(1)).subscribe(date => this.store.dispatch(runProviderConnectionNow({ line: { ...line, ruralProducer }, date })));
     }
   }
 
-  updateProductionFactor(item: VM, factor: number) {
+  updateProductionFactor(item: ProviderConnection, factor: number) {
     const ruralProducer = this.rural?.name;
     if (ruralProducer) {
       this.store.dispatch(updateProductionFactor({ line: { ...item, ruralProducer }, factor }));
@@ -142,11 +96,18 @@ export class DirectNegocioProviderComponent implements OnInit {
 
   balance() {
     this.items$.pipe(
-      take(1)
+      take(1),
+      switchMap(items => from(items).pipe(
+        concatMap(item => this.effectiveRate$(item).pipe(
+          map(effectiveRate => ([effectiveRate, item] as const)),
+          take(1)
+        )),
+        toArray()
+      ))
     ).subscribe(items => {
-      const total = items.reduce((total, it) => total + it.effectiveRate, 0);
+      const total = items.reduce((total, it) => total + it[0], 0);
       for (const item of items) {
-        this.updateProductionFactor(item, total > 0 ? item.effectiveRate / total : 1 / items.length);
+        this.updateProductionFactor(item[1], total > 0 ? item[0] / total : 1 / items.length);
       }
     });
   }
