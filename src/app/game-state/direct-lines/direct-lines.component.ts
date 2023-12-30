@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
+import { NEVER, Observable, combineLatest, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural, negocioRuralByNameAndProduct } from '../ngrx/negocios-rurales.ngrx';
@@ -22,7 +22,7 @@ import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
 import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../util';
 import { noValueError } from '../../no-value-error';
-import { productionPerWeek } from '../ngrx/computations';
+import { nextRun as nextRun_, productionPerWeek } from '../ngrx/computations';
 
 type VM = {
 
@@ -130,6 +130,7 @@ export class DirectLinesComponent implements OnInit {
   }
 
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
+  readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun_(provider));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
@@ -149,11 +150,22 @@ export class DirectLinesComponent implements OnInit {
   }
 
   sortByNextRun() {
-    this.itemsSorted$ = this.items$.pipe(map(it => [...it].sort((a, b) =>
-      (a.nextRun && a.effectiveRate > 0)
-        ? ((b.nextRun && b.effectiveRate > 0) ? a.nextRun.getTime() - b.nextRun.getTime() : -1)
-        : ((b.nextRun && b.effectiveRate > 0) ? 1 : 0)
-    )));
+    this.itemsSorted$ = this.items$.pipe(
+      switchMap(items => from(items).pipe(
+        concatMap(item =>
+          this.store.select(nextRun_(item)).pipe(
+            map(date => ({ ...item, nextRun: date })),
+            take(1),
+          )
+        ),
+        toArray(),
+        map(items => [...items].sort((a, b) =>
+          (a.nextRun && a.effectiveRate > 0)
+            ? ((b.nextRun && b.effectiveRate > 0) ? a.nextRun.getTime() - b.nextRun.getTime() : -1)
+            : ((b.nextRun && b.effectiveRate > 0) ? 1 : 0)
+        ))
+      ))
+    )
   }
 
   runningLate$(vm: VM): Observable<boolean> {

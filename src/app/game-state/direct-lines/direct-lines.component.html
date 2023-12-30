@@ -31,7 +31,7 @@
       <td class="align-right">{{ item.demandFactor ?? 1.0 | number:'.2-2' }}</td>
       <td class="align-right">{{ item.effectiveRate | number:'.1-1' }}</td>
       <td>{{ item.lastRun | date:'yyyy-MM-dd' }}</td>
-      <td>{{ item.nextRun | date:'yyyy-MM-dd' }}</td>
+      <td>{{ nextRun$(item) | async | date:'yyyy-MM-dd' }}</td>
       <td>
         <button (click)="runNow(item)">Run now</button>
       </td>
