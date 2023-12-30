@@ -47,6 +47,7 @@ const GAME_DATE_REDUCER = createReducer(
 const selectFeature = createFeatureSelector<string>(GAME_DATE_FEATURE_KEY);
 
 export const gameDate = createSelector(selectFeature, it => it);
+export const gameDateAsDate = createSelector(gameDate, gameDate => gameDate ? new Date(`${gameDate}T00:00:00Z`) : undefined);
 
 // NgRx effects
 

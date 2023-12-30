@@ -7,6 +7,7 @@ import { ProviderConnection } from "./provider-connections.ngrx";
 import { ciudad } from "./ciudades.ngrx";
 import { allIndustries } from "../../game-config/ngrx/industrias.ngrx";
 import { allDemands } from "../../game-config/ngrx/demands.ngrx";
+import { gameDate, gameDateAsDate } from "./game-date.ngrx";
 
 export const productionPerWeek = (
   producerName: string,
@@ -71,4 +72,12 @@ export const nextRun = (
     nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
     return nextRun;
   }
+)
+
+export const runningLate = (
+  provider: ProviderConnection
+) => createSelector(
+    gameDateAsDate,
+    nextRun(provider),
+    (gameDate, nextRun) => gameDate ? nextRun ? nextRun.getTime() <= gameDate.getTime() : false : false
 )

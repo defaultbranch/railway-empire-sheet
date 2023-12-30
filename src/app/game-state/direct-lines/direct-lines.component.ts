@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { NEVER, Observable, combineLatest, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
+import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural, negocioRuralByNameAndProduct } from '../ngrx/negocios-rurales.ngrx';
+import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
@@ -20,9 +20,9 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek, sortObservableStream } from '../util';
+import { businessDemandPerWeek, citizenDemandPerWeek, ruralProductionPerWeek, sortObservableStream } from '../util';
 import { noValueError } from '../../no-value-error';
-import { nextRun as nextRun_, productionPerWeek } from '../ngrx/computations';
+import { nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
 
 type VM = {
 
@@ -36,7 +36,6 @@ type VM = {
   demandFactor?: number;
   effectiveRate: number;
   lastRun?: Date;
-  nextRun?: Date;
 
   miles?: number;
   cost?: number;
@@ -117,7 +116,6 @@ export class DirectLinesComponent implements OnInit {
             effectiveRate,
 
             lastRun: provider.lastRun,
-            nextRun: provider.lastRun ? nextRun(provider.lastRun, effectiveRate) : undefined,
 
             miles: line?.miles,
             cost: line?.cost,
@@ -129,8 +127,9 @@ export class DirectLinesComponent implements OnInit {
     this.sortItemsByNextRun();
   }
 
+  readonly runningLate$ = (provider: ProviderConnection) => this.store.select(runningLate(provider));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
-  readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun_(provider));
+  readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
@@ -150,21 +149,14 @@ export class DirectLinesComponent implements OnInit {
   }
 
   sortItemsByNextRun() {
-    this.sortItems(
-      item => this.store.select(nextRun_(item)),
-      (a, b) => a ? (b ? a.getTime() - b.getTime() : -1) : (b ? 1 : 0)
-    );
+    this.itemsSorted$ = this.itemsSorted(this.nextRun$, (a, b) => a ? (b ? a.getTime() - b.getTime() : -1) : (b ? 1 : 0));
   }
 
-  private sortItems<C>(
+  private itemsSorted<C>(
     lookup: (item: VM) => Observable<C>,
     compare: (a: C, b: C) => number,
   ) {
-    this.itemsSorted$ = sortObservableStream(this.items$, lookup, compare);
-  }
-
-  runningLate$(vm: VM): Observable<boolean> {
-    return this.gameDate$.pipe(map(gameDate => vm.nextRun ? vm.nextRun.getTime() <= gameDate.getTime() : false));
+    return sortObservableStream(this.items$, lookup, compare);
   }
 
   runNow(line: ProviderConnection) {
