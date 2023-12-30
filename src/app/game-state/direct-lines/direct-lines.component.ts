@@ -20,7 +20,7 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule, allDemands } from '../../game-config/ngrx/demands.ngrx';
 import { allIndustries } from '../../game-config/ngrx/industrias.ngrx';
 import { NegociosNgrxModule, todosLosNegocios } from '../../game-config/ngrx/negocios.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek } from '../util';
+import { businessDemandPerWeek, citizenDemandPerWeek, nextRun, ruralProductionPerWeek, sortObservableStream } from '../util';
 import { noValueError } from '../../no-value-error';
 import { nextRun as nextRun_, productionPerWeek } from '../ngrx/computations';
 
@@ -126,7 +126,7 @@ export class DirectLinesComponent implements OnInit {
     });
 
     this.itemsSorted$ = this.items$.pipe(map(it => ([...it])));
-    this.sortByNextRun();
+    this.sortItemsByNextRun();
   }
 
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
@@ -149,24 +149,18 @@ export class DirectLinesComponent implements OnInit {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.destinationCity.localeCompare(b.destinationCity))));
   }
 
-  sortByNextRun() {
-    this.itemsSorted$ = this.items$.pipe(
-      switchMap(items => from(items).pipe(
-        concatMap(item =>
-          this.store.select(nextRun_(item)).pipe(
-            map(date => ([date, item] as const)),
-            take(1),
-          )
-        ),
-        toArray(),
-        map(items => [...items].sort((a, b) =>
-          a[0]
-            ? (b[0] ? a[0].getTime() - b[0].getTime() : -1)
-            : (b[0] ? 1 : 0)
-        )),
-        map(items => items.map(item => item[1])),
-      ))
-    )
+  sortItemsByNextRun() {
+    this.sortItems(
+      item => this.store.select(nextRun_(item)),
+      (a, b) => a ? (b ? a.getTime() - b.getTime() : -1) : (b ? 1 : 0)
+    );
+  }
+
+  private sortItems<C>(
+    lookup: (item: VM) => Observable<C>,
+    compare: (a: C, b: C) => number,
+  ) {
+    this.itemsSorted$ = sortObservableStream(this.items$, lookup, compare);
   }
 
   runningLate$(vm: VM): Observable<boolean> {

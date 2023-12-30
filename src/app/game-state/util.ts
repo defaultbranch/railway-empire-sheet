@@ -1,3 +1,4 @@
+import { Observable, concatMap, from, map, switchMap, take, toArray } from "rxjs";
 import { Demand } from "../game-config/ngrx/demands.ngrx";
 import { Industria } from "../game-config/ngrx/industrias.ngrx";
 import { Negocio } from "../game-config/ngrx/negocios.ngrx";
@@ -35,4 +36,22 @@ export const nextRun
     const nextRun = new Date(lastRun);
     nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
     return nextRun;
+  }
+
+export function sortObservableStream<T, C>(
+  items$: Observable<T[]>,
+  lookup: (item: T) => Observable<C>,
+  compare: (a: C, b: C) => number,
+): Observable<T[]> {
+  return items$.pipe(
+    switchMap(items => from(items).pipe(
+      concatMap(item => lookup(item).pipe(
+        map(criteria => ([criteria, item] as const)),
+        take(1)
+      )),
+      toArray(),
+      map(items => [...items].sort((a, b) => compare(a[0], b[0]))),
+      map(items => items.map(item => item[1])),
+    ))
+  );
 }
