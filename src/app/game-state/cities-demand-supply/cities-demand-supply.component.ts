@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Observable, combineLatest, concatMap, from, map, switchMap, tap, toArray } from 'rxjs';
+import { Observable, combineLatest, concatMap, from, map, switchMap, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Good, GoodsNgrxModule, allGoods } from '../../game-config/ngrx/goods.ngrx';
@@ -8,6 +8,12 @@ import { CiudadesNgrxModule, allCityKeys } from '../ngrx/ciudades.ngrx';
 import { cityDemandPerWeek } from '../ngrx/computations';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
+import { sortObservableStream } from '../util';
+
+type VM = {
+  city: string,
+  good: Good,
+};
 
 @Component({
   selector: 'app-cities-demand-supply',
@@ -24,10 +30,8 @@ import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 })
 export class CitiesDemandSupplyComponent {
 
-  keys$: Observable<{
-    city: string,
-    good: Good,
-  }[]>;
+  keys$: Observable<VM[]>;
+  keysSorted$: Observable<VM[]>;
 
   constructor(private store: Store) {
 
@@ -42,8 +46,24 @@ export class CitiesDemandSupplyComponent {
           )),
           toArray()
         )),
-    )
+    );
+    this.keysSorted$ = this.keys$;
   }
 
-  readonly demandPerWeek$ = (city: string, good: Good) => this.store.select(cityDemandPerWeek(city, good));
+  readonly demandPerWeek$ = (key: VM) => this.store.select(cityDemandPerWeek(key.city, key.good));
+
+  sortByDemandDesc() {
+    this.keysSorted$ = this.itemsSorted(
+      this.demandPerWeek$,
+      (a, b) => b - a
+    );
+  }
+
+  private itemsSorted<C>(
+    lookup: (item: VM) => Observable<C>,
+    compare: (a: C, b: C) => number,
+  ) {
+    return sortObservableStream(this.keys$, lookup, compare);
+  }
+
 }

@@ -3,14 +3,14 @@
     <tr>
       <th>City</th>
       <th>Good</th>
-      <th>Weekly<br>Demand</th>
+      <th class="clickable" (click)="sortByDemandDesc()">Weekly<br>Demand</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let key of keys$ | async">
+    <tr *ngFor="let key of keysSorted$ | async">
       <td>{{ key.city }}</td>
       <td>{{ key.good }}</td>
-      <td class="align-right">{{ demandPerWeek$(key.city, key.good) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ demandPerWeek$(key) | async | number:'.1-1' }}</td>
     </tr>
   </tbody>
 </table>
