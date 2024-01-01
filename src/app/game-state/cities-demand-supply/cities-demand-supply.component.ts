@@ -3,12 +3,11 @@ import { Component } from '@angular/core';
 import { Observable, combineLatest, concatMap, from, map, reduce, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good, GoodsNgrxModule, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { allCityKeys } from '../ngrx/ciudades.ngrx';
 import { cityDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
-import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
-import { sortObservableStream } from '../util';
+import { filteredObservableStream, sortObservableStream } from '../util';
 import { ProviderConnectionsNgrxModule, providersForCityAndGood } from '../ngrx/provider-connections.ngrx';
 
 type VM = {
@@ -34,7 +33,7 @@ export class CitiesDemandSupplyComponent {
 
   constructor(private store: Store) {
 
-    this.keys$ = combineLatest([
+    const keys$ = combineLatest([
       store.select(allCityKeys),
       store.select(allGoods),
     ]).pipe(
@@ -46,6 +45,7 @@ export class CitiesDemandSupplyComponent {
           toArray()
         )),
     );
+    this.keys$ = filteredObservableStream(keys$, this.demandPerWeek$, demand => demand > 0);
     this.keysSorted$ = this.keys$;
   }
 
