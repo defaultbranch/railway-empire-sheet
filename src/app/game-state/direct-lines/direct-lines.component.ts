@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { NEVER, Observable, combineLatest, map, take } from 'rxjs';
+import { NEVER, Observable, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
@@ -10,7 +10,7 @@ import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { DirectLinesNgrxModule, allLines, cost, miles } from '../ngrx/direct-lines.ngrx';
+import { DirectLinesNgrxModule, cost, miles } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';
 import { gameDate } from '../../game-state/ngrx/game-date.ngrx';
 import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
@@ -20,7 +20,7 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
 import { sortObservableStream } from '../util';
-import { demandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
+import { providerDemandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
 
 @Component({
   selector: 'app-direct-trains',
@@ -70,7 +70,7 @@ export class DirectLinesComponent implements OnInit {
   readonly miles$ = (provider: ProviderConnection) => this.store.select(miles(provider.ruralProducer, provider.destinationCity));
   readonly cost$ = (provider: ProviderConnection) => this.store.select(cost(provider.ruralProducer, provider.destinationCity));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
-  readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(demandPerWeek(provider));
+  readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(providerDemandPerWeek(provider));
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(effectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
