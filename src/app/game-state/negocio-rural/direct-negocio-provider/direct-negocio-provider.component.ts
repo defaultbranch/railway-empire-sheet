@@ -12,7 +12,7 @@ import { DemandsNgrxModule } from '../../../game-config/ngrx/demands.ngrx';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { noValueError } from '../../../no-value-error';
-import { providerDemandPerWeek, effectiveRate, nextRun, productionPerWeek, runningLate } from '../../ngrx/computations';
+import { providerDemandPerWeek, providerEffectiveRate, nextRun, productionPerWeek, runningLate } from '../../ngrx/computations';
 import { cost, miles } from '../../ngrx/direct-lines.ngrx';
 import { sortObservableStream } from '../../util';
 
@@ -58,7 +58,7 @@ export class DirectNegocioProviderComponent implements OnInit {
   readonly cost$ = (provider: ProviderConnection) => this.store.select(cost(provider.ruralProducer, provider.destinationCity));
   readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
   readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(providerDemandPerWeek(provider));
-  readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(effectiveRate(provider));
+  readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(providerEffectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {

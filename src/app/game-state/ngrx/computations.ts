@@ -60,18 +60,18 @@ export const providerDemandPerWeek = (
   provider: ProviderConnection,
 ) => cityDemandPerWeek(provider.destinationCity, provider.good);
 
-export const effectiveRate = (
+export const providerEffectiveRate = (
   provider: ProviderConnection,
 ) => createSelector(
   productionPerWeek(provider.ruralProducer, provider.good),
-  providerDemandPerWeek(provider),
+  cityDemandPerWeek(provider.destinationCity, provider.good),
   (productionPerWeek, demandPerWeek) => Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0))
 )
 
 export const nextRun = (
   provider: ProviderConnection,
 ) => createSelector(
-  effectiveRate(provider),
+  providerEffectiveRate(provider),
   (effectiveRate) => {
     if (effectiveRate <= 0) return undefined;
     if (!provider.lastRun) return undefined;
