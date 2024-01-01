@@ -6,13 +6,14 @@ import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { CiudadesNgrxModule } from "./ciudades.ngrx";
 import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
+import { Good } from "../../game-config/ngrx/goods.ngrx";
 
 // entity
 
 export type ProviderConnection = {
 
   ruralProducer: string;
-  good: string;
+  good: Good;
   destinationCity: string;
 
   productionFactor?: number;
@@ -98,6 +99,7 @@ export const allProviderConnectionKeys = createSelector(allKeys, keys => keys.fi
 export const allProviderConnections = createSelector(selectFeature, selectAll);
 export const providerForDestinationCity = (destinationCity: string) => createSelector(allProviderConnections, providers => providers.filter(it => it.destinationCity === destinationCity));
 export const providerForRuralProducer = (ruralProducer: string) => createSelector(allProviderConnections, providers => providers.filter(it => it.ruralProducer === ruralProducer));
+export const providersForCityAndGood = (city: string, good: Good) => createSelector(allProviderConnections, providers => providers.filter(it => it.destinationCity === city && it.good === good));
 
 // NgRx effects
 

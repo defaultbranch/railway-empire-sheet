@@ -4,6 +4,7 @@
       <th>City</th>
       <th>Good</th>
       <th class="clickable" (click)="sortByDemandDesc()">Weekly<br>Demand</th>
+      <th>Effective<br>Rate</th>
     </tr>
   </thead>
   <tbody>
@@ -11,6 +12,7 @@
       <td>{{ key.city }}</td>
       <td>{{ key.good }}</td>
       <td class="align-right">{{ demandPerWeek$(key) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ effectiveRate$(key) | async | number:'.1-1' }}</td>
     </tr>
   </tbody>
 </table>
