@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>City</th>
+      <th>Good</th>
+      <th>Weekly<br>Demand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let key of keys$ | async">
+      <td>{{ key.city }}</td>
+      <td>{{ key.good }}</td>
+      <td class="align-right">{{ demandPerWeek$(key.city, key.good) | async | number:'.1-1' }}</td>
+    </tr>
+  </tbody>
+</table>
