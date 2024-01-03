@@ -20,7 +20,7 @@ import { GameDateComponent } from "../game-date/game-date.component";
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
 import { sortObservableStream } from '../util';
-import { providerDemandPerWeek, providerEffectiveRate, nextRun, productionPerWeek, runningLate } from '../ngrx/computations';
+import { providerDemandPerWeek, providerEffectiveRate, nextRun, ruralProductionPerWeek, runningLate } from '../ngrx/computations';
 
 @Component({
   selector: 'app-direct-trains',
@@ -69,7 +69,7 @@ export class DirectLinesComponent implements OnInit {
   readonly runningLate$ = (provider: ProviderConnection) => this.store.select(runningLate(provider));
   readonly miles$ = (provider: ProviderConnection) => this.store.select(miles(provider.ruralProducer, provider.destinationCity));
   readonly cost$ = (provider: ProviderConnection) => this.store.select(cost(provider.ruralProducer, provider.destinationCity));
-  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
+  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(ruralProductionPerWeek(producerName, good));
   readonly demandPerWeek$ = (provider: ProviderConnection) => this.store.select(providerDemandPerWeek(provider));
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(providerEffectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));

@@ -11,7 +11,7 @@ import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
-import { productionPerWeek } from '../ngrx/computations';
+import { ruralProductionPerWeek } from '../ngrx/computations';
 
 @Component({
   selector: 'app-negocios-rurales-table',
@@ -46,7 +46,7 @@ export class NegociosRuralesTableComponent {
     this.itemsSorted$ = this.items$;
   }
 
-  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(productionPerWeek(producerName, good));
+  readonly productionPerWeek$ = (producerName: string, good: Good) => this.store.select(ruralProductionPerWeek(producerName, good));
 
   addNegocio(p: { name: string, size: number, product: string }) {
     this.store.dispatch(addNegocioRural({ negocio: { name: p.name, size: p.size, product: p.product } }));
