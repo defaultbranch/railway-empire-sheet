@@ -21,7 +21,7 @@
       <th style="text-align: left;">Industria {{ index + 1 }}</th>
       <td>
         <select [ngModel]="ciudad.businesses[index]?.name"
-          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses[index]?.size})">
+          (ngModelChange)="updateBusiness({ name: ciudad.name, index: index, business: $event, size: ciudad.businesses[index]?.size ?? 1})">
           <option></option>
           <option *ngFor="let industria of industrias$ | async" value="{{ industria }}">{{ industria }}</option>
         </select>
