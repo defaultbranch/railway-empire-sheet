@@ -2,17 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, concatMap, from, map, reduce, switchMap, take, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
-import { allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
-import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
+import { ProviderConnectionsNgrxModule, providersForCityAndGood } from '../ngrx/provider-connections.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
+import { cityDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
 
 @Component({
     selector: 'app-ciudad',
@@ -31,7 +32,7 @@ export class CiudadComponent implements OnDestroy {
 
   ciudad$: Observable<Ciudad | undefined>;
   industrias$: Observable<string[]>;
-  goods$: Observable<string[]>;
+  goods$: Observable<Good[]>;
 
   private disposing$ = new Subject<void>();
 
@@ -51,6 +52,15 @@ export class CiudadComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.disposing$.next(void 0);
   }
+
+  readonly cityDemandPerWeek$ = (city: string, good: Good) => this.store.select(cityDemandPerWeek(city, good));
+  readonly effectiveRate$ = (city: string, good: Good) => this.store.select(providersForCityAndGood(city, good)).pipe(
+    switchMap(providers => from(providers).pipe(
+      concatMap(provider => this.store.select(providerEffectiveRate(provider)).pipe(take(1))),
+      reduce((total, value) => total + (value ?? 0), 0),
+    ))
+  );
+
 
   updatePopulation(p: { name: string, population: number }) {
     this.store.dispatch(updatePopulation({ name: p.name, population: p.population }));

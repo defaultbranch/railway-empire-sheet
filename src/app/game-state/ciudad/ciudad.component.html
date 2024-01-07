@@ -40,9 +40,19 @@
   <h2>Goods</h2>
 
   <table>
-    <tr *ngFor="let good of goods$ | async">
-      <th style="text-align: left;">{{ good }}</th>
-      <td>not implemented</td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Good</th>
+        <th>Demand</th>
+        <th>Supply</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let good of goods$ | async">
+        <td style="text-align: left;">{{ good }}</td>
+        <td class="align-right">{{ cityDemandPerWeek$(ciudad.name, good) | async | number:'.1-1' }}</td>
+        <td class="align-right">{{ effectiveRate$(ciudad.name, good) | async | number:'.1-1' }}</td>
+      </tr>
+    </tbody>
   </table>
 </ng-container>
