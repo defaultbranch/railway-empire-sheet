@@ -9,6 +9,10 @@ import { NegociosNgrxModule, loadNegocios, todosLosNegocios } from '../game-conf
 import { GameDateNgrxModule, gameDate, loadGameDate } from '../game-state/ngrx/game-date.ngrx';
 import { IndustriasNgrxModule, allIndustries, loadIndustrias } from '../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule, allDemands, loadDemands } from '../game-config/ngrx/demands.ngrx';
+import { CiudadesNgrxModule, loadCiudades, todosLosCiudades } from '../game-state/ngrx/ciudades.ngrx';
+import { NegocioRuralComponent } from '../game-state/negocio-rural/negocio-rural.component';
+import { NegociosRuralesNgrxModule, loadNegociosRurales, todosLosNegociosRurales } from '../game-state/ngrx/negocios-rurales.ngrx';
+import { DirectLinesNgrxModule, allLines, loadDirectLines } from '../game-state/ngrx/direct-lines.ngrx';
 
 @Component({
   selector: 'app-load-and-save',
@@ -20,6 +24,9 @@ import { DemandsNgrxModule, allDemands, loadDemands } from '../game-config/ngrx/
     NegociosNgrxModule,
     IndustriasNgrxModule,
     DemandsNgrxModule,
+    CiudadesNgrxModule,
+    NegociosRuralesNgrxModule,
+    DirectLinesNgrxModule,
   ],
   templateUrl: './load-and-save.component.html',
   styleUrl: './load-and-save.component.scss'
@@ -39,6 +46,9 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
     store.dispatch(loadNegocios());
     store.dispatch(loadIndustrias());
     store.dispatch(loadDemands());
+    store.dispatch(loadCiudades());
+    store.dispatch(loadNegociosRurales());
+    store.dispatch(loadDirectLines());
   }
 
   ngOnInit(): void {
@@ -49,6 +59,9 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.store.select(todosLosNegocios),
       this.store.select(allIndustries),
       this.store.select(allDemands),
+      this.store.select(todosLosCiudades),
+      this.store.select(todosLosNegociosRurales),
+      this.store.select(allLines),
     ]).pipe(
       map(([
         gameDate,
@@ -56,12 +69,18 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
         negocios,
         industrias,
         demands,
+        cities,
+        localBusinesses,
+        directLines,
       ]) => ({
-        gameDate: gameDate,
-        goods: goods,
-        negocios: negocios,
-        industrias: industrias,
-        demands: demands,
+        gameDate,
+        goods,
+        negocios,
+        industrias,
+        demands,
+        cities,
+        localBusinesses,
+        directLines
       })),
       takeUntil(this.disposing$)
     ).subscribe(it => this.data$.next(it));
