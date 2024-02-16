@@ -13,6 +13,7 @@ import { CiudadesNgrxModule, loadCiudades, todosLosCiudades } from '../game-stat
 import { NegocioRuralComponent } from '../game-state/negocio-rural/negocio-rural.component';
 import { NegociosRuralesNgrxModule, loadNegociosRurales, todosLosNegociosRurales } from '../game-state/ngrx/negocios-rurales.ngrx';
 import { DirectLinesNgrxModule, allLines, loadDirectLines } from '../game-state/ngrx/direct-lines.ngrx';
+import { ProviderConnectionsNgrxModule, allProviderConnections, loadProviderConnections } from '../game-state/ngrx/provider-connections.ngrx';
 
 @Component({
   selector: 'app-load-and-save',
@@ -26,6 +27,7 @@ import { DirectLinesNgrxModule, allLines, loadDirectLines } from '../game-state/
     DemandsNgrxModule,
     CiudadesNgrxModule,
     NegociosRuralesNgrxModule,
+    ProviderConnectionsNgrxModule,
     DirectLinesNgrxModule,
   ],
   templateUrl: './load-and-save.component.html',
@@ -48,6 +50,7 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
     store.dispatch(loadDemands());
     store.dispatch(loadCiudades());
     store.dispatch(loadNegociosRurales());
+    store.dispatch(loadProviderConnections());
     store.dispatch(loadDirectLines());
   }
 
@@ -61,6 +64,7 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.store.select(allDemands),
       this.store.select(todosLosCiudades),
       this.store.select(todosLosNegociosRurales),
+      this.store.select(allProviderConnections),
       this.store.select(allLines),
     ]).pipe(
       map(([
@@ -71,6 +75,7 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
         demands,
         cities,
         localBusinesses,
+        providerConnections,
         directLines,
       ]) => ({
         gameDate,
@@ -80,6 +85,7 @@ export class LoadAndSaveComponent implements OnInit, AfterViewInit, OnDestroy {
         demands,
         cities,
         localBusinesses,
+        providerConnections,
         directLines
       })),
       takeUntil(this.disposing$)
