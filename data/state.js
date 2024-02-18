@@ -1,5 +1,5 @@
 {
-  "gameDate": "1912-03-05",
+  "gameDate": "1912-03-17",
   "goods": [
     "Cereales",
     "Ganado",
@@ -140,7 +140,8 @@
           "perWeek": [
             1.2,
             2.4,
-            4.8
+            4.8,
+            8.4
           ]
         }
       ]
@@ -569,7 +570,7 @@
     {
       "name": "Chicago",
       "size": 5,
-      "population": 129056,
+      "population": 120000,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -606,7 +607,7 @@
     {
       "name": "Columbia",
       "size": 2,
-      "population": 53539,
+      "population": 56433,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -629,7 +630,7 @@
     {
       "name": "Grand Rapids",
       "size": 3,
-      "population": 84472,
+      "population": 93897,
       "businesses": [
         {
           "name": "Bodegas",
@@ -654,11 +655,11 @@
     {
       "name": "Indianápolis",
       "size": 3,
-      "population": 88181,
+      "population": 95296,
       "businesses": [
         {
           "name": "Bodegas",
-          "size": 2
+          "size": 3
         },
         {
           "name": "Indusria juguetera",
@@ -679,7 +680,7 @@
     {
       "name": "Madison",
       "size": 1,
-      "population": 98958,
+      "population": 101773,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -707,7 +708,7 @@
     {
       "name": "Rochester",
       "size": 4,
-      "population": 76841,
+      "population": 86234,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -737,7 +738,7 @@
     {
       "name": "Rock Island",
       "size": 1,
-      "population": 87007,
+      "population": 92051,
       "businesses": [
         {
           "name": "Bodegas",
@@ -762,7 +763,7 @@
     {
       "name": "San Luis",
       "size": 4,
-      "population": 69209,
+      "population": 71261,
       "businesses": [
         {
           "name": "Bodegas",
@@ -791,7 +792,7 @@
     {
       "name": "Toledo",
       "size": 4,
-      "population": 80485,
+      "population": 89386,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -823,7 +824,7 @@
     {
       "name": "Kansas City",
       "size": 1,
-      "population": 46996,
+      "population": 49827,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -846,7 +847,7 @@
     {
       "name": "Duluth",
       "size": 1,
-      "population": 56957,
+      "population": 60877,
       "businesses": [
         {
           "name": "Bodegas",
@@ -868,7 +869,7 @@
     {
       "name": "Fayetteville",
       "size": 2,
-      "population": 40413,
+      "population": 41385,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -887,7 +888,7 @@
     {
       "name": "Sioux Falls",
       "size": 1,
-      "population": 31325,
+      "population": 35893,
       "businesses": [
         {
           "name": "Bodegas",
@@ -923,7 +924,7 @@
     {
       "name": "Des Moines",
       "size": 2,
-      "population": 39360,
+      "population": 44874,
       "businesses": [
         {
           "name": "Bodegas",
@@ -956,6 +957,39 @@
         "Carne": 0.4,
         "Cerveza": 0.3
       }
+    },
+    {
+      "name": "Memphis",
+      "population": 37050,
+      "businesses": [
+        {
+          "name": "Bodegas",
+          "size": 1
+        },
+        null
+      ]
+    },
+    {
+      "name": "Nashville",
+      "population": 36987,
+      "businesses": [
+        {
+          "name": "Bodegas",
+          "size": 1
+        },
+        null
+      ]
+    },
+    {
+      "name": "Louisville",
+      "population": 41920,
+      "businesses": [
+        {
+          "name": "Industria cárnica",
+          "size": 1
+        },
+        null
+      ]
     }
   ],
   "localBusinesses": [
@@ -1075,7 +1109,7 @@
     },
     {
       "name": "Miller Mansion",
-      "size": 3,
+      "size": 4,
       "product": "Fruta",
       "perWeek": 1.2
     },
@@ -1212,6 +1246,16 @@
       "name": "Anderson Perforación",
       "size": 1,
       "product": "Aceite"
+    },
+    {
+      "name": "Rice Granja",
+      "size": 2,
+      "product": "Cereales"
+    },
+    {
+      "name": "Kelly Mansión",
+      "size": 2,
+      "product": "Maíz"
     }
   ],
   "providerConnections": [
@@ -1219,7 +1263,7 @@
       "ruralProducer": "Foster Granja",
       "good": "Cereales",
       "destinationCity": "Chicago",
-      "lastRun": "1912-02-18T00:00:00.000Z",
+      "lastRun": "1912-03-14T00:00:00.000Z",
       "productionFactor": 0.4193301874561037
     },
     {
@@ -1233,21 +1277,21 @@
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Chicago",
-      "lastRun": "1912-01-30T00:00:00.000Z",
+      "lastRun": "1912-03-15T00:00:00.000Z",
       "productionFactor": 0.17879840686914605
     },
     {
       "ruralProducer": "Harris Tala",
       "good": "Madera",
       "destinationCity": "Chicago",
-      "lastRun": "1912-03-02T00:00:00.000Z",
+      "lastRun": "1912-03-12T00:00:00.000Z",
       "productionFactor": 0.5263723355614708
     },
     {
       "ruralProducer": "Walker Cría",
       "good": "Ganado",
       "destinationCity": "Chicago",
-      "lastRun": "1912-02-26T00:00:00.000Z"
+      "lastRun": "1912-03-09T00:00:00.000Z"
     },
     {
       "ruralProducer": "Williams Ganado",
@@ -1261,13 +1305,13 @@
       "good": "Fruta",
       "destinationCity": "Chicago",
       "lastRun": "1912-02-19T00:00:00.000Z",
-      "productionFactor": 0.2609637452004064
+      "productionFactor": 0.21425712642311398
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Chicago",
-      "lastRun": "1912-02-04T00:00:00.000Z",
+      "lastRun": "1912-03-09T00:00:00.000Z",
       "productionFactor": 0.31772895832496617
     },
     {
@@ -1318,7 +1362,7 @@
       "ruralProducer": "Howard Cría",
       "good": "Ganado",
       "destinationCity": "Fayetteville",
-      "lastRun": "1912-02-18T00:00:00.000Z",
+      "lastRun": "1912-03-06T00:00:00.000Z",
       "productionFactor": 0.3333333333333333
     },
     {
@@ -1359,7 +1403,7 @@
       "ruralProducer": "Howard Cría",
       "good": "Ganado",
       "destinationCity": "Kansas City",
-      "lastRun": "1912-02-18T00:00:00.000Z",
+      "lastRun": "1912-03-06T00:00:00.000Z",
       "productionFactor": 0.3333333333333333
     },
     {
@@ -1373,13 +1417,14 @@
       "ruralProducer": "Green Senderos del bosque",
       "good": "Madera",
       "destinationCity": "Knoxville",
-      "lastRun": "1911-04-23T00:00:00.000Z"
+      "lastRun": "1912-03-10T00:00:00.000Z",
+      "productionFactor": 0.11123332217493187
     },
     {
       "ruralProducer": "Ward Estado",
       "good": "Cereales",
       "destinationCity": "Knoxville",
-      "lastRun": "1911-05-13T00:00:00.000Z"
+      "lastRun": "1912-03-11T00:00:00.000Z"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -1393,14 +1438,14 @@
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Madison",
-      "lastRun": "1912-01-28T00:00:00.000Z",
+      "lastRun": "1912-03-06T00:00:00.000Z",
       "productionFactor": 0.23099722880436963
     },
     {
       "ruralProducer": "Reed Ganado",
       "good": "Ganado",
       "destinationCity": "Madison",
-      "lastRun": "1912-03-05T00:00:00.000Z",
+      "lastRun": "1912-03-15T00:00:00.000Z",
       "productionFactor": 0.6666666666666666
     },
     {
@@ -1414,7 +1459,7 @@
       "ruralProducer": "Lewis Cebado",
       "good": "Ganado",
       "destinationCity": "Omaha",
-      "lastRun": "1912-02-22T00:00:00.000Z"
+      "lastRun": "1912-03-08T00:00:00.000Z"
     },
     {
       "ruralProducer": "Evans Conservar",
@@ -1441,7 +1486,7 @@
       "ruralProducer": "Archer Conservar",
       "good": "Cereales",
       "destinationCity": "Rock Island",
-      "lastRun": "1912-02-28T00:00:00.000Z",
+      "lastRun": "1912-03-10T00:00:00.000Z",
       "productionFactor": 0.6223266234189354
     },
     {
@@ -1456,13 +1501,13 @@
       "good": "Fruta",
       "destinationCity": "San Luis",
       "lastRun": "1912-01-13T00:00:00.000Z",
-      "productionFactor": 0.13418850032766985
+      "productionFactor": 0.12723480905031273
     },
     {
       "ruralProducer": "Archer Conservar",
       "good": "Cereales",
       "destinationCity": "San Luis",
-      "lastRun": "1912-02-21T00:00:00.000Z",
+      "lastRun": "1912-03-14T00:00:00.000Z",
       "productionFactor": 0.37767337658106453
     },
     {
@@ -1483,7 +1528,7 @@
       "ruralProducer": "Perry Granja",
       "good": "Maíz",
       "destinationCity": "Toledo",
-      "lastRun": "1912-01-28T00:00:00.000Z",
+      "lastRun": "1912-03-10T00:00:00.000Z",
       "productionFactor": 0.49366318810965976
     },
     {
@@ -1497,7 +1542,7 @@
       "ruralProducer": "Lee Rancho",
       "good": "Ganado",
       "destinationCity": "Toledo",
-      "lastRun": "1912-03-03T00:00:00.000Z"
+      "lastRun": "1912-03-14T00:00:00.000Z"
     },
     {
       "ruralProducer": "Cooper Mansión",
@@ -1529,7 +1574,7 @@
       "ruralProducer": "Scott Limpieza",
       "good": "Madera",
       "destinationCity": "Madison",
-      "lastRun": "1911-12-26T00:00:00.000Z",
+      "lastRun": "1912-03-14T00:00:00.000Z",
       "productionFactor": 0.13156579375722766,
       "demandFactor": 0.5
     },
@@ -1558,7 +1603,7 @@
       "good": "Leche",
       "destinationCity": "Madison",
       "productionFactor": 0.326060806868684,
-      "lastRun": "1912-01-16T00:00:00.000Z"
+      "lastRun": "1912-03-15T00:00:00.000Z"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -1571,7 +1616,7 @@
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "Grand Rapids",
-      "lastRun": "1912-02-04T00:00:00.000Z",
+      "lastRun": "1912-03-16T00:00:00.000Z",
       "productionFactor": 0.18507296561958944
     },
     {
@@ -1621,7 +1666,7 @@
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "San Luis",
-      "lastRun": "1912-01-24T00:00:00.000Z",
+      "lastRun": "1912-03-17T00:00:00.000Z",
       "productionFactor": 0.15176245364606342
     },
     {
@@ -1636,7 +1681,7 @@
       "good": "Cereales",
       "destinationCity": "Des Moines",
       "productionFactor": 0.3891134861517621,
-      "lastRun": "1912-02-11T00:00:00.000Z"
+      "lastRun": "1912-03-08T00:00:00.000Z"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -1657,7 +1702,7 @@
       "good": "Leche",
       "destinationCity": "Rock Island",
       "productionFactor": 0.25550121368838824,
-      "lastRun": "1912-01-03T00:00:00.000Z"
+      "lastRun": "1912-03-11T00:00:00.000Z"
     },
     {
       "ruralProducer": "López Carbonería",
@@ -1707,7 +1752,7 @@
       "good": "Madera",
       "destinationCity": "Toledo",
       "productionFactor": 0.1133800544488197,
-      "lastRun": "1912-01-21T00:00:00.000Z"
+      "lastRun": "1912-03-09T00:00:00.000Z"
     },
     {
       "ruralProducer": "Parker Granja",
@@ -1776,7 +1821,7 @@
       "ruralProducer": "Reed Ganado",
       "good": "Ganado",
       "destinationCity": "Rochester",
-      "lastRun": "1912-02-22T00:00:00.000Z",
+      "lastRun": "1912-03-08T00:00:00.000Z",
       "productionFactor": 0.3333333333333333
     },
     {
@@ -1784,14 +1829,14 @@
       "good": "Madera",
       "destinationCity": "Rochester",
       "productionFactor": 0.34901569841388924,
-      "lastRun": "1912-02-11T00:00:00.000Z"
+      "lastRun": "1912-03-10T00:00:00.000Z"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Indianápolis",
-      "productionFactor": 0.1503124958766378,
-      "lastRun": "1911-12-24T00:00:00.000Z"
+      "productionFactor": 0.16690580080505935,
+      "lastRun": "1912-03-10T00:00:00.000Z"
     },
     {
       "ruralProducer": "López Carbonería",
@@ -1804,7 +1849,7 @@
       "ruralProducer": "Jones Carbonería",
       "good": "Hierro",
       "destinationCity": "Duluth",
-      "lastRun": "1911-11-27T00:00:00.000Z"
+      "lastRun": "1912-03-15T00:00:00.000Z"
     },
     {
       "ruralProducer": "Bishop Pozo",
@@ -1845,7 +1890,7 @@
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Rock Island",
-      "productionFactor": 0.15066875437076394,
+      "productionFactor": 0.1643548562031172,
       "lastRun": "1912-02-07T00:00:00.000Z"
     },
     {
@@ -1859,22 +1904,22 @@
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Toledo",
-      "productionFactor": 0.14495322457919713,
+      "productionFactor": 0.15959656252047055,
       "lastRun": "1912-03-01T00:00:00.000Z"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Grand Rapids",
-      "productionFactor": 0.15891327964532487,
-      "lastRun": "1912-01-20T00:00:00.000Z"
+      "productionFactor": 0.16765084499792612,
+      "lastRun": "1912-03-16T00:00:00.000Z"
     },
     {
       "ruralProducer": "Stewards Mansión",
       "good": "Maíz",
       "destinationCity": "Kansas City",
       "productionFactor": 0.28604184120545,
-      "lastRun": "1912-01-02T00:00:00.000Z"
+      "lastRun": "1912-03-17T00:00:00.000Z"
     },
     {
       "ruralProducer": "Anderson Perforación",
@@ -1901,7 +1946,7 @@
       "good": "Cemento",
       "destinationCity": "Indianápolis",
       "productionFactor": 0.1414540058733079,
-      "lastRun": "1912-02-25T00:00:00.000Z"
+      "lastRun": "1912-03-16T00:00:00.000Z"
     },
     {
       "ruralProducer": "Wilson Cebado",
@@ -1914,7 +1959,7 @@
       "ruralProducer": "Cox Conservar",
       "good": "Cereales",
       "destinationCity": "Columbia",
-      "lastRun": "1912-01-15T00:00:00.000Z",
+      "lastRun": "1912-03-15T00:00:00.000Z",
       "productionFactor": 0.38899660240785877
     },
     {
@@ -1949,6 +1994,54 @@
       "good": "Madera",
       "destinationCity": "Sioux Falls",
       "productionFactor": 0.12699245216771185
+    },
+    {
+      "ruralProducer": "Rice Granja",
+      "good": "Cereales",
+      "destinationCity": "Memphis",
+      "lastRun": "1912-03-05T00:00:00.000Z",
+      "productionFactor": 0.5001883714543747
+    },
+    {
+      "ruralProducer": "Rice Granja",
+      "good": "Cereales",
+      "destinationCity": "Nashville",
+      "lastRun": "1912-03-14T00:00:00.000Z",
+      "productionFactor": 0.49981162854562533
+    },
+    {
+      "ruralProducer": "Kelly Mansión",
+      "good": "Maíz",
+      "destinationCity": "Memphis",
+      "productionFactor": 0.5004254629442036,
+      "lastRun": "1912-03-14T00:00:00.000Z"
+    },
+    {
+      "ruralProducer": "Kelly Mansión",
+      "good": "Maíz",
+      "destinationCity": "Nashville",
+      "productionFactor": 0.4995745370557964,
+      "lastRun": "1912-03-05T00:00:00.000Z"
+    },
+    {
+      "ruralProducer": "Green Senderos del bosque",
+      "good": "Madera",
+      "destinationCity": "Toledo",
+      "productionFactor": 0.6023828880220253,
+      "lastRun": "1912-03-06T00:00:00.000Z"
+    },
+    {
+      "ruralProducer": "Green Senderos del bosque",
+      "good": "Madera",
+      "destinationCity": "Louisville",
+      "productionFactor": 0.2863837898030428,
+      "lastRun": "1912-03-14T00:00:00.000Z"
+    },
+    {
+      "ruralProducer": "Mason Granja",
+      "good": "Fruta",
+      "destinationCity": "Madison",
+      "lastRun": "1912-03-16T00:00:00.000Z"
     }
   ],
   "directLines": [
