@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { NEVER, Observable, map, take } from 'rxjs';
+import { NEVER, Observable, ReplaySubject, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
@@ -44,7 +44,7 @@ export class DirectCityProviderComponent implements OnInit {
   gameDate$: Observable<Date>;
 
   newRuralProducer?: NegocioRural;
-  newGood?: string;
+  newGood$ = new ReplaySubject<Good>(1);
 
   constructor(private store: Store) {
     this.rurales$ = store.select(todosLosNegociosRurales);
@@ -97,5 +97,11 @@ export class DirectCityProviderComponent implements OnInit {
     if (destinationCity) {
       this.store.dispatch(updateDemandFactor({ line: { ...item, destinationCity }, factor }));
     }
+  }
+
+  newGoodRurales$(): Observable<NegocioRural[]> {
+    return combineLatest([this.rurales$, this.newGood$]).pipe(
+      map(([rurales, newGood]) => rurales.filter(rural => { return newGood && newGood === rural.product })),
+    );
   }
 }

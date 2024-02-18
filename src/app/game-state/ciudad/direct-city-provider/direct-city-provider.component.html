@@ -32,7 +32,7 @@
     <!-- new ones -->
     <tr>
       <td>
-        <select [(ngModel)]="newGood">
+        <select [ngModel]="newGood$ | async" (ngModelChange)="newGood$.next($event)">
           <option disabled></option>
           <option *ngFor="let good of goods$ | async" [ngValue]="good">{{ good }}</option>
         </select>
@@ -40,14 +40,16 @@
       <td>
         <select [(ngModel)]="newRuralProducer">
           <option disabled></option>
-          <option *ngFor="let rural of rurales$ | async" [ngValue]="rural">{{ rural.name }} ({{rural.product}})
+          <option *ngFor="let rural of newGoodRurales$() | async" [ngValue]="rural">{{ rural.name }} ({{rural.product}})
           </option>
         </select>
       </td>
       <td colspan="8">
-        <button
+        <ng-container *ngIf="newGood$ | async as newGood">
+          <button
           (click)="addLine({ruralProducer: newRuralProducer!, good: newGood!, destinationCity: ciudad })"
           [disabled]="!newRuralProducer || !newGood || !ciudad">Add</button>
+        </ng-container>
       </td>
     </tr>
   </tbody>
