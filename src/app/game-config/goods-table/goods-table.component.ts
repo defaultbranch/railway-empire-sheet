@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { GoodsNgrxModule, addGood, removeGood } from '../ngrx/goods.ngrx';
+import { Good, GoodsNgrxModule, addGood, removeGood } from '../ngrx/goods.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 
 @Component({
@@ -20,7 +20,7 @@ import { allGoods } from '../ngrx/goods.ngrx';
 })
 export class GoodsTableComponent {
 
-  goods$: Observable<string[]>;
+  goods$: Observable<Good[]>;
 
   newName?: string;
 

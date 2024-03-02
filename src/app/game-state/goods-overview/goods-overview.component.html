@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Supply</th>
+      <th>Demand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let good of goods$ | async">
+      <td>{{ good }}</td>
+      <td class="align-right">{{ totalSupply$(good) | async | number:'.1-1' }}</td>
+      <td class="align-right">{{ totalDemand$(good) | async | number:'.1-1' }}</td>
+    </tr>
+  </tbody>
+</table>

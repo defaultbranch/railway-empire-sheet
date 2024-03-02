@@ -1,4 +1,4 @@
-import { Store, createSelector } from "@ngrx/store";
+import { createSelector } from "@ngrx/store";
 
 import { Good } from '../../game-config/ngrx/goods.ngrx';
 import { negocioRuralByNameAndProduct } from './negocios-rurales.ngrx';

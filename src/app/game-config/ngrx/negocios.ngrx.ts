@@ -11,7 +11,7 @@ import { Good, GoodsNgrxModule } from "./goods.ngrx";
 export type Negocio = {
   name: Good;
   productos?: {
-    name: string;
+    name: Good;
     perWeek?: number[];
   }[];
 }
