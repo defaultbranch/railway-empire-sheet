@@ -3,8 +3,17 @@ div.links {
   a {
     margin: 15px;
     padding: 10px;
-    background-color: deepskyblue;
-    color: white;
     text-decoration: none;
+
+    &.game-config {
+      background-color: mediumseagreen;
+      color: white;
+    }
+
+    &.game-state {
+      background-color: deepskyblue;
+      color: white;
+    }
+
   }
 }
