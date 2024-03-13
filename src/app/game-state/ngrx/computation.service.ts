@@ -2,14 +2,14 @@ import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Good, allGoods } from "../../game-config/ngrx/goods.ngrx";
 import { Observable, combineLatest, map, shareReplay, switchMap } from "rxjs";
-import { businessProductionPerWeek, ruralProductionPerWeek } from "./computations";
+import { businessProductionPerWeek, cityDemandPerWeek, ruralProductionPerWeek } from "./computations";
 import { allCityKeys } from "./ciudades.ngrx";
 import { allLocalBusinessKeys } from "./negocios-rurales.ngrx";
 
 const c
   : <K extends string | number | symbol, R>(key: K, cache: Record<K, Observable<R>>, factory: (key: K) => Observable<R>) => Observable<R>
   = (key, cache, factory) => cache[key] ?? (() => {
-    const created = factory(key);
+    const created = factory(key).pipe(shareReplay(1));
     cache[key] = created;
     return created;
   })();
@@ -52,5 +52,19 @@ export class ComputationService {
       map(([a, b]) => a + b)
     );
   }
+
+  totalDemand$ = (key: Good) => c(key, this.totalDemand$cache, this.totalDemand_$.bind(this));
+  private totalDemand$cache: Record<Good, Observable<number>> = {};
+  private totalDemand_$(good: Good): Observable<number> {
+    return this.cities$.pipe(
+      switchMap(cities => combineLatest(
+        cities.map(city =>
+          this.store.select(cityDemandPerWeek(city, good))
+        )
+      )),
+      map(values => values.reduceRight((a, b) => a + b))
+    )
+  }
+
 
 }

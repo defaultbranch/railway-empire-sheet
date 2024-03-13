@@ -13,7 +13,7 @@ import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 import { ProviderConnectionsNgrxModule, providersForCityAndGood } from '../ngrx/provider-connections.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
-import { cityDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
+import { cityImportDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
 
 @Component({
     selector: 'app-ciudad',
@@ -53,7 +53,7 @@ export class CiudadComponent implements OnDestroy {
     this.disposing$.next(void 0);
   }
 
-  readonly cityDemandPerWeek$ = (city: string, good: Good) => this.store.select(cityDemandPerWeek(city, good));
+  readonly cityDemandPerWeek$ = (city: string, good: Good) => this.store.select(cityImportDemandPerWeek(city, good));
   readonly effectiveRate$ = (city: string, good: Good) => this.store.select(providersForCityAndGood(city, good)).pipe(
     switchMap(providers => from(providers).pipe(
       concatMap(provider => this.store.select(providerEffectiveRate(provider)).pipe(take(1))),

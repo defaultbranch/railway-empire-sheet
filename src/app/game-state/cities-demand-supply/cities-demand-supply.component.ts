@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { allCityKeys } from '../ngrx/ciudades.ngrx';
-import { cityDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
+import { cityImportDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { filteredObservableStream, sortObservableStream } from '../util';
 import { ProviderConnectionsNgrxModule, providersForCityAndGood } from '../ngrx/provider-connections.ngrx';
@@ -49,7 +49,7 @@ export class CitiesDemandSupplyComponent {
     this.keysSorted$ = this.keys$;
   }
 
-  readonly demandPerWeek$ = (key: VM) => this.store.select(cityDemandPerWeek(key.city, key.good));
+  readonly demandPerWeek$ = (key: VM) => this.store.select(cityImportDemandPerWeek(key.city, key.good));
   readonly effectiveRate$ = (key: VM) => this.store.select(providersForCityAndGood(key.city, key.good)).pipe(
     switchMap(providers => from(providers).pipe(
       concatMap(provider => this.store.select(providerEffectiveRate(provider)).pipe(take(1))),

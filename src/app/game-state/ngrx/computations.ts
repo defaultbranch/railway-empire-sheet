@@ -66,6 +66,15 @@ export const cityDemandPerWeek = (
   good: Good,
 ) => createSelector(
   businessDemandPerWeek(city, good),
+  citizenDemandPerWeek(city, good),
+  (a, b) => a + b
+);
+
+export const cityImportDemandPerWeek = (
+  city: string,
+  good: Good,
+) => createSelector(
+  businessDemandPerWeek(city, good),
   businessProductionPerWeek(city, good),
   citizenDemandPerWeek(city, good),
   (a, b, c) => Math.max(a + c - b, 0)
@@ -73,13 +82,13 @@ export const cityDemandPerWeek = (
 
 export const providerDemandPerWeek = (
   provider: ProviderConnection,
-) => cityDemandPerWeek(provider.destinationCity, provider.good);
+) => cityImportDemandPerWeek(provider.destinationCity, provider.good);
 
 export const providerEffectiveRate = (
   provider: ProviderConnection,
 ) => createSelector(
   ruralProductionPerWeek(provider.ruralProducer, provider.good),
-  cityDemandPerWeek(provider.destinationCity, provider.good),
+  cityImportDemandPerWeek(provider.destinationCity, provider.good),
   (productionPerWeek, demandPerWeek) => Math.min(productionPerWeek * (provider.productionFactor ?? 1.0), demandPerWeek * (provider.demandFactor ?? 1.0))
 )
 

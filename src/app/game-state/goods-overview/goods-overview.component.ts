@@ -6,7 +6,7 @@ import { Store, createSelector } from '@ngrx/store';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { CiudadesNgrxModule, allCityKeys } from '../ngrx/ciudades.ngrx';
 import { NegociosRuralesNgrxModule, allLocalBusinessKeys } from '../ngrx/negocios-rurales.ngrx';
-import { businessDemandPerWeek, citizenDemandPerWeek } from '../ngrx/computations';
+import { businessDemandPerWeek, citizenDemandPerWeek, cityDemandPerWeek } from '../ngrx/computations';
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { ComputationService } from '../ngrx/computation.service';
@@ -27,39 +27,19 @@ import { ComputationService } from '../ngrx/computation.service';
 export class GoodsOverviewComponent {
 
   goods$: Observable<Good[]>;
-  cities$: Observable<string[]>;
-  rurales$: Observable<string[]>;
 
   constructor(
     private computationService: ComputationService,
-    private store: Store
+    store: Store
   ) {
     this.goods$ = store.select(allGoods);
-    this.cities$ = store.select(allCityKeys);
-    this.rurales$ = store.select(allLocalBusinessKeys);
   }
 
   totalSupply$(good: Good): Observable<number> {
-    return this.computationService.totalSupply$(good)
+    return this.computationService.totalSupply$(good);
   }
 
   totalDemand$(good: Good): Observable<number> {
-    return this.cities$.pipe(
-      switchMap(cities => combineLatest(
-        cities.map(city =>
-          this.store.select(cityDemandPerWeek(city, good))
-        )
-      )),
-      map(values => values.reduceRight((a, b) => a + b))
-    )
+    return this.computationService.totalDemand$(good);
   }
 }
-
-const cityDemandPerWeek = (
-  city: string,
-  good: Good,
-) => createSelector(
-  businessDemandPerWeek(city, good),
-  citizenDemandPerWeek(city, good),
-  (a, b) => a + b
-);
