@@ -26,7 +26,7 @@ export class ComputationService {
 
     const citiesProduction$ = this.cities$.pipe(
       switchMap(cities => combineLatest(
-        cities.map((city: any) =>
+        cities.map((city: string) =>
           this.store.select(businessProductionPerWeek(city, good))
         )
       )),

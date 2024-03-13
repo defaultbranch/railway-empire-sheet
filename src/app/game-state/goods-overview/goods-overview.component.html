@@ -5,6 +5,7 @@
       <th class="clickable" (click)="sortByTotalSupply()">Supply</th>
       <th class="clickable" (click)="sortByTotalDemand()">Demand</th>
       <th class="clickable" (click)="sortByTotalSupplyDemandRatio()">Ratio</th>
+      <th>Producers</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +19,11 @@
         <td class="align-right">{{ stats.totalSupply | number:'.1-1' }}</td>
         <td class="align-right">{{ stats.totalDemand | number:'.1-1' }}</td>
         <td class="align-right">{{ stats.totalSupplyDemandRatio | number:'.2-2' }}</td>
+        <td>
+          <span *ngFor="let producer of producedInDesc$(good) | async">
+            {{ producer.city }} ( {{producer.perWeek}})
+          </span>
+        </td>
       </ng-container>
     </tr>
   </tbody>
