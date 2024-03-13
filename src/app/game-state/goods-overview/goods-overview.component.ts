@@ -6,7 +6,7 @@ import { Store, createSelector } from '@ngrx/store';
 import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { CiudadesNgrxModule, allCityKeys } from '../ngrx/ciudades.ngrx';
 import { NegociosRuralesNgrxModule, allLocalBusinessKeys } from '../ngrx/negocios-rurales.ngrx';
-import { businessDemandPerWeek, businessProductionPerWeek, citizenDemandPerWeek, cityDemandPerWeek } from '../ngrx/computations';
+import { businessDemandPerWeek, businessProductionPerWeek, citizenDemandPerWeek, cityDemandPerWeek, ruralProductionPerWeek } from '../ngrx/computations';
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { ComputationService } from '../ngrx/computation.service';
@@ -31,6 +31,7 @@ export class GoodsOverviewComponent {
 
   // aux
   cities$: Observable<string[]>;
+  rurales$: Observable<string[]>;
 
   constructor(
     private computationService: ComputationService,
@@ -38,6 +39,7 @@ export class GoodsOverviewComponent {
   ) {
     this.goods$ = store.select(allGoods);
     this.cities$ = store.select(allCityKeys);
+    this.rurales$ = store.select(allLocalBusinessKeys);
   }
 
   sortByGood() {
@@ -68,10 +70,16 @@ export class GoodsOverviewComponent {
     return this.computationService.totalSupplyDemandRatio$(good);
   }
 
-  producedInDesc$(good: Good): Observable<{ city: string, perWeek: number }[]> {
-    return this.cities$.pipe(
+  producedInDesc$(good: Good): Observable<({ type: 'CITY', city: string, perWeek: number } | { type: 'RURAL', rural: string, perWeek: number })[]> {
+
+    const cityProducers$ = this.cities$.pipe(
       switchMap(cities => combineLatest(
-        cities.map((city: string) => this.store.select(businessProductionPerWeek(city, good)).pipe(map(perWeek => ({ city, perWeek}))))
+        cities
+          .map(city => this.store.select(businessProductionPerWeek(city, good))
+            .pipe(
+              map(perWeek => ({ type: 'CITY', city, perWeek } as const))
+            )
+          )
       )),
       map(it => it.filter(it => it.perWeek > 0)),
       map(it => {
@@ -83,5 +91,30 @@ export class GoodsOverviewComponent {
         return it;
       })
     );
+
+    const ruralProducer$ = this.rurales$.pipe(
+      switchMap(rurales => combineLatest(
+        rurales
+          .map(rural => this.store.select(ruralProductionPerWeek(rural, good))
+            .pipe(
+              map(perWeek => ({ type: 'RURAL', rural, perWeek } as const))
+            )
+          )
+      )),
+      map(it => it.filter(it => it.perWeek > 0)),
+      map(it => {
+        it.sort((a, b) => {
+          const amountDelta = b.perWeek - a.perWeek
+          if (amountDelta) return amountDelta;
+          return a.rural.localeCompare(b.rural);
+        });
+        return it;
+      })
+    )
+
+    return combineLatest([
+      cityProducers$,
+      ruralProducer$
+    ], (a, b) => ([...a, ...b]))
   }
 }

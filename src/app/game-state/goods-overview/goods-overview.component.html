@@ -21,7 +21,12 @@
         <td class="align-right">{{ stats.totalSupplyDemandRatio | number:'.2-2' }}</td>
         <td>
           <span *ngFor="let producer of producedInDesc$(good) | async">
-            {{ producer.city }} ( {{producer.perWeek}})
+            <ng-container *ngIf=" producer.type === 'CITY'">
+              {{ producer.city }} ( {{producer.perWeek}})
+            </ng-container>
+            <ng-container *ngIf=" producer.type === 'RURAL'">
+              {{ producer.rural }} ( {{producer.perWeek}})
+            </ng-container>
           </span>
         </td>
       </ng-container>
