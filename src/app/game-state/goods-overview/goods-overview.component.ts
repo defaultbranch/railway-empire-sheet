@@ -10,12 +10,14 @@ import { businessDemandPerWeek, businessProductionPerWeek, citizenDemandPerWeek,
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { ComputationService } from '../ngrx/computation.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-goods-overview',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     CiudadesNgrxModule,
     DemandsNgrxModule,
     IndustriasNgrxModule,

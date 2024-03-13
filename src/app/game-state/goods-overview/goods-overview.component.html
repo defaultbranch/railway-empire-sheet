@@ -20,13 +20,18 @@
         <td class="align-right">{{ stats.totalDemand | number:'.1-1' }}</td>
         <td class="align-right">{{ stats.totalSupplyDemandRatio | number:'.2-2' }}</td>
         <td>
-          <span *ngFor="let producer of producedInDesc$(good) | async">
+          <span *ngFor="let producer of producedInDesc$(good) | async; let isLast=last">
             <ng-container *ngIf=" producer.type === 'CITY'">
-              {{ producer.city }} ( {{producer.perWeek}})
+              <a [routerLink]="['/', 'game-state','ciudad']" [queryParams]="{name: producer.city}">
+                {{ producer.city }} ( {{producer.perWeek}})
+              </a>
             </ng-container>
             <ng-container *ngIf=" producer.type === 'RURAL'">
-              {{ producer.rural }} ( {{producer.perWeek}})
+              <a [routerLink]="['/','game-state','negocio-rural']" [queryParams]="{name: producer.rural}">
+                {{ producer.rural }} ({{producer.perWeek}})
+              </a>
             </ng-container>
+            {{isLast ? '' : ', '}}
           </span>
         </td>
       </ng-container>
