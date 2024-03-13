@@ -30,9 +30,21 @@ export class GoodsOverviewComponent {
 
   constructor(
     private computationService: ComputationService,
-    store: Store
+    private store: Store
   ) {
     this.goods$ = store.select(allGoods);
+  }
+
+  sortByGood() {
+    this.goods$ = this.store.select(allGoods);
+  }
+
+  sortByTotalSupply() {
+    this.goods$ = this.computationService.goodsByTotalSupplyDesc$();
+  }
+
+  sortByTotalDemand() {
+    this.goods$ = this.computationService.goodsByTotalDemandDesc$();
   }
 
   totalSupply$(good: Good): Observable<number> {
@@ -41,5 +53,9 @@ export class GoodsOverviewComponent {
 
   totalDemand$(good: Good): Observable<number> {
     return this.computationService.totalDemand$(good);
+  }
+
+  totalSupplyDemandRatio$(good: Good): Observable<number> {
+    return this.computationService.totalSupplyDemandRatio$(good);
   }
 }

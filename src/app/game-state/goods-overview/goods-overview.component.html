@@ -1,19 +1,23 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Supply</th>
-      <th>Demand</th>
+      <th class="clickable" (click)="sortByGood()">Name</th>
+      <th class="clickable" (click)="sortByTotalSupply()">Supply</th>
+      <th class="clickable" (click)="sortByTotalDemand()">Demand</th>
       <th>Ratio</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let good of goods$ | async">
-      <ng-container *ngIf="{ totalSupply: totalSupply$(good) | async, totalDemand: totalDemand$(good) | async } as stats">
+      <ng-container *ngIf="{
+        totalSupply: totalSupply$(good) | async,
+        totalDemand: totalDemand$(good) | async,
+        totalSupplyDemandRatio: totalSupplyDemandRatio$(good) | async
+        } as stats">
         <td>{{ good }}</td>
         <td class="align-right">{{ stats.totalSupply | number:'.1-1' }}</td>
         <td class="align-right">{{ stats.totalDemand | number:'.1-1' }}</td>
-        <td class="align-right">{{ (stats.totalSupply ?? 0) / (stats.totalDemand ?? 0) | number:'.2-2' }}</td>
+        <td class="align-right">{{ stats.totalSupplyDemandRatio | number:'.2-2' }}</td>
       </ng-container>
     </tr>
   </tbody>

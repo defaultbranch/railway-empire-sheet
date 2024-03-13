@@ -1,18 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Good, allGoods } from "../../game-config/ngrx/goods.ngrx";
-import { Observable, combineLatest, map, shareReplay, switchMap } from "rxjs";
+import { Observable, combineLatest, flatMap, map, shareReplay, switchMap } from "rxjs";
 import { businessProductionPerWeek, cityDemandPerWeek, ruralProductionPerWeek } from "./computations";
 import { allCityKeys } from "./ciudades.ngrx";
 import { allLocalBusinessKeys } from "./negocios-rurales.ngrx";
 
-const c
-  : <K extends string | number | symbol, R>(key: K, cache: Record<K, Observable<R>>, factory: (key: K) => Observable<R>) => Observable<R>
-  = (key, cache, factory) => cache[key] ?? (() => {
-    const created = factory(key).pipe(shareReplay(1));
-    cache[key] = created;
-    return created;
-  })();
 
 @Injectable({ providedIn: 'root' })
 export class ComputationService {
@@ -27,7 +20,7 @@ export class ComputationService {
     this.rurales$ = store.select(allLocalBusinessKeys);
   }
 
-  totalSupply$ = (key: Good) => c(key, this.totalSupply$cache, this.totalSupply_$.bind(this));
+  totalSupply$ = (key: Good) => c1(key, this.totalSupply$cache, this.totalSupply_$.bind(this));
   private totalSupply$cache: Record<Good, Observable<number>> = {};
   private totalSupply_$(good: Good): Observable<number> {
 
@@ -53,7 +46,7 @@ export class ComputationService {
     );
   }
 
-  totalDemand$ = (key: Good) => c(key, this.totalDemand$cache, this.totalDemand_$.bind(this));
+  totalDemand$ = (key: Good) => c1(key, this.totalDemand$cache, this.totalDemand_$.bind(this));
   private totalDemand$cache: Record<Good, Observable<number>> = {};
   private totalDemand_$(good: Good): Observable<number> {
     return this.cities$.pipe(
@@ -66,5 +59,41 @@ export class ComputationService {
     )
   }
 
+  totalSupplyDemandRatio$ = (key: Good) => c1(key, this.totalSupplyDemandRatio$cache, this.totalSupplyDemandRatio_$.bind(this));
+  private totalSupplyDemandRatio$cache: Record<Good, Observable<number>> = {};
+  private totalSupplyDemandRatio_$(good: Good): Observable<number> {
+    return combineLatest([this.totalSupply$(good), this.totalDemand$(good)], (supply, demand) => supply/demand);
+  }
+
+  goodsByTotalSupplyDesc$(): Observable<Good[]> {
+    return this.goods$.pipe(
+      switchMap(goods => combineLatest(goods.map(good => this.totalSupply$(good).pipe(map(supply => ({ good, supply })))))),
+      map(goodSupplies => {
+        goodSupplies.sort((a, b) => b.supply - a.supply);
+        return goodSupplies.map(goodSupply => goodSupply.good);
+      }),
+      shareReplay(1)
+    )
+  }
+
+  goodsByTotalDemandDesc$(): Observable<Good[]> {
+    return this.goods$.pipe(
+      switchMap(goods => combineLatest(goods.map(good => this.totalDemand$(good).pipe(map(demand => ({ good, demand })))))),
+      map(goodDemands => {
+        goodDemands.sort((a, b) => b.demand - a.demand);
+        return goodDemands.map(goodDemand => goodDemand.good);
+      }),
+      shareReplay(1)
+    )
+  }
 
 }
+
+
+const c1
+  : <K extends string | number | symbol, R>(key: K, cache: Record<K, Observable<R>>, factory: (key: K) => Observable<R>) => Observable<R>
+  = (key, cache, factory) => cache[key] ?? (() => {
+    const created = factory(key).pipe(shareReplay(1));
+    cache[key] = created;
+    return created;
+  })();
