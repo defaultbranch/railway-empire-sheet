@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, combineLatest, concatMap, from, map, switchMap } from 'rxjs';
+import { Observable, combineLatest, map, switchMap } from 'rxjs';
 import { Store, createSelector } from '@ngrx/store';
 
-import { Good, GoodsNgrxModule, allGoods } from '../../game-config/ngrx/goods.ngrx';
-import { Ciudad, CiudadesNgrxModule, allCityKeys, todosLosCiudades } from '../ngrx/ciudades.ngrx';
-import { NegocioRural, NegociosRuralesNgrxModule, allLocalBusinessKeys, todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
-import { businessDemandPerWeek, businessProductionPerWeek, citizenDemandPerWeek, ruralProductionPerWeek } from '../ngrx/computations';
+import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { CiudadesNgrxModule, allCityKeys } from '../ngrx/ciudades.ngrx';
+import { NegociosRuralesNgrxModule, allLocalBusinessKeys } from '../ngrx/negocios-rurales.ngrx';
+import { businessDemandPerWeek, citizenDemandPerWeek } from '../ngrx/computations';
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
-import { NegociosNgrxModule, allNegocioKeys } from '../../game-config/ngrx/negocios.ngrx';
+import { ComputationService } from '../ngrx/computation.service';
 
 @Component({
   selector: 'app-goods-overview',
@@ -30,34 +30,17 @@ export class GoodsOverviewComponent {
   cities$: Observable<string[]>;
   rurales$: Observable<string[]>;
 
-  constructor(private store: Store) {
+  constructor(
+    private computationService: ComputationService,
+    private store: Store
+  ) {
     this.goods$ = store.select(allGoods);
     this.cities$ = store.select(allCityKeys);
     this.rurales$ = store.select(allLocalBusinessKeys);
   }
 
   totalSupply$(good: Good): Observable<number> {
-
-    const citiesProduction$ = this.cities$.pipe(
-      switchMap(cities => combineLatest(
-        cities.map(city =>
-          this.store.select(businessProductionPerWeek(city, good))
-        )
-      )),
-      map(values => values.reduceRight((a, b) => a + b))
-    );
-
-    const ruralesProduction$ = this.rurales$.pipe(
-      switchMap(rurales => combineLatest(
-        rurales.map(rural =>
-          this.store.select(ruralProductionPerWeek(rural, good)))
-      )),
-      map(values => values.reduceRight((a, b) => a + b))
-    );
-
-    return combineLatest([citiesProduction$, ruralesProduction$]).pipe(
-      map(([a, b]) => a+b)
-    );
+    return this.computationService.totalSupply$(good)
   }
 
   totalDemand$(good: Good): Observable<number> {
