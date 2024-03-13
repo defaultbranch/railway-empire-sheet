@@ -47,6 +47,10 @@ export class GoodsOverviewComponent {
     this.goods$ = this.computationService.goodsByTotalDemandDesc$();
   }
 
+  sortByTotalSupplyDemandRatio() {
+    this.goods$ = this.computationService.goodsByTotalSupplyDemandRatio$();
+  }
+
   totalSupply$(good: Good): Observable<number> {
     return this.computationService.totalSupply$(good);
   }

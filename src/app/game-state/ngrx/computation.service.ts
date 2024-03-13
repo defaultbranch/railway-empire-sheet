@@ -87,6 +87,17 @@ export class ComputationService {
     )
   }
 
+  goodsByTotalSupplyDemandRatio$(): Observable<Good[]> {
+    return this.goods$.pipe(
+      switchMap(goods => combineLatest(goods.map(good => this.totalSupplyDemandRatio$(good).pipe(map(ratio => ({ good, ratio })))))),
+      map(goodSupplyDemandRatios => {
+        goodSupplyDemandRatios.sort((a, b) => a.ratio - b.ratio);
+        return goodSupplyDemandRatios.map(goodSupplyDemandRatio => goodSupplyDemandRatio.good);
+      }),
+      shareReplay(1)
+    )
+  }
+
 }
 
 
