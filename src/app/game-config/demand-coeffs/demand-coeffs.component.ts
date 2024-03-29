@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good, GoodsNgrxModule, allGoods } from '../ngrx/goods.ngrx';
+import { Good } from '../../concepts';
+import { GoodsNgrxModule, allGoods } from '../ngrx/goods.ngrx';
 import { DemandsNgrxModule, demand, upsertDemand } from '../ngrx/demands.ngrx';
 
 type VM = {

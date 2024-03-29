@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Good, allGoods } from "../../game-config/ngrx/goods.ngrx";
 import { Observable, combineLatest, flatMap, map, shareReplay, switchMap } from "rxjs";
+
+import { Good } from "../../concepts";
+import { allGoods } from "../../game-config/ngrx/goods.ngrx";
 import { businessProductionPerWeek, cityDemandPerWeek, ruralProductionPerWeek } from "./computations";
 import { allCityKeys } from "./ciudades.ngrx";
 import { allLocalBusinessKeys } from "./negocios-rurales.ngrx";

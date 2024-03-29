@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good, GoodsNgrxModule, addGood, removeGood } from '../ngrx/goods.ngrx';
+import { Good } from '../../concepts';
+import { GoodsNgrxModule, addGood, removeGood } from '../ngrx/goods.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 
 @Component({

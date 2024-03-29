@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 
-import { Good } from '../../game-config/ngrx/goods.ngrx';
+import { Good } from "../../concepts";
 import { negocioRuralByNameAndProduct } from './negocios-rurales.ngrx';
 import { negocioProductionPerWeek } from '../../game-config/ngrx/negocios.ngrx';
 import { ProviderConnection } from "./provider-connections.ngrx";

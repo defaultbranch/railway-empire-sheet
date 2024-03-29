@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, combineLatest, map, of, switchMap } from 'rxjs';
-import { Store, createSelector } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
-import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { Good } from '../../concepts';
+import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { CiudadesNgrxModule, allCityKeys } from '../ngrx/ciudades.ngrx';
 import { NegociosRuralesNgrxModule, allLocalBusinessKeys } from '../ngrx/negocios-rurales.ngrx';
-import { businessDemandPerWeek, businessProductionPerWeek, citizenDemandPerWeek, cityDemandPerWeek, ruralProductionPerWeek } from '../ngrx/computations';
+import { businessProductionPerWeek, ruralProductionPerWeek } from '../ngrx/computations';
 import { IndustriasNgrxModule } from '../../game-config/ngrx/industrias.ngrx';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';
 import { ComputationService } from '../ngrx/computation.service';

@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { Good } from '../../concepts';
 import { NegocioRural, NegociosRuralesNgrxModule, updateSize } from '../ngrx/negocios-rurales.ngrx';
 import { addNegocioRural, removeNegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
-import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
 import { NegociosNgrxModule } from '../../game-config/ngrx/negocios.ngrx';
 import { ruralProductionPerWeek } from '../ngrx/computations';

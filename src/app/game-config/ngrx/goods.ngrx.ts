@@ -1,14 +1,11 @@
-import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
+import { Store, StoreModule, createActionGroup, emptyProps, props, createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
 
-// entity
+import { Good } from "../../concepts";
 
-export type Good = string;
 
 // NgRx feature key
 

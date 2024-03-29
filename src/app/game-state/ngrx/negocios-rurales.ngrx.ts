@@ -5,7 +5,7 @@ import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { NegociosNgrxModule } from "../../game-config/ngrx/negocios.ngrx";
-import { Good } from "../../game-config/ngrx/goods.ngrx";
+import { Good } from "../../concepts";
 
 // entity
 

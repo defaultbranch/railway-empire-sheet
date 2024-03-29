@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { Observable, combineLatest, concatMap, from, map, reduce, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { Good } from '../../concepts';
+import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { allCityKeys } from '../ngrx/ciudades.ngrx';
 import { cityImportDemandPerWeek, providerEffectiveRate } from '../ngrx/computations';
 import { DemandsNgrxModule } from '../../game-config/ngrx/demands.ngrx';

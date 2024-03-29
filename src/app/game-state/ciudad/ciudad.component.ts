@@ -5,11 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, concatMap, from, map, reduce, switchMap, take, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import { Good } from '../../concepts';
 import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';
-import { Good, allGoods } from '../../game-config/ngrx/goods.ngrx';
+import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { DirectCityProviderComponent } from './direct-city-provider/direct-city-provider.component';
 import { ProviderConnectionsNgrxModule, providersForCityAndGood } from '../ngrx/provider-connections.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";
