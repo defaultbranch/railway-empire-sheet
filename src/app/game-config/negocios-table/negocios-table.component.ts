@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Negocio, NegociosNgrxModule, allNegocioKeys, negocio } from '../ngrx/negocios.ngrx';
+import { Negocio } from '../../concepts';
+import { NegociosNgrxModule, allNegocioKeys, negocio } from '../ngrx/negocios.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngrx/negocios.ngrx';
 

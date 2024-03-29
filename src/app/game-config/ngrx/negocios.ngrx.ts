@@ -4,18 +4,8 @@ import { Store, StoreModule, createActionGroup, createFeatureSelector, createRed
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
-import { Good } from "../../concepts";
+import { Good, Negocio } from "../../concepts";
 import { GoodsNgrxModule } from "./goods.ngrx";
-
-// entity
-
-export type Negocio = {
-  name: Good;
-  productos?: {
-    name: Good;
-    perWeek?: number[];
-  }[];
-}
 
 // NgRx feature key
 
