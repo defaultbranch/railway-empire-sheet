@@ -9,6 +9,17 @@
 export type Good = string;
 
 
+export type Size = number;
+
+export type PerWeek = number;
+
+
+export type Farm = {
+  product: Good;
+  perWeek: Record<Size, PerWeek>;
+}
+
+
 export type Negocio = {
   name: Good;
   productos?: {
