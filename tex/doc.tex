@@ -9,7 +9,7 @@
 \begin{tabular}{ll}
   $\eta$    & overall profit-on-investment \\
   $i$       & capital bound into an investment (on day zero) \\
-  $d$       & days an investment $i$ is bound  \\
+  $d$       & days an investment $i$ is bound (also: days a train needs for a run) \\
   $p$       & profit for an investment $i$ after $d$ days \\
   $y$       & yield for a delivery
 \end{tabular}
@@ -19,7 +19,8 @@
 \begin{tabular}{ll}
   $e$    & earnings (also: fictional cost) \\
   $m$    & maintenance cost \\
-  $l$    & track length
+  $l$    & track length \\
+  $o$    & occupation
 \end{tabular}
 
 
@@ -66,7 +67,7 @@ With these $i$ and $p$, the efficiency $\eta_w$ can be computed using eq.~\ref{e
 \subsection{Shared assets}
 
 When assets are shared then instead of calculating based on their investment, we calculate based on
-some fictional cost $e$ for them. The fictional costs are the earnings $e$ contributed to each asset.
+some fictional cost (earnings) $e$ for them. The fictional costs are the earnings $e$ contributed to each asset.
 
 For the one-shot line from sec.~\ref{sec:one_shot_line}, this becomes:
 
@@ -91,12 +92,35 @@ but by miles $l \cdot e_w\left(\mathrm{mile}\right)$:
   p &=& y \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
-    &-& \frac{d}{7} \cdot l \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
-  &-& m\left(\mathrm{train}\right)
+    &-& \frac{d}{7} \cdot l\left(\mathrm{track}\right) \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
+    &-& m\left(\mathrm{train}\right)
 \end{eqnarray}
 
-Next, assets like stations and tracks are shared by more than one train, so the earning of each of these
+Next, assets like stations and tracks are shared by one or more trains, so the earning of each of these
 should be fairly shared by the trains.
+
+We count the occupation by the period $d$ of each train.
+
+\begin{eqnarray}
+  o\left(\mathrm{station}\right) &=& \sum_{\mathrm{trains@station}} d_{\mathrm{train}} \\
+  o\left(\mathrm{track}\right)   &=& \sum_{\mathrm{trains@track}} d_{\mathrm{train}}
+\end{eqnarray}
+
+Again, this penalizes long-running trains over short-running ones and satisfies the requirement that
+all required infrastructure must be present at all times during $d_{\mathrm{train}}$.
+
+With that we get:
+
+\begin{eqnarray}
+  p &=& y \nonumber \\
+    &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station1}} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
+    &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station2}} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
+    &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{track}} \cdot l \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
+    &-& m\left(\mathrm{train}\right)
+\end{eqnarray}
+
+
+
 
 
 \end{document}
