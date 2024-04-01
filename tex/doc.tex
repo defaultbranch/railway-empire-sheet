@@ -4,7 +4,7 @@
 
 \section{Symbols}
 
-Looking at profitability:
+\noindent Looking at profitability:
 
 \begin{tabular}{ll}
   $\eta$    & overall profit-on-investment \\
@@ -14,11 +14,12 @@ Looking at profitability:
   $y$       & yield for a delivery
 \end{tabular}
 
-Looking at assets:
+\noindent Looking at assets:
 
 \begin{tabular}{ll}
-  $e$    & earnings \\
-  $m$    & maintenance cost
+  $e$    & earnings (also: fictional cost) \\
+  $m$    & maintenance cost \\
+  $l$    & track length
 \end{tabular}
 
 
@@ -30,14 +31,15 @@ Looking at assets:
 The profit-on-investment per week $\eta_w$ is:
 
 \begin{equation}
-  \eta_w = \left(\frac{p}{i}+1\right)^{\left(7/d\right)}-1
+  \eta_w = \left(\frac{p}{i}+1\right)^{\left(7/d\right)}-1 \label{eq:weekly_profit}
 \end{equation}
 
 
 \subsection{One-shot line}
+\label{sec:one_shot_line}
 
 For a one-shot line, two terminal stations (between producer and consumer),
-a track (of some cost and length), and a locomotive are setup for a period of
+a track (of some cost and length), and a train is setup for a period of
 $d$ days, and sold afterwards. The profit $p$ is the yield $y$ minus any
 maintenance and deprecation costs.
 
@@ -50,16 +52,51 @@ Overall investment and profit:
   i &=& i\left(\mathrm{station1}\right)
      +  i\left(\mathrm{station2}\right)
      +  i\left(\mathrm{track}\right)
-     +  i\left(\mathrm{locomotive}\right) \\
+     +  i\left(\mathrm{train}\right) \\
   p &=& y
-     -  m\left(\mathrm{locomotive}\right)
+     -  m\left(\mathrm{train}\right)
 \end{eqnarray}
 
+(Since investment happens at day zero, the maintenance cost accumulated at day $d$ is deducted
+from the profit at that day, instead of being added to the upfront investment.)
+
+With these $i$ and $p$, the efficiency $\eta_w$ can be computed using eq.~\ref{eq:weekly_profit}.
 
 
+\subsection{Shared assets}
 
+When assets are shared then instead of calculating based on their investment, we calculate based on
+some fictional cost $e$ for them. The fictional costs are the earnings $e$ contributed to each asset.
 
+For the one-shot line from sec.~\ref{sec:one_shot_line}, this becomes:
 
+\begin{eqnarray}
+  i &=& i\left(\mathrm{train}\right) \\
+  p &=& y \nonumber \\
+    &-& \frac{d}{7} \cdot \biggl(
+          e_w\left(\mathrm{station1}\right)
+       +  e_w\left(\mathrm{station2}\right)
+       +  e_w\left(\mathrm{track}\right)
+       \biggr) \nonumber \\
+    &-& m\left(\mathrm{train}\right)
+\end{eqnarray}
+
+There is no real value for the fictional costs $e_w\left(\mathrm{station}\right)$ and $e_w\left(\mathrm{track}\right)$,
+we have to come up with an estimate that is overall consistent.
+
+Obviously, longer tracks are less efficient, so earning should be split not by count $e_w\left(\mathrm{track}\right)$
+but by miles $l \cdot e_w\left(\mathrm{mile}\right)$:
+
+\begin{eqnarray}
+  p &=& y \nonumber \\
+    &-& \frac{d}{7} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
+    &-& \frac{d}{7} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
+    &-& \frac{d}{7} \cdot l \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
+  &-& m\left(\mathrm{train}\right)
+\end{eqnarray}
+
+Next, assets like stations and tracks are shared by more than one train, so the earning of each of these
+should be fairly shared by the trains.
 
 
 \end{document}
