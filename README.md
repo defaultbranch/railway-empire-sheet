@@ -83,7 +83,93 @@ are transitive in that regards; e.g., some `scenarios` start with export warehou
 from the start.)
 
 
+**`lines`**
+
+A line connects stations and transports goods between them. There may be zero (on-demand), one, or more trains at any given time.
+
+
+### Types of Lines
+
+This is a details concept. At different stages of the game or of the local development, the type of line that gains
+the most money or benefit per time changes.
+
+
+#### `one-shot line`
+
+- is created on-demand at the producer and runs once to the consumer
+- transport volume corresponds to the rate of trains launched, and is independed of the trip duration (or the track distance)
+- the rate depends on the production (possibly shared between multiple lines) and the demand (possibly shared between multiple lines)
+- benefits:
+  - highest return on invested capital (trains always run fully loaded)
+- limitations:
+  - requires a free primary track at the station to get started, so works fine while produced volume is small
+  - requires manual management (creation and destruction), so works fine while the fleet is small; order: roughly once per running train and per game day
+
+
+### `circular line`
+
+- is set up to run continuously between two stops (prosumer-prosumer)
+- transport volume corresponds to the number of trains divided by the duration of the full round-trip
+- benefits:
+  - makes use of all available station tracks
+  - no manual monitoring for ongoing setup and teardown required
+- limitations:
+  - will only be loaded according to current supply and demand (possibly lowering the return on invested capital)
+  - binds invested capital permanently (capital not available elsewhere)
+
 
 ## Organisation/Navigation
 
-_tbd_
+- `/goods`
+- `/businesses`
+- `/businesses/config`
+- `/businesses/business?name=`
+- `/cities`
+- `/cities/config`
+- `/cities/city?name=`
+- `/stations`
+- `/stations/station?id=`
+- `/warehouses`
+- `/warehouses/warehouse?name=`
+- `/lines`
+- `/lines/line?id=`
+
+
+## Evaluation
+
+### Return-on-investments
+
+When investing an amount 'I' for earning an amount 'G' after 'd' days (cycle time),
+the daily interest rate is '((I+G)/G)^(1/d)-1'. The weekly and annual interest rate
+are '((I+G)/G)^(7/d)-1' and '((I+G)/G)^(365/d)-1', respectively.
+
+- **One-shot lines**
+  - investment includes the rural station, the track and the locomotive
+  - cycle time is loading time, one-trip time and unloading time
+  - gain is the yield (16'000 or more when fully loaded) minus cost for maintenance and deprecation
+
+- **Circular lines**
+  - investment is the price of the locomotive plus the participitation in the infrastructure (station and tracks)
+  - cycle time is loading time, full-trip time and unloading time (so loading/unloading times are less significant)
+  - gain is the yield (16'000 or more when fully loaded) minus cost for maintenance and deprecation
+
+- **Warehouse lines**
+  - investment is the price of the locomotive plus the participitation in the infrastructure (station and tracks)
+  - we should introduce virtual costs
+    - for participating in the earnings of the final delivery
+    - costs should be fair, i.e., in proportion to the time
+
+- **Infrastructure**
+  - investment is the price for building it
+  - we should introduce virtual costs
+    - for using the stations
+    - for using the tracks
+    - costs should be fair, i.e., the gain per infrastructure and the gain per line should be as equal as possible
+    - costs should be equivalent to one-shot lines
+
+
+### Supply
+
+Which places do not receive enough goods from their transport supply?
+
+Which places do not produce enough goods for their  transport demand?

@@ -1,0 +1,65 @@
+\documentclass[12pt]{article}
+\begin{document}
+
+
+\section{Symbols}
+
+Looking at profitability:
+
+\begin{tabular}{ll}
+  $\eta$    & overall profit-on-investment \\
+  $i$       & capital bound into an investment (on day zero) \\
+  $d$       & days an investment $i$ is bound  \\
+  $p$       & profit for an investment $i$ after $d$ days \\
+  $y$       & yield for a delivery
+\end{tabular}
+
+Looking at assets:
+
+\begin{tabular}{ll}
+  $e$    & earnings \\
+  $m$    & maintenance cost
+\end{tabular}
+
+
+\section{Concepts}
+
+
+\subsection{Profit-on-investment for a single investment}
+
+The profit-on-investment per week $\eta_w$ is:
+
+\begin{equation}
+  \eta_w = \left(\frac{p}{i}+1\right)^{\left(7/d\right)}-1
+\end{equation}
+
+
+\subsection{One-shot line}
+
+For a one-shot line, two terminal stations (between producer and consumer),
+a track (of some cost and length), and a locomotive are setup for a period of
+$d$ days, and sold afterwards. The profit $p$ is the yield $y$ minus any
+maintenance and deprecation costs.
+
+A one-shot line is considered to have no shared assets and hence no associated cost splitting
+and no profit splitting; all investments are made at day zero and are again liquidated at day $d$.
+
+Overall investment and profit:
+
+\begin{eqnarray}
+  i &=& i\left(\mathrm{station1}\right)
+     +  i\left(\mathrm{station2}\right)
+     +  i\left(\mathrm{track}\right)
+     +  i\left(\mathrm{locomotive}\right) \\
+  p &=& y
+     -  m\left(\mathrm{locomotive}\right)
+\end{eqnarray}
+
+
+
+
+
+
+
+
+\end{document}
