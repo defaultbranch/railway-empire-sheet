@@ -73,7 +73,8 @@ For the one-shot line from sec.~\ref{sec:one_shot_line}, this becomes:
 
 \begin{eqnarray}
   i &=& i\left(\mathrm{train}\right) \\
-  p &=& y \nonumber \\
+  p &=& p\left(\mathrm{train}\right) \nonumber \\
+    &=& y\left(\mathrm{train}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \biggl(
           e_w\left(\mathrm{station1}\right)
        +  e_w\left(\mathrm{station2}\right)
@@ -89,7 +90,8 @@ Obviously, longer tracks are less efficient, so earning should be split not by c
 but by miles $l \cdot e_w\left(\mathrm{mile}\right)$:
 
 \begin{eqnarray}
-  p &=& y \nonumber \\
+  p\left(\mathrm{train}\right)
+    &=& y\left(\mathrm{train}\right) \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
     &-& \frac{d}{7} \cdot l\left(\mathrm{track}\right) \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
@@ -112,12 +114,21 @@ all required infrastructure must be present at all times during $d_{\mathrm{trai
 With that we get:
 
 \begin{eqnarray}
-  p &=& y \nonumber \\
+  p\left(\mathrm{train}\right)
+    &=& y\left(\mathrm{train}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station1}} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station2}} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{track}} \cdot l \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
     &-& m\left(\mathrm{train}\right)
 \end{eqnarray}
+
+With that we also get:
+
+\begin{eqnarray}
+  p_w\left(\mathrm{station}\right) &=& e_w\left(\mathrm{station}\right) \\
+  p_w\left(\mathrm{track}\right)   &=& e_w\left(\mathrm{track}\right)
+\end{eqnarray}
+
 
 
 
