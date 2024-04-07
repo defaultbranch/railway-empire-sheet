@@ -35,6 +35,21 @@ The profit-on-investment per week $\eta_w$ is:
   \eta_w = \left(\frac{p}{i}+1\right)^{\left(7/d\right)}-1 \label{eq:weekly_profit}
 \end{equation}
 
+Conversely, the weekly profit $p_w$ for a given investment $i$ is:
+
+\begin{equation}
+  p_w = i \cdot \eta_w
+\end{equation}
+
+Therefore, the mean profitability $\overline\eta_w$ of multiple investmens $i_n$ with
+separate profitabilities $\eta_{w,n}$ is just the average weighted by investments:
+
+\begin{equation}
+  \overline\eta_w = \frac{\sum_n i_n \cdot \eta_{w,n}}{\sum_n i_n}
+\end{equation}
+
+
+
 
 \subsection{One-shot line}
 \label{sec:one_shot_line}
@@ -53,7 +68,7 @@ Overall investment and profit:
   i &=& i\left(\mathrm{station1}\right)
      +  i\left(\mathrm{station2}\right)
      +  i\left(\mathrm{track}\right)
-     +  i\left(\mathrm{train}\right) \\
+     +  i_\mathit{train} \\
   p &=& y
      -  m\left(\mathrm{train}\right)
 \end{eqnarray}
@@ -64,7 +79,7 @@ from the profit at that day, instead of being added to the upfront investment.)
 With these $i$ and $p$, the efficiency $\eta_w$ can be computed using eq.~\ref{eq:weekly_profit}.
 
 
-\subsection{Shared assets}
+\subsection{Train running on shared assets}
 
 When assets are shared then instead of calculating based on their investment, we calculate based on
 some fictional cost (earnings) $e$ for them. The fictional costs are the earnings $e$ contributed to each asset.
@@ -72,16 +87,18 @@ some fictional cost (earnings) $e$ for them. The fictional costs are the earning
 For the one-shot line from sec.~\ref{sec:one_shot_line}, this becomes:
 
 \begin{eqnarray}
-  i &=& i\left(\mathrm{train}\right) \\
-  p &=& p\left(\mathrm{train}\right) \nonumber \\
-    &=& y\left(\mathrm{train}\right) \nonumber \\
+  i &=& i_\mathit{train} \\
+  p &=& p_\mathit{train} \nonumber \\
+    &=& y_\mathit{train} \nonumber \\
     &-& \frac{d}{7} \cdot \biggl(
           e_w\left(\mathrm{station1}\right)
        +  e_w\left(\mathrm{station2}\right)
        +  e_w\left(\mathrm{track}\right)
        \biggr) \nonumber \\
-    &-& m\left(\mathrm{train}\right)
+    &-& \frac{d}{7} \cdot m_{w,\mathit{train}}
 \end{eqnarray}
+
+\subsubsection{Fictional infrastructure costs}
 
 There is no real value for the fictional costs $e_w\left(\mathrm{station}\right)$ and $e_w\left(\mathrm{track}\right)$,
 we have to come up with an estimate that is overall consistent.
@@ -90,13 +107,16 @@ Obviously, longer tracks are less efficient, so earning should be split not by c
 but by miles $l \cdot e_w\left(\mathrm{mile}\right)$:
 
 \begin{eqnarray}
-  p\left(\mathrm{train}\right)
-    &=& y\left(\mathrm{train}\right) \nonumber \\
+  p_\mathit{train}
+    &=& y_\mathit{train} \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
     &-& \frac{d}{7} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
     &-& \frac{d}{7} \cdot l\left(\mathrm{track}\right) \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
-    &-& m\left(\mathrm{train}\right)
+    &-& \frac{d}{7} \cdot m_{w,\mathit{train}}
 \end{eqnarray}
+
+Regarding track miles, note that there are single and double tracks. For double tracks, $l$ will
+be twice as much as for single tracks, which allows to keep $e_w\left(\mathrm{mile}\right)$ the same.
 
 Next, assets like stations and tracks are shared by one or more trains, so the earning of each of these
 should be fairly shared by the trains.
@@ -119,7 +139,7 @@ With that we get:
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station1}} \cdot e_w\left(\mathrm{station1}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{station2}} \cdot e_w\left(\mathrm{station2}\right) \nonumber \\
     &-& \frac{d}{7} \cdot \frac{d_\mathrm{train}}{o_\mathrm{track}} \cdot l \cdot e_w\left(\mathrm{mile}\right) \nonumber \\
-    &-& m\left(\mathrm{train}\right)
+    &-& \frac{d}{7} \cdot m_{w,\mathit{train}}
 \end{eqnarray}
 
 With that we also get:
@@ -129,9 +149,163 @@ With that we also get:
   p_w\left(\mathrm{track}\right)   &=& e_w\left(\mathrm{track}\right)
 \end{eqnarray}
 
+Again, we have to invest for the infrastructure, so given $i$ and $p$ of infrastructure items, we can compute their profitability $\eta_w$,
+and use that to find $e_w\left(\mathrm{station}\right)$ and $e_w\left(\mathrm{track}\right)$.
+
+\subsubsection{Fictional infrastructure costs from contrived one-shot line example}
+
+Let's assume:
+
+\begin{eqnarray}
+i\left(\mathrm{station}\right) &=& \$\, 40'000 \\
+d_\mathit{load}\left(\mathrm{station}\right) &=& 10 \,\mathrm{days} \\
+d_\mathit{unload}\left(\mathrm{station}\right)  &=& 10 \,\mathrm{days} \\
+i\left(\mathrm{track}\right)   &=& \$\, 40'000 \\
+l\left(\mathrm{track}\right)   &=& 50 \,\mathrm{miles} \\
+i_\mathit{train}   &=& \$\, 40000 \\
+y_\mathit{train}   &=& \$\, 16000 \\
+m_\mathit{train}   &=& \$\, 2 /\mathrm{day}\\
+v_\mathit{train}   &=& 0.5 \,\mathrm{miles}/\mathrm{day}
+\end{eqnarray}
+
+Intermediate values are:
+
+\begin{eqnarray}
+d_\mathit{train}    &=& d_\mathit{load}\left(\mathrm{station1}\right) + d_\mathit{unload}\left(\mathrm{station2}\right) + \frac{l\left(\mathrm{track}\right)}{v_\mathit{train}} \\
+w_\mathit{train}    &=& d_\mathit{train} / 7
+\end{eqnarray}
 
 
+The equations for the profitabilities of each part are:
 
+\begin{eqnarray}
+\eta_{w,\mathit{s1}} &=& e_{w,\mathit{s1}}
+                                         / i\left(\mathrm{station1}\right) \\
+\eta_{w,\mathit{s2}} &=& e_{w,\mathit{s2}}
+                                         / i\left(\mathrm{station2}\right) \\
+\eta_{w,\mathrm{mile}} &=& e_{w,\mathit{mile}}
+                                         / i\left(\mathrm{mile}\right) \\
+\eta_{w,\mathit{train}} + 1  
+  &=& 
+    \left( 
+      \frac{ 
+        y_\mathit{train} 
+        - w_\mathit{train} \cdot \left( \begin{array}{c} 
+          e_{w,\mathit{s1}} \\ 
+          + e_{w,\mathit{s2}} \\ 
+          + l_\mathit{track} e_{w,\mathit{mile}} \\ 
+          + 7  m_\mathit{train} 
+        \end{array} \right)
+      }{ i_\mathit{train} } +1 
+    \right) ^{w_\mathit{train}}
+\end{eqnarray}
+
+
+The unknowns are the the fictional weekly costs $e_{w,\mathit{s1}}$, $e_{w,\mathit{s2}}$, $e_{w,\mathit{mile}}$.
+
+The solution is that where all profitabilities are balanced,
+
+\begin{equation}
+\eta_w = \eta_{w,\mathit{s1}} = \eta_{w,\mathit{s2}} = \eta_{w,\mathrm{mile}} = \eta_{w,\mathit{train}}
+\end{equation}
+
+So we can collapse the system of equations to:
+
+\begin{eqnarray}
+\eta_w + 1  
+  &=& 
+    \left( 
+      \frac{ 
+        y_\mathit{train} 
+        - w_\mathit{train} \cdot \left( \begin{array}{c} 
+          \eta_w \cdot i_\mathit{s1} \\ 
+          + \eta_w \cdot i_\mathit{s2} \\ 
+          + \eta_w \cdot i_\mathit{mile} \cdot l_\mathit{track} \\ 
+          + 7  m_\mathit{train} 
+        \end{array} \right)
+      }{ i_\mathit{train} } +1 
+    \right) ^{w_\mathit{train}} \\
+  &=& 
+    \left( 
+      \frac{ 
+        \left( \begin{array}{c} 
+          y_\mathit{train} \\
+          - 7 \, w_\mathit{train} \, m_\mathit{train} 
+        \end{array} \right)    
+        - \eta_w \, w_\mathit{train} \, \left( \begin{array}{c} 
+          i_\mathit{s1} + i_\mathit{s2} \\ 
+          + i_\mathit{mile} \cdot l_\mathit{track}
+        \end{array} \right)
+      }{ i_\mathit{train} } +1 
+    \right) ^{w_\mathit{train}}
+\end{eqnarray}
+
+The basic structure of the problem to solve is:
+
+\begin{eqnarray}
+\eta_w + 1  
+  &=& 
+    \left( 
+      c_1 - \eta_w \, c_2 + 1 
+    \right) ^{c_3} \label{equ:eta_w_1} \\
+c_1 &=& \frac{y_\mathit{train} - 7 \, w_\mathit{train} \, m_\mathit{train}}{i_\mathit{train}} \label{equ:c1} \\
+c_2 &=& \frac{w_\mathit{train}}{i_\mathit{train}} \, \left( 
+          i_\mathit{s1} + i_\mathit{s2} 
+          + i_\mathit{mile} \cdot l_\mathit{track}
+        \right) \\
+c_3 &=& w_\mathit{train}
+\end{eqnarray}
+
+\subsubsection{Minimum train profitability and maximum train track length}
+
+We requires that a train should at least pay for itself, so $c_1$ from eq.~\ref{equ:c1} should be positive. This puts a constraint on the travel duration $w_\mathit{train}$ and track length $l_\mathit{train}$ (ignoring the time for loading and unloading at stations):
+
+\begin{eqnarray}
+  c_1 > 0 
+& \Longleftrightarrow &
+  w_\mathit{train} < \frac{y_\mathit{train}}{7 \, m_\mathit{train}} \\
+& \Longleftrightarrow &
+  l_\mathit{train} < \frac{v_\mathit{train} \, y_\mathit{train}}{m_\mathit{train}}
+\end{eqnarray}
+
+(Using $l_\mathit{train}$ instead of $l_\mathit{track}$ on purpose.)
+
+Since the latter boundary seems to be both handy and relevant, let's derive a non-dimensional value $\lambda_\mathit{train}$ from it:
+
+\begin{eqnarray}
+  \lambda_\mathit{train} &=& \frac{v_\mathit{train} \, y_\mathit{train}}{l_\mathit{train} \, m_\mathit{train} }
+\end{eqnarray}
+
+For $\lambda_\mathit{train}$ the minimum profitability constraint becomes:
+
+\begin{eqnarray}
+  c_1 > 0 & \Longleftrightarrow & \lambda_\mathit{train} > 1  
+\end{eqnarray}
+
+During the game, values for $y_\mathit{train}$, $v_\mathit{train}$ and $m_\mathit{train}$ change slowly by some percent only (with technical inventions or especially skilled employees), while the value for $l_\mathit{train}$ will vary by an order of magnitude at any time (connecting nearby stations versus connecting stations far away). Therefore, the value of $\lambda_\mathit{train}$ will be critical near $\lambda_\mathit{train} \approx 1$, when $l_\mathit{train}$ and consequently $w_\mathit{train}$ become large. In these cases, in turn, the times spend on loading and unloading become negligible, which justifies the simplification that the constraints $c_1 > 0$ and $\lambda_\mathit{train} > 1$ ignore them.
+
+\subsubsection{Estimate fictional infrastructure costs from contrived one-shot line example}
+
+For the region of interest, eq.~\ref{equ:eta_w_1} can be converted into a fixpoint equation for $\eta_w$ around $\eta_w=0$:
+
+\begin{eqnarray}
+\eta_{w,i+1} &=& \frac{1}{c_2}\,\left( 1 + c_1 - \left(1 + \eta_{w,i}\right)^{1/c_3}\right)
+\end{eqnarray}
+
+The two-iterations estimate is:
+
+\begin{eqnarray}
+\eta_{w,0} &=& 0 \\
+\eta_{w,1} &=& c_1 / c_2 \\
+\eta_{w,2} &=& \frac{1}{c_2}\,\left( 1 + c_1 - \left(1 + \frac{c_1}{c_2}\right)^{1/c_3}\right)
+\end{eqnarray}
+
+The approximate fictional infrastructure costs then are:
+
+\begin{eqnarray}
+e_{w,s} &\approx & \eta_{w,2} \, i_s \\
+e_{w,\mathit{mile}} &\approx & \eta_{w,2} \, i_\mathit{mile}
+\end{eqnarray}
 
 
 \end{document}
