@@ -1,5 +1,5 @@
 {
-  "gameDate": "1912-11-17",
+  "gameDate": "1912-11-22",
   "goods": [
     "Cereales",
     "Ganado",
@@ -121,7 +121,8 @@
           "perWeek": [
             1.6,
             3.2,
-            6.4
+            6.4,
+            11.1
           ]
         }
       ]
@@ -591,7 +592,7 @@
     {
       "name": "Chicago",
       "size": 5,
-      "population": 120000,
+      "population": 145175,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -651,7 +652,7 @@
     {
       "name": "Grand Rapids",
       "size": 3,
-      "population": 120000,
+      "population": 139737,
       "businesses": [
         {
           "name": "Bodegas",
@@ -680,7 +681,7 @@
     {
       "name": "Indianápolis",
       "size": 3,
-      "population": 120000,
+      "population": 131339,
       "businesses": [
         {
           "name": "Bodegas",
@@ -709,7 +710,7 @@
     {
       "name": "Madison",
       "size": 1,
-      "population": 120000,
+      "population": 138846,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -741,11 +742,11 @@
     {
       "name": "Rochester",
       "size": 4,
-      "population": 104730,
+      "population": 106739,
       "businesses": [
         {
           "name": "Industria cárnica",
-          "size": 2
+          "size": 3
         },
         {
           "name": "Industria mobiliaria",
@@ -775,7 +776,7 @@
     {
       "name": "Rock Island",
       "size": 1,
-      "population": 111742,
+      "population": 111948,
       "businesses": [
         {
           "name": "Bodegas",
@@ -804,7 +805,7 @@
     {
       "name": "San Luis",
       "size": 4,
-      "population": 86020,
+      "population": 89769,
       "businesses": [
         {
           "name": "Bodegas",
@@ -833,7 +834,7 @@
     {
       "name": "Toledo",
       "size": 4,
-      "population": 120377,
+      "population": 124623,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -869,11 +870,11 @@
     {
       "name": "Kansas City",
       "size": 1,
-      "population": 66236,
+      "population": 71176,
       "businesses": [
         {
           "name": "Industria cárnica",
-          "size": 1
+          "size": 2
         },
         {
           "name": "Fábrica de papel",
@@ -892,7 +893,7 @@
     {
       "name": "Duluth",
       "size": 1,
-      "population": 68742,
+      "population": 75747,
       "businesses": [
         {
           "name": "Bodegas",
@@ -914,11 +915,11 @@
     {
       "name": "Fayetteville",
       "size": 2,
-      "population": 58863,
+      "population": 63081,
       "businesses": [
         {
           "name": "Industria cárnica",
-          "size": 1
+          "size": 2
         },
         {
           "name": "Refinerías",
@@ -937,7 +938,7 @@
     {
       "name": "Sioux Falls",
       "size": 1,
-      "population": 51055,
+      "population": 56652,
       "businesses": [
         {
           "name": "Bodegas",
@@ -959,7 +960,7 @@
     {
       "name": "Knoxville",
       "size": 1,
-      "population": 23645,
+      "population": 30650,
       "businesses": [
         {
           "name": "Bodegas",
@@ -977,7 +978,7 @@
     {
       "name": "Des Moines",
       "size": 2,
-      "population": 56452,
+      "population": 68162,
       "businesses": [
         {
           "name": "Bodegas",
@@ -999,11 +1000,11 @@
     {
       "name": "Omaha",
       "size": 1,
-      "population": 43474,
+      "population": 51158,
       "businesses": [
         {
           "name": "Industria cárnica",
-          "size": 1
+          "size": 2
         },
         {
           "name": "Editoriales",
@@ -1021,11 +1022,11 @@
     },
     {
       "name": "Memphis",
-      "population": 46108,
+      "population": 48248,
       "businesses": [
         {
           "name": "Bodegas",
-          "size": 1
+          "size": 2
         },
         {
           "name": "Fábrica de caramelos",
@@ -1035,7 +1036,7 @@
     },
     {
       "name": "Nashville",
-      "population": 43045,
+      "population": 52060,
       "businesses": [
         {
           "name": "Bodegas",
@@ -1049,7 +1050,7 @@
     },
     {
       "name": "Louisville",
-      "population": 55235,
+      "population": 66414,
       "businesses": [
         {
           "name": "Industria cárnica",
@@ -1057,7 +1058,7 @@
         },
         {
           "name": "Fábricas químicas",
-          "size": 1
+          "size": 2
         }
       ]
     }
@@ -1179,7 +1180,7 @@
     },
     {
       "name": "Harris Tala",
-      "size": 3,
+      "size": 4,
       "product": "Madera",
       "perWeek": 3.2
     },
@@ -1279,7 +1280,7 @@
     },
     {
       "name": "Perry Granja",
-      "size": 2,
+      "size": 3,
       "product": "Maíz",
       "perWeek": 3.2
     },
@@ -1355,7 +1356,7 @@
     },
     {
       "name": "Williams Ganado",
-      "size": 3,
+      "size": 4,
       "product": "Leche",
       "perWeek": 1.6
     },
@@ -1364,6 +1365,11 @@
       "size": 3,
       "product": "Leche",
       "perWeek": 1.6
+    },
+    {
+      "name": "Wood Mansión",
+      "size": 1,
+      "product": "Algodón"
     },
     {
       "name": "Wright Estado",
@@ -1376,11 +1382,6 @@
       "size": 1,
       "product": "Madera",
       "perWeek": 3.2
-    },
-    {
-      "name": "Wood Mansión",
-      "size": 1,
-      "product": "Algodón"
     }
   ],
   "providerConnections": [
