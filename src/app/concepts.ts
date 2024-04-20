@@ -8,26 +8,35 @@
  */
 export type Good = string;
 
-
 export type Negocio = {
-  name: Good;
+  name: Good,
   productos?: {
-    name: Good;
-    perWeek?: number[];
+    name: Good,
+    perWeek?: number[],
   }[];
 }
 
-
 export type Industria = {
-  name: IndustryName;
+  name: IndustryName,
   materiasPrimas?: {
-    name: Good;
-    perWeek?: number[];
-  }[];
+    name: Good,
+    perWeek?: number[],
+  }[],
   productos?: {
-    name: Good;
-    perWeek?: number[];
+    name: Good,
+    perWeek?: number[],
   }[];
 };
 
 export type IndustryName = string;
+
+export type Ciudad = {
+  name: string,
+  population: number,
+  businesses: [Business?, Business?, Business?],
+}
+
+export type Business = {
+  name: IndustryName,
+  size: number,
+}

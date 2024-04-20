@@ -5,8 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, concatMap, from, map, reduce, switchMap, take, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good } from '../../concepts';
-import { Ciudad } from '../ngrx/ciudades.ngrx';
+import { Ciudad, Good } from '../../concepts';
 import { ciudad } from '../ngrx/ciudades.ngrx';
 import { updateBusiness, updatePopulation } from '../ngrx/ciudades.ngrx';
 import { allIndustryKeys } from '../../game-config/ngrx/industrias.ngrx';

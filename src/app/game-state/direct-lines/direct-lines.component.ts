@@ -5,11 +5,10 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good } from '../../concepts';
+import { Ciudad, Good } from '../../concepts';
 import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
-import { Ciudad } from '../ngrx/ciudades.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { DirectLinesNgrxModule, cost, miles } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';

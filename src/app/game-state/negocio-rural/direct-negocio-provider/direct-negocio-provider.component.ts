@@ -3,9 +3,9 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good } from '../../../concepts';
+import { Ciudad, Good } from '../../../concepts';
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
-import { Ciudad, todosLosCiudades } from '../../ngrx/ciudades.ngrx';
+import { todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
 import { ProviderConnection, addProviderConnection, providerForRuralProducer, runProviderConnectionNow, updateProductionFactor } from '../../ngrx/provider-connections.ngrx';
