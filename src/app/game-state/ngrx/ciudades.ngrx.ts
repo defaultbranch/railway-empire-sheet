@@ -5,7 +5,7 @@ import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { IndustriasNgrxModule } from "../../game-config/ngrx/industrias.ngrx";
-import { Business, Ciudad, IndustryName } from "../../concepts";
+import { CityBusiness, Ciudad, IndustryName } from "../../concepts";
 
 
 // NgRx feature key
@@ -59,7 +59,7 @@ const CIUDAD_REDUCER = createReducer(
   on(actions.updateBusiness, (state: EntityState<Ciudad>, p: { name: string, index: number, business: IndustryName, size: number }): EntityState<Ciudad> => adapter.mapOne({
     id: p.name, map: ciudad => ({
       ...ciudad,
-      businesses: ((businesses: [Business?, Business?, Business?]): [Business?, Business?, Business?] => {
+      businesses: ((businesses: [CityBusiness?, CityBusiness?, CityBusiness?]): [CityBusiness?, CityBusiness?, CityBusiness?] => {
         businesses[p.index] = { name: p.business, size: p.size };
         return businesses;
       })([...ciudad.businesses])

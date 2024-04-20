@@ -39,12 +39,12 @@ export type IndustryName = string;
 export type Ciudad = {
   name: string,
   population: number,
-  businesses: [Business?, Business?, Business?],
+  businesses: [CityBusiness?, CityBusiness?, CityBusiness?],
 }
 
 export type CityName = string;
 
-export type Business = {
+export type CityBusiness = {
   name: IndustryName,
   size: number,
 }
