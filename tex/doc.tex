@@ -256,6 +256,8 @@ c_2 &=& \frac{w_\mathit{train}}{i_\mathit{train}} \, \left(
 c_3 &=& w_\mathit{train}
 \end{eqnarray}
 
+We will show an approximate solution for the problem equation~\ref{equ:eta_w_1} in sec.~\ref{sec:solve_eta_w_1}.
+
 \subsubsection{Minimum train profitability and maximum train track length}
 
 We requires that a train should at least pay for itself, so $c_1$ from eq.~\ref{equ:c1} should be positive. This puts a constraint on the travel duration $w_\mathit{train}$ and track length $l_\mathit{train}$ (ignoring the time for loading and unloading at stations):
@@ -285,6 +287,7 @@ For $\lambda_\mathit{train}$ the minimum profitability constraint becomes:
 During the game, values for $y_\mathit{train}$, $v_\mathit{train}$ and $m_\mathit{train}$ change slowly by some percent only (with technical inventions or especially skilled employees), while the value for $l_\mathit{train}$ will vary by an order of magnitude at any time (connecting nearby stations versus connecting stations far away). Therefore, the value of $\lambda_\mathit{train}$ will be critical near $\lambda_\mathit{train} \approx 1$, when $l_\mathit{train}$ and consequently $w_\mathit{train}$ become large. In these cases, in turn, the times spend on loading and unloading become negligible, which justifies the simplification that the constraints $c_1 > 0$ and $\lambda_\mathit{train} > 1$ ignore them.
 
 \subsubsection{Estimate fictional infrastructure costs from contrived one-shot line example}
+\label{sec:solve_eta_w_1}
 
 For the region of interest, eq.~\ref{equ:eta_w_1} can be converted into a fixpoint equation for $\eta_w$ around $\eta_w=0$:
 
