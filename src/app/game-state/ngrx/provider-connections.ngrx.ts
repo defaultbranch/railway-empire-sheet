@@ -4,22 +4,10 @@ import { Store, StoreModule, createActionGroup, createFeatureSelector, createRed
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
-import { Good } from "../../concepts";
+import { Good, ProviderConnection } from "../../concepts";
 import { CiudadesNgrxModule } from "./ciudades.ngrx";
 import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
 
-// entity
-
-export type ProviderConnection = {
-
-  ruralProducer: string;
-  good: Good;
-  destinationCity: string;
-
-  productionFactor?: number;
-  demandFactor?: number;
-  lastRun?: Date;
-};
 
 // NgRx feature key
 

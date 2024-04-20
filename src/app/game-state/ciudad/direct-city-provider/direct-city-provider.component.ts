@@ -5,12 +5,12 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, ReplaySubject, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good } from '../../../concepts';
+import { Ciudad, Good, ProviderConnection } from '../../../concepts';
 import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
-import { ProviderConnection, providerForDestinationCity, updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
+import { providerForDestinationCity, updateDemandFactor } from '../../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../../ngrx/provider-connections.ngrx';
 import { DemandsNgrxModule } from '../../../game-config/ngrx/demands.ngrx';
 import { NegociosNgrxModule } from '../../../game-config/ngrx/negocios.ngrx';

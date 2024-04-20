@@ -40,3 +40,19 @@ export type Business = {
   name: IndustryName,
   size: number,
 }
+
+export type DirectLine = {
+  ruralProducer: string,
+  destinationCity: string,
+  miles: number,
+  cost: number,
+}
+
+export type ProviderConnection = {
+  ruralProducer: string,
+  good: Good,
+  destinationCity: string,
+  productionFactor?: number,
+  demandFactor?: number,
+  lastRun?: Date,
+}

@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good } from '../../concepts';
+import { Ciudad, Good, ProviderConnection } from '../../concepts';
 import { NegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
@@ -13,7 +13,6 @@ import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
 import { DirectLinesNgrxModule, cost, miles } from '../ngrx/direct-lines.ngrx';
 import { addDirectLine } from '../ngrx/direct-lines.ngrx';
 import { gameDate } from '../../game-state/ngrx/game-date.ngrx';
-import { ProviderConnection } from '../ngrx/provider-connections.ngrx';
 import { allProviderConnections } from '../ngrx/provider-connections.ngrx';
 import { addProviderConnection, runProviderConnectionNow } from '../ngrx/provider-connections.ngrx';
 import { GameDateComponent } from "../game-date/game-date.component";

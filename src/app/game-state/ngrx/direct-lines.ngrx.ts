@@ -6,17 +6,8 @@ import { map, switchMap, take, tap } from "rxjs";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ProviderConnectionsNgrxModule } from "./provider-connections.ngrx";
+import { DirectLine } from "../../concepts";
 
-// entity
-
-export type DirectLine = {
-
-  ruralProducer: string;
-  destinationCity: string;
-
-  miles: number;
-  cost: number;
-};
 
 // NgRx feature key
 
