@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { IndustriasNgrxModule, addIndustria, allIndustryKeys, industry, removeIndustria, setMateriaPrima, setMateriaPrimaPerWeek, setProduct, setProductPerWeek } from '../ngrx/industrias.ngrx';
-import { Industria } from '../ngrx/industrias.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
+import { Industria } from '../../concepts';
 
 @Component({
   selector: 'app-industrias-table',

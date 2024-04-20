@@ -4,7 +4,8 @@ import { Store, StoreModule, createActionGroup, createFeatureSelector, createRed
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
-import { IndustriasNgrxModule, IndustryName } from "../../game-config/ngrx/industrias.ngrx";
+import { IndustriasNgrxModule } from "../../game-config/ngrx/industrias.ngrx";
+import { IndustryName } from "../../concepts";
 
 // entity
 

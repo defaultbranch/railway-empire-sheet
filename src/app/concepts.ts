@@ -9,17 +9,6 @@
 export type Good = string;
 
 
-export type Size = number;
-
-export type PerWeek = number;
-
-
-export type Farm = {
-  product: Good;
-  perWeek: Record<Size, PerWeek>;
-}
-
-
 export type Negocio = {
   name: Good;
   productos?: {
@@ -27,3 +16,18 @@ export type Negocio = {
     perWeek?: number[];
   }[];
 }
+
+
+export type Industria = {
+  name: IndustryName;
+  materiasPrimas?: {
+    name: Good;
+    perWeek?: number[];
+  }[];
+  productos?: {
+    name: Good;
+    perWeek?: number[];
+  }[];
+};
+
+export type IndustryName = string;
