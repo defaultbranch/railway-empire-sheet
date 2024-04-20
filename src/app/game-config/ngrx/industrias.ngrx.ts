@@ -5,7 +5,7 @@ import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { GoodsNgrxModule } from "./goods.ngrx";
-import { Industria } from "../../concepts";
+import { IndustryType } from "../../concepts";
 
 
 // NgRx feature key
@@ -18,9 +18,9 @@ const actions = createActionGroup({
   source: INDUSTRIAS_FEATURE_KEY,
   events: {
 
-    addIndustria: props<({ industria: Industria })>(),
+    addIndustria: props<({ industria: IndustryType })>(),
     removeIndustria: props<({ nombre: string })>(),
-    setIndustrias: props<{ industrias: Industria[] }>(),
+    setIndustrias: props<{ industrias: IndustryType[] }>(),
 
     setMateriaPrima: props<({ industria: string, index: number, good: string })>(),
     setMateriaPrimaPerWeek: props<({ industria: string, index: number, nivel: number, perWeek: number })>(),
@@ -44,7 +44,7 @@ export const {
 
 // NgRx entity adapter
 
-const adapter = createEntityAdapter<Industria>({ selectId: industria => industria.name });
+const adapter = createEntityAdapter<IndustryType>({ selectId: industria => industria.name });
 
 // NgRx reducer
 
@@ -52,11 +52,11 @@ const INDUSTRIAS_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
-  on(actions.addIndustria, (state: EntityState<Industria>, p: { industria: Industria }): EntityState<Industria> => adapter.addOne(p.industria, state)),
-  on(actions.removeIndustria, (state: EntityState<Industria>, p: { nombre: string }): EntityState<Industria> => adapter.removeOne(p.nombre, state)),
-  on(actions.setIndustrias, (state: EntityState<Industria>, p: { industrias: Industria[] }): EntityState<Industria> => adapter.setAll(p.industrias, state)),
+  on(actions.addIndustria, (state: EntityState<IndustryType>, p: { industria: IndustryType }): EntityState<IndustryType> => adapter.addOne(p.industria, state)),
+  on(actions.removeIndustria, (state: EntityState<IndustryType>, p: { nombre: string }): EntityState<IndustryType> => adapter.removeOne(p.nombre, state)),
+  on(actions.setIndustrias, (state: EntityState<IndustryType>, p: { industrias: IndustryType[] }): EntityState<IndustryType> => adapter.setAll(p.industrias, state)),
 
-  on(actions.setMateriaPrima, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
+  on(actions.setMateriaPrima, (state: EntityState<IndustryType>, p: { industria: string, index: number, good: string }): EntityState<IndustryType> => adapter.mapOne({
     id: p.industria,
     map: industria => ({
       ...industria,
@@ -67,7 +67,7 @@ const INDUSTRIAS_REDUCER = createReducer(
     })
   }, state)),
 
-  on(actions.setMateriaPrimaPerWeek, (state: EntityState<Industria>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<Industria> => adapter.mapOne({
+  on(actions.setMateriaPrimaPerWeek, (state: EntityState<IndustryType>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<IndustryType> => adapter.mapOne({
     id: p.industria,
     map: industria => ({
       ...industria,
@@ -84,7 +84,7 @@ const INDUSTRIAS_REDUCER = createReducer(
     })
   }, state)),
 
-  on(actions.setProduct, (state: EntityState<Industria>, p: { industria: string, index: number, good: string }): EntityState<Industria> => adapter.mapOne({
+  on(actions.setProduct, (state: EntityState<IndustryType>, p: { industria: string, index: number, good: string }): EntityState<IndustryType> => adapter.mapOne({
     id: p.industria,
     map: industria => ({
       ...industria,
@@ -95,7 +95,7 @@ const INDUSTRIAS_REDUCER = createReducer(
     })
   }, state)),
 
-  on(actions.setProductPerWeek, (state: EntityState<Industria>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<Industria> => adapter.mapOne({
+  on(actions.setProductPerWeek, (state: EntityState<IndustryType>, p: { industria: string, index: number, nivel: number, perWeek: number }): EntityState<IndustryType> => adapter.mapOne({
     id: p.industria,
     map: industria => ({
       ...industria,
@@ -116,7 +116,7 @@ const INDUSTRIAS_REDUCER = createReducer(
 
 // NgRx selectors
 
-const selectFeature = createFeatureSelector<EntityState<Industria>>(INDUSTRIAS_FEATURE_KEY);
+const selectFeature = createFeatureSelector<EntityState<IndustryType>>(INDUSTRIAS_FEATURE_KEY);
 
 const {
   selectIds,

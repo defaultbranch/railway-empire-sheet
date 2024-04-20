@@ -16,7 +16,7 @@ export type RuralType = {
   }[];
 }
 
-export type Industria = {
+export type IndustryType = {
   name: IndustryName,
   materiasPrimas?: {
     name: Good,
