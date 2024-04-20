@@ -5,15 +5,8 @@ import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { NegociosNgrxModule } from "../../game-config/ngrx/negocios.ngrx";
-import { Good } from "../../concepts";
+import { Good, NegocioRural } from "../../concepts";
 
-// entity
-
-export type NegocioRural = {
-  name: string;
-  product: Good;
-  size: number;
-}
 
 // NgRx feature key
 

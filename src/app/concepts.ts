@@ -16,6 +16,12 @@ export type RuralType = {
   }[];
 }
 
+export type NegocioRural = {
+  name: string;
+  product: Good;
+  size: number;
+}
+
 export type IndustryType = {
   name: IndustryName,
   materiasPrimas?: {

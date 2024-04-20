@@ -5,8 +5,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, ReplaySubject, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good, ProviderConnection } from '../../../concepts';
-import { NegocioRural } from '../../ngrx/negocios-rurales.ngrx';
+import { Ciudad, Good, NegocioRural, ProviderConnection } from '../../../concepts';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
