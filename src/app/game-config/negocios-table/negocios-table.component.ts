@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Negocio } from '../../concepts';
+import { RuralType } from '../../concepts';
 import { NegociosNgrxModule, allNegocioKeys, negocio } from '../ngrx/negocios.ngrx';
 import { allGoods } from '../ngrx/goods.ngrx';
 import { addNegocio, removeNegocio, setProduct, setProductPerWeek } from '../ngrx/negocios.ngrx';
@@ -44,11 +44,11 @@ export class NegociosTableComponent {
     this.store.dispatch(removeNegocio({ name }));
   }
 
-  setProduct(negocio: Negocio, index: number, good: string) {
+  setProduct(negocio: RuralType, index: number, good: string) {
     this.store.dispatch(setProduct({ negocio: negocio.name, index, good }));
   }
 
-  setProductosPerWeek(negocio: Negocio, index: number, nivel: number, perWeek: number) {
+  setProductosPerWeek(negocio: RuralType, index: number, nivel: number, perWeek: number) {
     this.store.dispatch(setProductPerWeek({ negocio: negocio.name, index, nivel, perWeek }));
   }
 

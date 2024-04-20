@@ -8,7 +8,7 @@
  */
 export type Good = string;
 
-export type Negocio = {
+export type RuralType = {
   name: Good,
   productos?: {
     name: Good,
@@ -36,6 +36,8 @@ export type Ciudad = {
   businesses: [Business?, Business?, Business?],
 }
 
+export type CityName = string;
+
 export type Business = {
   name: IndustryName,
   size: number,
@@ -43,15 +45,15 @@ export type Business = {
 
 export type DirectLine = {
   ruralProducer: string,
-  destinationCity: string,
+  destinationCity: CityName,
   miles: number,
   cost: number,
 }
 
 export type ProviderConnection = {
   ruralProducer: string,
+  destinationCity: CityName,
   good: Good,
-  destinationCity: string,
   productionFactor?: number,
   demandFactor?: number,
   lastRun?: Date,
