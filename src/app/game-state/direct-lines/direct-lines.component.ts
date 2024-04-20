@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good, NegocioRural, ProviderConnection } from '../../concepts';
+import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../concepts';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../game-config/ngrx/goods.ngrx';
 import { todosLosCiudades } from '../ngrx/ciudades.ngrx';
@@ -40,12 +40,12 @@ export class DirectLinesComponent implements OnInit {
   items$: Observable<ProviderConnection[]> = NEVER;
   itemsSorted$: Observable<ProviderConnection[]> = NEVER;
 
-  rurales$: Observable<NegocioRural[]>;
+  rurales$: Observable<RuralBusiness[]>;
   goods$: Observable<Good[]>;
   ciudades$: Observable<Ciudad[]>;
   gameDate$: Observable<Date>;
 
-  newRuralProducer?: NegocioRural;
+  newRuralProducer?: RuralBusiness;
   newGood?: Good;
   newDestinationCity?: Ciudad;
   newMiles?: number;
@@ -72,7 +72,7 @@ export class DirectLinesComponent implements OnInit {
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(providerEffectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
-  addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
+  addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
     this.store.dispatch(addDirectLine({ line: { ruralProducer: p.ruralProducer.name, destinationCity: p.destinationCity.name, miles: p.miles, cost: p.cost } }));
   }

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { NegocioRural } from '../../concepts';
+import { RuralBusiness } from '../../concepts';
 import { negocioRural, updateSize } from '../ngrx/negocios-rurales.ngrx';
 import { GameDateComponent } from '../game-date/game-date.component';
 import { ProviderConnectionsNgrxModule } from '../ngrx/provider-connections.ngrx';
@@ -26,7 +26,7 @@ import { DirectNegocioProviderComponent } from './direct-negocio-provider/direct
 })
 export class NegocioRuralComponent implements OnDestroy {
 
-  negocioRural$: Observable<NegocioRural | undefined>;
+  negocioRural$: Observable<RuralBusiness | undefined>;
 
   private disposing$ = new Subject<void>();
 
@@ -45,7 +45,7 @@ export class NegocioRuralComponent implements OnDestroy {
     this.disposing$.next(void 0);
   }
 
-  updateSize(negocio: NegocioRural, size: number) {
+  updateSize(negocio: RuralBusiness, size: number) {
     this.store.dispatch(updateSize({ negocio, size }));
   }
 

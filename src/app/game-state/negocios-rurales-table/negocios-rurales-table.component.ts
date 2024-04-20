@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Good, NegocioRural } from '../../concepts';
+import { Good, RuralBusiness } from '../../concepts';
 import { NegociosRuralesNgrxModule, updateSize } from '../ngrx/negocios-rurales.ngrx';
 import { addNegocioRural, removeNegocioRural } from '../ngrx/negocios-rurales.ngrx';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
@@ -30,8 +30,8 @@ import { ruralProductionPerWeek } from '../ngrx/computations';
 })
 export class NegociosRuralesTableComponent {
 
-  items$: Observable<NegocioRural[]>;
-  itemsSorted$: Observable<NegocioRural[]>;
+  items$: Observable<RuralBusiness[]>;
+  itemsSorted$: Observable<RuralBusiness[]>;
 
   goods$: Observable<string[]>;
 
@@ -65,7 +65,7 @@ export class NegociosRuralesTableComponent {
     this.itemsSorted$ = this.items$.pipe(map(it => it.sort((a, b) => a.product.localeCompare(b.product))));
   }
 
-  updateSize(negocio: NegocioRural, size: number) {
+  updateSize(negocio: RuralBusiness, size: number) {
     this.store.dispatch(updateSize({ negocio, size }));
   }
 }

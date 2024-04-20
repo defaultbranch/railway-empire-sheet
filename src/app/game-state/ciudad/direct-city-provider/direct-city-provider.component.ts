@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, ReplaySubject, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good, NegocioRural, ProviderConnection } from '../../../concepts';
+import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../../concepts';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../../game-state/ngrx/game-date.ngrx';
@@ -38,11 +38,11 @@ export class DirectCityProviderComponent implements OnInit {
   items$: Observable<ProviderConnection[]> = NEVER;
   itemsSorted$: Observable<ProviderConnection[]> = NEVER;
 
-  rurales$: Observable<NegocioRural[]>;
+  rurales$: Observable<RuralBusiness[]>;
   goods$: Observable<string[]>;
   gameDate$: Observable<Date>;
 
-  newRuralProducer?: NegocioRural;
+  newRuralProducer?: RuralBusiness;
   newGood$ = new ReplaySubject<Good>(1);
 
   constructor(private store: Store) {
@@ -65,7 +65,7 @@ export class DirectCityProviderComponent implements OnInit {
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(providerEffectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
-  addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
+  addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
   }
 
@@ -98,7 +98,7 @@ export class DirectCityProviderComponent implements OnInit {
     }
   }
 
-  newGoodRurales$(): Observable<NegocioRural[]> {
+  newGoodRurales$(): Observable<RuralBusiness[]> {
     return combineLatest([this.rurales$, this.newGood$]).pipe(
       map(([rurales, newGood]) => rurales.filter(rural => { return newGood && newGood === rural.product })),
     );

@@ -16,7 +16,7 @@ export type RuralType = {
   }[];
 }
 
-export type NegocioRural = {
+export type RuralBusiness = {
   name: string;
   product: Good;
   size: number;

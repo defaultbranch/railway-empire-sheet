@@ -5,7 +5,7 @@ import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
 
 import { NegociosNgrxModule } from "../../game-config/ngrx/negocios.ngrx";
-import { Good, NegocioRural } from "../../concepts";
+import { Good, RuralBusiness } from "../../concepts";
 
 
 // NgRx feature key
@@ -18,11 +18,11 @@ const actions = createActionGroup({
   source: NEGOCIOS_RURALES_FEATURE_KEY,
   events: {
 
-    addNegocioRural: props<{ negocio: NegocioRural }>(),
+    addNegocioRural: props<{ negocio: RuralBusiness }>(),
     removeNegocioRural: props<{ nombre: string }>(),
-    setNegociosRurales: props<{ negocios: NegocioRural[] }>(),
+    setNegociosRurales: props<{ negocios: RuralBusiness[] }>(),
 
-    updateSize: props<{ negocio: NegocioRural, size: number }>(),
+    updateSize: props<{ negocio: RuralBusiness, size: number }>(),
 
     persistNegociosRurales: emptyProps(),
     loadNegociosRurales: emptyProps(),
@@ -38,7 +38,7 @@ export const {
 
 // NgRx entity adapter
 
-const adapter = createEntityAdapter<NegocioRural>({ selectId: negocio => negocio.name });
+const adapter = createEntityAdapter<RuralBusiness>({ selectId: negocio => negocio.name });
 
 // NgRx reducer
 
@@ -46,11 +46,11 @@ const NEGOCIOS_RURALES_REDUCER = createReducer(
 
   adapter.getInitialState(),
 
-  on(actions.addNegocioRural, (state: EntityState<NegocioRural>, p: { negocio: NegocioRural }): EntityState<NegocioRural> => adapter.addOne(p.negocio, state)),
-  on(actions.removeNegocioRural, (state: EntityState<NegocioRural>, p: { nombre: string }): EntityState<NegocioRural> => adapter.removeOne(p.nombre, state)),
-  on(actions.setNegociosRurales, (state: EntityState<NegocioRural>, p: { negocios: NegocioRural[] }): EntityState<NegocioRural> => adapter.setAll(p.negocios, state)),
+  on(actions.addNegocioRural, (state: EntityState<RuralBusiness>, p: { negocio: RuralBusiness }): EntityState<RuralBusiness> => adapter.addOne(p.negocio, state)),
+  on(actions.removeNegocioRural, (state: EntityState<RuralBusiness>, p: { nombre: string }): EntityState<RuralBusiness> => adapter.removeOne(p.nombre, state)),
+  on(actions.setNegociosRurales, (state: EntityState<RuralBusiness>, p: { negocios: RuralBusiness[] }): EntityState<RuralBusiness> => adapter.setAll(p.negocios, state)),
 
-  on(actions.updateSize, (state: EntityState<NegocioRural>, p: { negocio: NegocioRural, size: number }): EntityState<NegocioRural> => adapter.mapOne({
+  on(actions.updateSize, (state: EntityState<RuralBusiness>, p: { negocio: RuralBusiness, size: number }): EntityState<RuralBusiness> => adapter.mapOne({
     id: p.negocio.name,
     map: negocio => ({
       ...negocio,
@@ -61,7 +61,7 @@ const NEGOCIOS_RURALES_REDUCER = createReducer(
 
 // NgRx selectors
 
-const selectFeature = createFeatureSelector<EntityState<NegocioRural>>(NEGOCIOS_RURALES_FEATURE_KEY);
+const selectFeature = createFeatureSelector<EntityState<RuralBusiness>>(NEGOCIOS_RURALES_FEATURE_KEY);
 
 const {
   selectIds,

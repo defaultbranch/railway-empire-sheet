@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { NEVER, Observable, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { Ciudad, Good, NegocioRural, ProviderConnection } from '../../../concepts';
+import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../../concepts';
 import { todosLosCiudades } from '../../ngrx/ciudades.ngrx';
 import { allGoods } from '../../../game-config/ngrx/goods.ngrx';
 import { gameDate } from '../../ngrx/game-date.ngrx';
@@ -30,7 +30,7 @@ import { sortObservableStream } from '../../util';
 })
 export class DirectNegocioProviderComponent implements OnInit {
 
-  @Input() rural?: NegocioRural;
+  @Input() rural?: RuralBusiness;
 
   items$: Observable<ProviderConnection[]> = NEVER;
   itemsSorted$: Observable<ProviderConnection[]> = NEVER;
@@ -61,7 +61,7 @@ export class DirectNegocioProviderComponent implements OnInit {
   readonly effectiveRate$ = (provider: ProviderConnection) => this.store.select(providerEffectiveRate(provider));
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
-  addLine(p: { ruralProducer: NegocioRural, good: string, destinationCity: Ciudad }) {
+  addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad }) {
     this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
   }
 
