@@ -52,7 +52,7 @@ export type CityBusiness = {
 
 export type DirectLine = {
 
-  type?: 'DirectLine',
+  type: 'DirectLine',
   id: string,
 
   ruralProducer: string,
@@ -63,14 +63,14 @@ export type DirectLine = {
 
 export function requireDirectline(x: unknown): x is DirectLine {
   const cand = x as DirectLine;
-  const val = cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.miles !== undefined && cand.cost !== undefined;
+  const val = cand.type === 'DirectLine' && cand.id !== undefined && cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.miles !== undefined && cand.cost !== undefined;
   if (!val) throw new Error('DirectLine required');
   return val;
 }
 
 export type ProviderConnection = {
 
-  type?: 'ProviderConnection',
+  type: 'ProviderConnection',
   id: string,
 
   ruralProducer: string,
@@ -83,7 +83,7 @@ export type ProviderConnection = {
 
 export function requireProviderConnection(x: unknown): x is ProviderConnection {
   const cand = x as ProviderConnection;
-  const val = cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.good !== undefined;
+  const val = cand.type === 'ProviderConnection' && cand.id !== undefined && cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.good !== undefined;
   if (!val) throw new Error('ProviderConnection required');
   return val;
 }
