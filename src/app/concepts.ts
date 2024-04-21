@@ -68,10 +68,9 @@ export function requireDirectline(x: unknown): x is DirectLine {
   return val;
 }
 
-
 export type ProviderConnection = {
 
-  type?: 'DirectLine',
+  type?: 'ProviderConnection',
   id?: string,
 
   ruralProducer: string,
@@ -80,4 +79,11 @@ export type ProviderConnection = {
   productionFactor?: number,
   demandFactor?: number,
   lastRun?: Date,
+}
+
+export function requireProviderConnection(x: unknown): x is ProviderConnection {
+  const cand = x as ProviderConnection;
+  const val = cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.good !== undefined;
+  if (!val) throw new Error('ProviderConnection required');
+  return val;
 }

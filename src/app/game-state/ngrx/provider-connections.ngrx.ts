@@ -1,10 +1,11 @@
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
 import { Store, StoreModule, createActionGroup, createFeatureSelector, createReducer, createSelector, emptyProps, on, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
+import { v4 as uuidv4 } from 'uuid';
 
-import { Good, ProviderConnection } from "../../concepts";
+import { Good, ProviderConnection, requireProviderConnection } from "../../concepts";
 import { CiudadesNgrxModule } from "./ciudades.ngrx";
 import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
 
@@ -123,7 +124,9 @@ const loadProviderConnectionsEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadProviderConnections),
     map(() => {
-      const lines = JSON.parse(localStorage.getItem('provider-connections') as string ?? '[]');
+      const raw = JSON.parse(localStorage.getItem('provider-connections') as string ?? '[]');
+      if (!Array.isArray(raw)) throw new Error('require array');
+      const lines = raw.filter(requireProviderConnection).map(it => it.id ? {...it, type: 'ProviderConnection'} as const : {...it, type: 'ProviderConnection', id: uuidv4()} as const);
       return actions.setProviderConnections({ lines });
     }),
   ),

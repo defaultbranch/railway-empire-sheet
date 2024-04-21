@@ -103,7 +103,7 @@ const loadDirectLinesEffect = createEffect(
     map(() => {
       const raw = JSON.parse(localStorage.getItem('direct-lines') as string ?? '[]');
       if (!Array.isArray(raw)) throw new Error('require array');
-      const lines = raw.filter(requireDirectline).map(it => it.id ? it : {...it, id: uuidv4()});
+      const lines = raw.filter(requireDirectline).map(it => it.id ? {...it, type: 'DirectLine'} as const : {...it, type: 'DirectLine', id: uuidv4()} as const);
       return actions.setDirectLines({ lines });
     }),
   ),

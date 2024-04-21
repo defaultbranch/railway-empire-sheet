@@ -1390,28 +1390,36 @@
       "good": "Cereales",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-29T00:00:00.000Z",
-      "productionFactor": 0.4193301874561037
+      "productionFactor": 0.4193301874561037,
+      "type": "ProviderConnection",
+      "id": "1b5ff2e7-ec45-4878-a1f9-b270bee813d9"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-04T00:00:00.000Z",
-      "productionFactor": 0.17072494077978614
+      "productionFactor": 0.17072494077978614,
+      "type": "ProviderConnection",
+      "id": "ef3e2290-e963-4db7-82ad-0588b8f3e0c4"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Chicago",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.12279718140186009
+      "productionFactor": 0.12279718140186009,
+      "type": "ProviderConnection",
+      "id": "6d119099-a78c-4865-851b-977890588b36"
     },
     {
       "ruralProducer": "Harris Tala",
       "good": "Madera",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-31T00:00:00.000Z",
-      "productionFactor": 0.6657964277680226
+      "productionFactor": 0.6657964277680226,
+      "type": "ProviderConnection",
+      "id": "92eeaf05-3ded-44f5-b6d2-00c17c16e4b5"
     },
     {
       "ruralProducer": "Walker Cría",
@@ -1419,28 +1427,36 @@
       "destinationCity": "Chicago",
       "lastRun": "1912-10-24T00:00:00.000Z",
       "productionFactor": 1,
-      "demandFactor": 0.7
+      "demandFactor": 0.7,
+      "type": "ProviderConnection",
+      "id": "782955ed-2404-4cba-87ac-2fd46a41eaab"
     },
     {
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "Chicago",
-      "lastRun": "1912-09-16T00:00:00.000Z",
-      "productionFactor": 0.19945979638479114
+      "lastRun": "1912-11-22T00:00:00.000Z",
+      "productionFactor": 0.19945979638479114,
+      "type": "ProviderConnection",
+      "id": "2e1ab528-581b-4397-8410-6b9259545953"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-06T00:00:00.000Z",
-      "productionFactor": 0.2081713708289914
+      "productionFactor": 0.2081713708289914,
+      "type": "ProviderConnection",
+      "id": "8260a6e1-575d-4196-a82e-3841b28ee31d"
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-13T00:00:00.000Z",
-      "productionFactor": 0.2574488534944391
+      "productionFactor": 0.2574488534944391,
+      "type": "ProviderConnection",
+      "id": "651cd698-e6cc-4c1c-be45-ed8236f5b542"
     },
     {
       "ruralProducer": "Stewards Mansión",
@@ -1448,14 +1464,18 @@
       "destinationCity": "Columbia",
       "lastRun": "1912-10-08T00:00:00.000Z",
       "productionFactor": 0.20661988228445768,
-      "demandFactor": 1
+      "demandFactor": 1,
+      "type": "ProviderConnection",
+      "id": "bef76375-f66f-4c1b-bc43-8a9cff5fe811"
     },
     {
       "ruralProducer": "Howard Cría",
       "good": "Ganado",
       "destinationCity": "Columbia",
       "lastRun": "1912-10-28T00:00:00.000Z",
-      "productionFactor": 0.4375
+      "productionFactor": 0.4375,
+      "type": "ProviderConnection",
+      "id": "58d9bb63-cd04-4853-a7b6-d9ea05414c9e"
     },
     {
       "ruralProducer": "Stewards Mansión",
@@ -1463,7 +1483,9 @@
       "destinationCity": "Des Moines",
       "lastRun": "1912-09-29T00:00:00.000Z",
       "demandFactor": 0.5,
-      "productionFactor": 0.08906603712567104
+      "productionFactor": 0.08906603712567104,
+      "type": "ProviderConnection",
+      "id": "26534be0-3a0d-4b3c-b4d3-b852f256e962"
     },
     {
       "ruralProducer": "Anderson Estado",
@@ -1471,7 +1493,9 @@
       "destinationCity": "Duluth",
       "lastRun": "1912-10-23T00:00:00.000Z",
       "productionFactor": 0.5241727274659458,
-      "demandFactor": 1
+      "demandFactor": 1,
+      "type": "ProviderConnection",
+      "id": "a697770f-519d-4bb9-bd1c-7445870f5557"
     },
     {
       "ruralProducer": "Young Tala",
@@ -1479,83 +1503,107 @@
       "destinationCity": "Duluth",
       "lastRun": "1912-09-25T00:00:00.000Z",
       "demandFactor": 0.9,
-      "productionFactor": 0.29210685047336793
+      "productionFactor": 0.29210685047336793,
+      "type": "ProviderConnection",
+      "id": "75c88b44-9dcb-43fd-9dd7-dbd1350005a3"
     },
     {
       "ruralProducer": "Cox Conservar",
       "good": "Cereales",
       "destinationCity": "Fayetteville",
       "lastRun": "1912-10-19T00:00:00.000Z",
-      "productionFactor": 0.2780407226036224
+      "productionFactor": 0.2780407226036224,
+      "type": "ProviderConnection",
+      "id": "110de6c5-adcd-4b8d-973d-205681375aca"
     },
     {
       "ruralProducer": "Howard Cría",
       "good": "Ganado",
       "destinationCity": "Fayetteville",
       "lastRun": "1912-10-31T00:00:00.000Z",
-      "productionFactor": 0.28125000000000006
+      "productionFactor": 0.28125000000000006,
+      "type": "ProviderConnection",
+      "id": "2a1918d0-b0cc-4c2e-a063-2f36a106f113"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-10-05T00:00:00.000Z",
-      "productionFactor": 0.11651405895346492
+      "productionFactor": 0.11651405895346492,
+      "type": "ProviderConnection",
+      "id": "34764698-fbb7-4ccb-8570-7b5866f86f97"
     },
     {
       "ruralProducer": "Perry Granja",
       "good": "Maíz",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-10-26T00:00:00.000Z",
-      "productionFactor": 0.5063368118903403
+      "productionFactor": 0.5063368118903403,
+      "type": "ProviderConnection",
+      "id": "3b764c5e-4048-4910-adba-8387b0cec249"
     },
     {
       "ruralProducer": "Cole Mansión",
       "good": "Cereales",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-10-27T00:00:00.000Z",
-      "productionFactor": 0.7090835878839673
+      "productionFactor": 0.7090835878839673,
+      "type": "ProviderConnection",
+      "id": "e97e58ca-b5d0-4e28-bf73-f3ef87766f07"
     },
     {
       "ruralProducer": "Collins Estado",
       "good": "Maíz",
       "destinationCity": "Indianápolis",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.6079701174651739
+      "productionFactor": 0.6079701174651739,
+      "type": "ProviderConnection",
+      "id": "440434ef-78b8-4036-9a63-2a240b22b358"
     },
     {
       "ruralProducer": "Foster Granja",
       "good": "Cereales",
       "destinationCity": "Indianápolis",
       "lastRun": "1912-10-31T00:00:00.000Z",
-      "productionFactor": 0.5806698125438964
+      "productionFactor": 0.5806698125438964,
+      "type": "ProviderConnection",
+      "id": "1db371ac-8bf9-4794-8244-67f4a0a48e9b"
     },
     {
       "ruralProducer": "Howard Cría",
       "good": "Ganado",
       "destinationCity": "Kansas City",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.28125000000000006
+      "productionFactor": 0.28125000000000006,
+      "type": "ProviderConnection",
+      "id": "373e335b-0b03-4415-b1a4-1e9003ae6718"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Kansas City",
       "lastRun": "1912-10-06T00:00:00.000Z",
-      "productionFactor": 0.31798721854801987
+      "productionFactor": 0.31798721854801987,
+      "type": "ProviderConnection",
+      "id": "ee0a771d-3737-46f0-816d-aa9fce0441d8"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
       "good": "Madera",
       "destinationCity": "Knoxville",
       "lastRun": "1912-08-27T00:00:00.000Z",
-      "productionFactor": 0.06493591182351907
+      "productionFactor": 0.06493591182351907,
+      "type": "ProviderConnection",
+      "id": "ada9a1c9-cf7c-4804-8902-012347e3be61"
     },
     {
       "ruralProducer": "Ward Estado",
       "good": "Cereales",
       "destinationCity": "Knoxville",
-      "lastRun": "1912-09-22T00:00:00.000Z"
+      "lastRun": "1912-09-22T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "8931978f-af80-4301-a4de-c6db15cbe7e6"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -1563,41 +1611,53 @@
       "destinationCity": "Madison",
       "lastRun": "1912-09-28T00:00:00.000Z",
       "demandFactor": 0.5,
-      "productionFactor": 0.08065964111172379
+      "productionFactor": 0.08065964111172379,
+      "type": "ProviderConnection",
+      "id": "3a512673-07b4-4fa1-bbc1-e39baf85bc62"
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Madison",
       "lastRun": "1912-10-29T00:00:00.000Z",
-      "productionFactor": 0.230880131813813
+      "productionFactor": 0.230880131813813,
+      "type": "ProviderConnection",
+      "id": "4e5b399b-3e07-4602-8cec-6531def10b2b"
     },
     {
       "ruralProducer": "Reed Ganado",
       "good": "Ganado",
       "destinationCity": "Madison",
       "lastRun": "1912-11-01T00:00:00.000Z",
-      "productionFactor": 0.6666666666666666
+      "productionFactor": 0.6666666666666666,
+      "type": "ProviderConnection",
+      "id": "d8102c0b-d53c-4bed-8329-78945206be13"
     },
     {
       "ruralProducer": "Anderson Estado",
       "good": "Cereales",
       "destinationCity": "Madison",
       "lastRun": "1912-10-16T00:00:00.000Z",
-      "productionFactor": 0.4758272725340543
+      "productionFactor": 0.4758272725340543,
+      "type": "ProviderConnection",
+      "id": "a5b3a539-7c12-4aa8-b0cb-c79fb95a2fdd"
     },
     {
       "ruralProducer": "Lewis Cebado",
       "good": "Ganado",
       "destinationCity": "Omaha",
-      "lastRun": "1912-10-23T00:00:00.000Z"
+      "lastRun": "1912-10-23T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "f82a0b42-aea7-4f86-930b-f9b3d42f789a"
     },
     {
       "ruralProducer": "Evans Conservar",
       "good": "Maíz",
       "destinationCity": "Omaha",
       "lastRun": "1912-09-03T00:00:00.000Z",
-      "productionFactor": 0.17534442968784242
+      "productionFactor": 0.17534442968784242,
+      "type": "ProviderConnection",
+      "id": "cfad7776-304a-48f8-894d-ec677853e5ca"
     },
     {
       "ruralProducer": "Cooper Mansión",
@@ -1605,84 +1665,108 @@
       "destinationCity": "Rochester",
       "lastRun": "1912-10-26T00:00:00.000Z",
       "productionFactor": 0.2648109528591647,
-      "demandFactor": 1
+      "demandFactor": 1,
+      "type": "ProviderConnection",
+      "id": "8e7dfb21-d51f-4090-8559-59883d918a7d"
     },
     {
       "ruralProducer": "Mason Granja",
       "good": "Fruta",
       "destinationCity": "Rochester",
       "lastRun": "1912-11-01T00:00:00.000Z",
-      "productionFactor": 0.23133944891550087
+      "productionFactor": 0.23133944891550087,
+      "type": "ProviderConnection",
+      "id": "fb222756-af45-4bcb-8b3a-08d48c31ea88"
     },
     {
       "ruralProducer": "Archer Conservar",
       "good": "Cereales",
       "destinationCity": "Rock Island",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.6509657994619852
+      "productionFactor": 0.6509657994619852,
+      "type": "ProviderConnection",
+      "id": "ca81b1dc-e13e-4943-8b37-bb4aa3e7b66a"
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Rock Island",
       "lastRun": "1912-10-07T00:00:00.000Z",
-      "productionFactor": 0.21417813744336126
+      "productionFactor": 0.21417813744336126,
+      "type": "ProviderConnection",
+      "id": "51aad61b-f347-43f5-803a-ba4ed0a7dcfe"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "San Luis",
       "lastRun": "1912-10-27T00:00:00.000Z",
-      "productionFactor": 0.128220271314094
+      "productionFactor": 0.128220271314094,
+      "type": "ProviderConnection",
+      "id": "6cc922de-c41e-45e0-9e4a-dae149d48c13"
     },
     {
       "ruralProducer": "Archer Conservar",
       "good": "Cereales",
       "destinationCity": "San Luis",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.2552570035007415
+      "productionFactor": 0.2552570035007415,
+      "type": "ProviderConnection",
+      "id": "9928aa3f-4161-4235-8f89-bb2f73d0602c"
     },
     {
       "ruralProducer": "Evans Conservar",
       "good": "Maíz",
       "destinationCity": "Sioux Falls",
       "lastRun": "1912-10-24T00:00:00.000Z",
-      "productionFactor": 0.20689430979473
+      "productionFactor": 0.20689430979473,
+      "type": "ProviderConnection",
+      "id": "584931ba-b0ef-4b9e-a39b-4b8227d62f53"
     },
     {
       "ruralProducer": "Cole Mansión",
       "good": "Cereales",
       "destinationCity": "Toledo",
       "lastRun": "1912-10-30T00:00:00.000Z",
-      "productionFactor": 0.29091641211603264
+      "productionFactor": 0.29091641211603264,
+      "type": "ProviderConnection",
+      "id": "fda9fb55-181b-4a1a-861c-2b8ac07f0389"
     },
     {
       "ruralProducer": "Perry Granja",
       "good": "Maíz",
       "destinationCity": "Toledo",
       "lastRun": "1912-10-08T00:00:00.000Z",
-      "productionFactor": 0.49366318810965976
+      "productionFactor": 0.49366318810965976,
+      "type": "ProviderConnection",
+      "id": "f25e20c0-afae-4473-9c63-69678f04cb8b"
     },
     {
       "ruralProducer": "Parker Granja",
       "good": "Verduras",
       "destinationCity": "Toledo",
       "lastRun": "1912-10-24T00:00:00.000Z",
-      "productionFactor": 0.23778423045324731
+      "productionFactor": 0.23778423045324731,
+      "type": "ProviderConnection",
+      "id": "b411bc13-b273-4914-b41b-d294fe8ee396"
     },
     {
       "ruralProducer": "Lee Rancho",
       "good": "Ganado",
       "destinationCity": "Toledo",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.8
+      "productionFactor": 0.8,
+      "type": "ProviderConnection",
+      "id": "cead0f37-dc66-40ae-bcfa-1dcef4d08f3f"
     },
     {
       "ruralProducer": "Cooper Mansión",
       "good": "Cereales",
       "destinationCity": "Sioux Falls",
       "lastRun": "1912-10-18T00:00:00.000Z",
-      "productionFactor": 0.2469037716926194
+      "productionFactor": 0.2469037716926194,
+      "type": "ProviderConnection",
+      "id": "b0e98936-4da0-4841-bf0c-2bf2600e2b9f"
     },
     {
       "ruralProducer": "Carter Surco",
@@ -1690,21 +1774,27 @@
       "destinationCity": "Rochester",
       "demandFactor": 0.5,
       "lastRun": "1912-08-03T00:00:00.000Z",
-      "productionFactor": 0.4445397127236918
+      "productionFactor": 0.4445397127236918,
+      "type": "ProviderConnection",
+      "id": "324bf84a-7956-419d-8d1c-4573adf1cab8"
     },
     {
       "ruralProducer": "Wilson Cebado",
       "good": "Leche",
       "destinationCity": "Rochester",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.31144708551784434
+      "productionFactor": 0.31144708551784434,
+      "type": "ProviderConnection",
+      "id": "236fa8e3-9764-4ea7-92eb-459523d46997"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Fayetteville",
       "lastRun": "1912-10-19T00:00:00.000Z",
-      "productionFactor": 0.13334164827290648
+      "productionFactor": 0.13334164827290648,
+      "type": "ProviderConnection",
+      "id": "35c9dbb6-3993-4b96-b95a-482eaf3f6629"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -1712,21 +1802,27 @@
       "destinationCity": "Madison",
       "lastRun": "1912-10-04T00:00:00.000Z",
       "productionFactor": 0.13156579375722766,
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "a4bcda26-0d8a-4544-8183-78087054496b"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Indianápolis",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.11509063495904835
+      "productionFactor": 0.11509063495904835,
+      "type": "ProviderConnection",
+      "id": "1912d5de-6c82-4f3e-a07b-6b7ab49253b6"
     },
     {
       "ruralProducer": "Allen Mansión",
       "good": "Algodón",
       "destinationCity": "Madison",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 1
+      "productionFactor": 1,
+      "type": "ProviderConnection",
+      "id": "2936e24d-aad0-4a73-bd27-f33d7a2cceb9"
     },
     {
       "ruralProducer": "Williams Ganado",
@@ -1734,7 +1830,9 @@
       "destinationCity": "Madison",
       "productionFactor": 0.1788755453978807,
       "demandFactor": 0.5,
-      "lastRun": "1912-10-09T00:00:00.000Z"
+      "lastRun": "1912-10-09T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "2bf98939-5cd8-4bff-9a09-9c0518de56bc"
     },
     {
       "ruralProducer": "Wilson Cebado",
@@ -1742,28 +1840,36 @@
       "destinationCity": "Madison",
       "productionFactor": 0,
       "lastRun": "1912-03-15T00:00:00.000Z",
-      "demandFactor": 0
+      "demandFactor": 0,
+      "type": "ProviderConnection",
+      "id": "eab19d3e-acea-42dc-b0a1-b1e36c56aed4"
     },
     {
       "ruralProducer": "Scott Limpieza",
       "good": "Madera",
       "destinationCity": "Rock Island",
       "lastRun": "1912-10-24T00:00:00.000Z",
-      "productionFactor": 0.20143843809084064
+      "productionFactor": 0.20143843809084064,
+      "type": "ProviderConnection",
+      "id": "00131ae9-f8da-408a-a277-e7539883f9df"
     },
     {
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-10-08T00:00:00.000Z",
-      "productionFactor": 0.16788364845210885
+      "productionFactor": 0.16788364845210885,
+      "type": "ProviderConnection",
+      "id": "bac49652-d10b-4d4e-b8c2-e8b1b390a0d2"
     },
     {
       "ruralProducer": "Harris Tala",
       "good": "Madera",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-11-22T00:00:00.000Z",
-      "productionFactor": 0.15887008971496583
+      "productionFactor": 0.15887008971496583,
+      "type": "ProviderConnection",
+      "id": "83d5a19d-e034-4447-86fc-6eed34c7690a"
     },
     {
       "ruralProducer": "Thompson Mansión",
@@ -1771,7 +1877,9 @@
       "destinationCity": "Madison",
       "lastRun": "1912-11-17T00:00:00.000Z",
       "productionFactor": 0.16283319909294897,
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "35091f5d-42d6-4733-9415-6f5330dad391"
     },
     {
       "ruralProducer": "Evans Conservar",
@@ -1779,14 +1887,18 @@
       "destinationCity": "Des Moines",
       "lastRun": "1912-07-13T00:00:00.000Z",
       "productionFactor": 0.1286280656826551,
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "d7c65e2a-7962-45d8-9e7d-86b0be510268"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Rock Island",
       "productionFactor": 0.15100987714363986,
-      "lastRun": "1912-10-12T00:00:00.000Z"
+      "lastRun": "1912-10-12T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "d8455e53-1876-4608-9a1d-e01554ddbfcb"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -1794,77 +1906,99 @@
       "destinationCity": "Indianápolis",
       "lastRun": "1912-10-20T00:00:00.000Z",
       "productionFactor": 0.09467384140528787,
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "d251cda5-6694-4638-85d5-95830d5dd6fe"
     },
     {
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "Indianápolis",
       "lastRun": "1912-10-23T00:00:00.000Z",
-      "productionFactor": 0.1672354041138583
+      "productionFactor": 0.1672354041138583,
+      "type": "ProviderConnection",
+      "id": "dd92b22b-d567-47db-ae02-b62d5469b7cf"
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "San Luis",
       "lastRun": "1912-10-20T00:00:00.000Z",
-      "productionFactor": 0.16688692846354522
+      "productionFactor": 0.16688692846354522,
+      "type": "ProviderConnection",
+      "id": "5d5560c6-21bd-45b6-af8d-586f7417d27b"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "Toledo",
       "productionFactor": 0.15099964404518973,
-      "lastRun": "1912-10-23T00:00:00.000Z"
+      "lastRun": "1912-10-23T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "5938093d-560d-4486-8155-430c44844aa7"
     },
     {
       "ruralProducer": "Cooper Mansión",
       "good": "Cereales",
       "destinationCity": "Des Moines",
       "productionFactor": 0.37836078996555256,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "fe0ad807-86ed-49b3-8fce-eb5b17d0db2c"
     },
     {
       "ruralProducer": "Scott Limpieza",
       "good": "Madera",
       "destinationCity": "San Luis",
       "productionFactor": 0.17940496042889678,
-      "lastRun": "1912-10-29T00:00:00.000Z"
+      "lastRun": "1912-10-29T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "985ebab1-e6df-4088-a62d-2f6d40a3c705"
     },
     {
       "ruralProducer": "Thompson Mansión",
       "good": "Azúcar",
       "destinationCity": "San Luis",
       "productionFactor": 0.07960122622406578,
-      "lastRun": "1912-09-24T00:00:00.000Z"
+      "lastRun": "1912-09-24T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "519d00c2-48f4-4e77-96aa-89edd77fae65"
     },
     {
       "ruralProducer": "Wilson Cebado",
       "good": "Leche",
       "destinationCity": "Rock Island",
       "productionFactor": 0.3322994388421175,
-      "lastRun": "1912-10-25T00:00:00.000Z"
+      "lastRun": "1912-10-25T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "b4b4fe17-92c1-46bc-92d8-e3a64778fd49"
     },
     {
       "ruralProducer": "López Carbonería",
       "good": "Carbón",
       "destinationCity": "Toledo",
       "lastRun": "1912-10-24T00:00:00.000Z",
-      "productionFactor": 0.25
+      "productionFactor": 0.25,
+      "type": "ProviderConnection",
+      "id": "a9fb3d11-bf18-4b09-9485-bce0a870d368"
     },
     {
       "ruralProducer": "Stevens Granja",
       "good": "Maíz",
       "destinationCity": "Duluth",
       "productionFactor": 0.1306059487848414,
-      "lastRun": "1912-10-09T00:00:00.000Z"
+      "lastRun": "1912-10-09T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "3ecf5c1e-b3e2-4266-be47-1bafd1cee496"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "Rock Island",
       "lastRun": "1912-09-11T00:00:00.000Z",
-      "productionFactor": 0.17581561823613168
+      "productionFactor": 0.17581561823613168,
+      "type": "ProviderConnection",
+      "id": "7d9646ec-a51e-4203-b95b-422e202c6a17"
     },
     {
       "ruralProducer": "Evans Conservar",
@@ -1872,14 +2006,18 @@
       "destinationCity": "Rochester",
       "productionFactor": 0.4891331948347725,
       "lastRun": "1912-09-09T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "016022d1-cf80-4d1b-8c0d-003e95495236"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "Madison",
       "productionFactor": 0.2243691194833449,
-      "lastRun": "1912-09-16T00:00:00.000Z"
+      "lastRun": "1912-09-16T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "1c903e90-7c42-4d38-8d78-4272f091e0cb"
     },
     {
       "ruralProducer": "Archer Conservar",
@@ -1887,7 +2025,9 @@
       "destinationCity": "Columbia",
       "productionFactor": 0.09377719703727344,
       "lastRun": "1912-10-13T00:00:00.000Z",
-      "demandFactor": 1
+      "demandFactor": 1,
+      "type": "ProviderConnection",
+      "id": "37bf7435-bef4-43d7-af10-5d506171cfff"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -1895,21 +2035,27 @@
       "destinationCity": "Toledo",
       "productionFactor": 0,
       "lastRun": "1912-03-09T00:00:00.000Z",
-      "demandFactor": 0
+      "demandFactor": 0,
+      "type": "ProviderConnection",
+      "id": "c1e0f423-ac6a-4165-b5f0-5cc9928a736a"
     },
     {
       "ruralProducer": "Parker Granja",
       "good": "Verduras",
       "destinationCity": "Grand Rapids",
       "productionFactor": 0.2569604131257851,
-      "lastRun": "1912-10-02T00:00:00.000Z"
+      "lastRun": "1912-10-02T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "08685cbb-f3b3-4764-b145-fc4fdca053ae"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Madison",
       "productionFactor": 0.17072494077978614,
-      "lastRun": "1912-11-01T00:00:00.000Z"
+      "lastRun": "1912-11-01T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "c9553089-3514-4771-a34a-b8f015e470fc"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -1917,28 +2063,36 @@
       "destinationCity": "Duluth",
       "lastRun": "1912-08-09T00:00:00.000Z",
       "productionFactor": 0.1385751093091457,
-      "demandFactor": 0.1
+      "demandFactor": 0.1,
+      "type": "ProviderConnection",
+      "id": "f3453ea1-a31c-448c-97c4-d5afb3126d03"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "San Luis",
       "productionFactor": 0.15696371521512564,
-      "lastRun": "1912-10-13T00:00:00.000Z"
+      "lastRun": "1912-10-13T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "ffa28531-c936-4027-80b4-2d58430f14ad"
     },
     {
       "ruralProducer": "Parker Granja",
       "good": "Verduras",
       "destinationCity": "Chicago",
       "lastRun": "1912-10-21T00:00:00.000Z",
-      "productionFactor": 0.2608117330504975
+      "productionFactor": 0.2608117330504975,
+      "type": "ProviderConnection",
+      "id": "bc3b7671-649d-43c4-816a-8de929a2b5eb"
     },
     {
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "Toledo",
       "lastRun": "1912-09-28T00:00:00.000Z",
-      "productionFactor": 0.15724911697485972
+      "productionFactor": 0.15724911697485972,
+      "type": "ProviderConnection",
+      "id": "fba7cd3e-3a4e-4680-8f08-3e5a056d3ae6"
     },
     {
       "ruralProducer": "Anderson Estado",
@@ -1946,27 +2100,35 @@
       "destinationCity": "Rochester",
       "productionFactor": 0,
       "demandFactor": 0,
-      "lastRun": "1911-10-15T00:00:00.000Z"
+      "lastRun": "1911-10-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "3e6ab3bf-3f5b-40b1-813a-d50d84d99230"
     },
     {
       "ruralProducer": "Parker Granja",
       "good": "Verduras",
       "destinationCity": "Indianápolis",
       "lastRun": "1912-10-22T00:00:00.000Z",
-      "productionFactor": 0.24444362337047001
+      "productionFactor": 0.24444362337047001,
+      "type": "ProviderConnection",
+      "id": "378333fb-30b1-4c8b-af6a-657c0e50eb17"
     },
     {
       "ruralProducer": "Jenkins Cantera",
       "good": "Hierro",
       "destinationCity": "Toledo",
-      "lastRun": "1912-10-21T00:00:00.000Z"
+      "lastRun": "1912-10-21T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "23851996-84a3-4317-8a25-5937a1bdd0a3"
     },
     {
       "ruralProducer": "Reed Ganado",
       "good": "Ganado",
       "destinationCity": "Rochester",
       "lastRun": "1912-10-28T00:00:00.000Z",
-      "productionFactor": 0.3333333333333333
+      "productionFactor": 0.3333333333333333,
+      "type": "ProviderConnection",
+      "id": "b0697ec1-009d-48db-9978-bb2cb4ab5b7b"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -1974,70 +2136,90 @@
       "destinationCity": "Rochester",
       "productionFactor": 0.34901569841388924,
       "lastRun": "1912-09-23T00:00:00.000Z",
-      "demandFactor": 0.1
+      "demandFactor": 0.1,
+      "type": "ProviderConnection",
+      "id": "9929a68c-3fcc-45d7-96f6-eecb01a90428"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Indianápolis",
       "productionFactor": 0.16819852383838066,
-      "lastRun": "1912-10-22T00:00:00.000Z"
+      "lastRun": "1912-10-22T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "07e44960-ed30-4755-a747-4b33ce7ebbb8"
     },
     {
       "ruralProducer": "López Carbonería",
       "good": "Carbón",
       "destinationCity": "Duluth",
       "lastRun": "1912-09-14T00:00:00.000Z",
-      "productionFactor": 0.5
+      "productionFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "a35426b5-b556-4dcc-81d7-d27fcebf34e7"
     },
     {
       "ruralProducer": "Jones Carbonería",
       "good": "Hierro",
       "destinationCity": "Duluth",
       "lastRun": "1912-10-21T00:00:00.000Z",
-      "productionFactor": 1
+      "productionFactor": 1,
+      "type": "ProviderConnection",
+      "id": "7c799ac1-7331-4dca-90a5-8ca70811b309"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Grand Rapids",
       "productionFactor": 0.17072494077978614,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "70e6fc7c-fa8d-464d-8831-aa0962a15af0"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Rock Island",
       "productionFactor": 0.15897621943845722,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "e5a19cf1-f340-402d-960f-478104cb367c"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "Rochester",
       "productionFactor": 0.16642312284378086,
-      "lastRun": "1912-10-19T00:00:00.000Z"
+      "lastRun": "1912-10-19T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "02ddfa57-68d6-4d95-97f1-116520083922"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Toledo",
       "productionFactor": 0.1688384301841695,
-      "lastRun": "1912-10-27T00:00:00.000Z"
+      "lastRun": "1912-10-27T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "334d333a-59f6-41ef-b745-a6ce3f85a907"
     },
     {
       "ruralProducer": "Williams Ganado",
       "good": "Leche",
       "destinationCity": "San Luis",
       "productionFactor": 0.12929648867650112,
-      "lastRun": "1912-09-15T00:00:00.000Z"
+      "lastRun": "1912-09-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "85354aeb-fc85-491c-b439-e79cc6b0782e"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Rock Island",
       "productionFactor": 0.16562782159573491,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "bf9eaec3-55b3-4dca-a6a0-684395bd8527"
     },
     {
       "ruralProducer": "Thompson Mansión",
@@ -2045,7 +2227,9 @@
       "destinationCity": "Rochester",
       "lastRun": "1912-09-24T00:00:00.000Z",
       "productionFactor": 0.10115417817978224,
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "6b09b6e8-3d36-41a5-937f-dec4ba6b52a7"
     },
     {
       "ruralProducer": "Miller Mansion",
@@ -2053,55 +2237,71 @@
       "destinationCity": "Toledo",
       "productionFactor": 0.16083267385640962,
       "lastRun": "1912-08-14T00:00:00.000Z",
-      "demandFactor": 0.3
+      "demandFactor": 0.3,
+      "type": "ProviderConnection",
+      "id": "bad9d67a-692e-4665-b52d-fe2c1335ed56"
     },
     {
       "ruralProducer": "Miller Mansion",
       "good": "Fruta",
       "destinationCity": "Grand Rapids",
       "productionFactor": 0.16894933856638952,
-      "lastRun": "1912-10-31T00:00:00.000Z"
+      "lastRun": "1912-10-31T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "6927c204-f6c5-43d6-b615-c23bc425fdd5"
     },
     {
       "ruralProducer": "Stewards Mansión",
       "good": "Maíz",
       "destinationCity": "Kansas City",
       "productionFactor": 0.20282646659336395,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "d20327d2-ee31-4c42-80a1-d76106d489b5"
     },
     {
       "ruralProducer": "Anderson Perforación",
       "good": "Aceite",
       "destinationCity": "Columbia",
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "1125a5c0-a363-4afb-90f4-2a9773565264"
     },
     {
       "ruralProducer": "Stewards Mansión",
       "good": "Maíz",
       "destinationCity": "Fayetteville",
       "productionFactor": 0.16279671431343382,
-      "lastRun": "1912-09-25T00:00:00.000Z"
+      "lastRun": "1912-09-25T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "191b4db1-5209-4489-a665-5f9817ebb53c"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Columbia",
       "lastRun": "1912-11-22T00:00:00.000Z",
-      "productionFactor": 0.17948281401011815
+      "productionFactor": 0.17948281401011815,
+      "type": "ProviderConnection",
+      "id": "cb476108-4e2e-406b-95f2-789a8368f107"
     },
     {
       "ruralProducer": "Bishop Pozo",
       "good": "Cemento",
       "destinationCity": "Indianápolis",
       "productionFactor": 0.16001052803801474,
-      "lastRun": "1912-10-22T00:00:00.000Z"
+      "lastRun": "1912-10-22T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "b271e8fc-39b3-480d-b1da-1ab536ef5189"
     },
     {
       "ruralProducer": "Wilson Cebado",
       "good": "Leche",
       "destinationCity": "Duluth",
       "productionFactor": 0.20442562353354007,
-      "lastRun": "1912-08-27T00:00:00.000Z"
+      "lastRun": "1912-08-27T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "11087a8f-0b04-41e9-b109-9eb2c3cd62c5"
     },
     {
       "ruralProducer": "Cox Conservar",
@@ -2109,214 +2309,276 @@
       "destinationCity": "Columbia",
       "lastRun": "1912-07-03T00:00:00.000Z",
       "productionFactor": 0.3742531455751072,
-      "demandFactor": 0
+      "demandFactor": 0,
+      "type": "ProviderConnection",
+      "id": "9f286cd4-0f7b-43a1-afdc-55b3cce355a6"
     },
     {
       "ruralProducer": "Cox Conservar",
       "good": "Cereales",
       "destinationCity": "Kansas City",
       "productionFactor": 0.3477061318212704,
-      "lastRun": "1912-11-02T00:00:00.000Z"
+      "lastRun": "1912-11-02T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "6f7d23da-a59e-4ebd-89a0-c7f6f17b403c"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Des Moines",
       "productionFactor": 0.15473654131732684,
-      "lastRun": "1912-08-28T00:00:00.000Z"
+      "lastRun": "1912-08-28T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "9fd89960-1973-45ed-ae3b-c602f5dacca1"
     },
     {
       "ruralProducer": "Cooper Mansión",
       "good": "Cereales",
       "destinationCity": "Omaha",
       "lastRun": "1912-10-14T00:00:00.000Z",
-      "productionFactor": 0.10992448548266329
+      "productionFactor": 0.10992448548266329,
+      "type": "ProviderConnection",
+      "id": "a8402962-238d-46b6-9424-a21d2499d2f6"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Omaha",
       "productionFactor": 0.09837549363478935,
-      "lastRun": "1912-11-22T00:00:00.000Z"
+      "lastRun": "1912-11-22T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "3169439b-7361-48b6-a143-bef529aa4748"
     },
     {
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Sioux Falls",
       "productionFactor": 0.11607628421683933,
-      "lastRun": "1912-10-18T00:00:00.000Z"
+      "lastRun": "1912-10-18T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "5a9805ff-b84a-407f-9092-b6c631d062b6"
     },
     {
       "ruralProducer": "Rice Granja",
       "good": "Cereales",
       "destinationCity": "Memphis",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.4504879991770722
+      "productionFactor": 0.4504879991770722,
+      "type": "ProviderConnection",
+      "id": "3ed91325-ab65-4ba8-a4ad-3901dab4b13b"
     },
     {
       "ruralProducer": "Rice Granja",
       "good": "Cereales",
       "destinationCity": "Nashville",
       "lastRun": "1912-10-31T00:00:00.000Z",
-      "productionFactor": 0.3462890205001744
+      "productionFactor": 0.3462890205001744,
+      "type": "ProviderConnection",
+      "id": "1d848672-f99b-4886-a3de-728821ad7752"
     },
     {
       "ruralProducer": "Kelly Mansión",
       "good": "Maíz",
       "destinationCity": "Memphis",
       "productionFactor": 0.5283052555061023,
-      "lastRun": "1912-09-01T00:00:00.000Z"
+      "lastRun": "1912-09-01T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "ccfc9ff6-926b-45f9-9cb6-eba19ca4203d"
     },
     {
       "ruralProducer": "Kelly Mansión",
       "good": "Maíz",
       "destinationCity": "Nashville",
       "productionFactor": 0.4716947444938977,
-      "lastRun": "1912-09-11T00:00:00.000Z"
+      "lastRun": "1912-09-11T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "1c0fa5a7-a16c-4bfb-a3db-71d535156a53"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
       "good": "Madera",
       "destinationCity": "Toledo",
       "productionFactor": 0.3259126411395349,
-      "lastRun": "1912-10-20T00:00:00.000Z"
+      "lastRun": "1912-10-20T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "fb535067-4210-4d8d-96d7-2d228a947a47"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
       "good": "Madera",
       "destinationCity": "Louisville",
       "productionFactor": 0.15169105897957608,
-      "lastRun": "1912-09-29T00:00:00.000Z"
+      "lastRun": "1912-09-29T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "e1329324-95c8-43c5-afdc-250d28553b9e"
     },
     {
       "ruralProducer": "Mason Granja",
       "good": "Fruta",
       "destinationCity": "Madison",
       "lastRun": "1912-10-24T00:00:00.000Z",
-      "productionFactor": 0.27302583359785315
+      "productionFactor": 0.27302583359785315,
+      "type": "ProviderConnection",
+      "id": "2b83fe20-197e-4a30-817d-8031716cef13"
     },
     {
       "ruralProducer": "Lee Rancho",
       "good": "Ganado",
       "destinationCity": "Louisville",
       "productionFactor": 0.2,
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "30ce7e49-c323-45c0-bf9f-1d9895364b77"
     },
     {
       "ruralProducer": "Collins Estado",
       "good": "Maíz",
       "destinationCity": "Louisville",
       "productionFactor": 0.27573233292430444,
-      "lastRun": "1912-11-01T00:00:00.000Z"
+      "lastRun": "1912-11-01T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "26a35d05-ee3f-4c64-b06f-8bfba1d45049"
     },
     {
       "ruralProducer": "White Cría",
       "good": "Leche",
       "destinationCity": "Kansas City",
       "productionFactor": 0.2864544365493649,
-      "lastRun": "1912-11-22T00:00:00.000Z"
+      "lastRun": "1912-11-22T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "6f0e1443-9e4d-4d7c-a5af-82aae7989dc0"
     },
     {
       "ruralProducer": "Thomas Conservar",
       "good": "Algodón",
       "destinationCity": "Grand Rapids",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "8e68aa9e-9928-42da-a095-49d21a561213"
     },
     {
       "ruralProducer": "Archer Paisaje rural",
       "good": "Aceite",
       "destinationCity": "Fayetteville",
-      "lastRun": "1912-11-17T00:00:00.000Z"
+      "lastRun": "1912-11-17T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "9f106753-c48d-4f02-b2f9-ec4c3d7ea0c1"
     },
     {
       "ruralProducer": "Baker Campo",
       "good": "Aceite",
       "destinationCity": "Fayetteville",
-      "lastRun": "1912-09-27T00:00:00.000Z"
+      "lastRun": "1912-09-27T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "ed622a7b-adce-4865-9658-6dcbad256dc0"
     },
     {
       "ruralProducer": "Rice Granja",
       "good": "Cereales",
       "destinationCity": "Louisville",
       "lastRun": "1912-09-14T00:00:00.000Z",
-      "productionFactor": 0.2032229803227534
+      "productionFactor": 0.2032229803227534,
+      "type": "ProviderConnection",
+      "id": "b8486b9b-747c-467e-beb6-c27b37eb707d"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
       "good": "Madera",
       "destinationCity": "Nashville",
       "productionFactor": 0.266062302331577,
-      "lastRun": "1912-10-25T00:00:00.000Z"
+      "lastRun": "1912-10-25T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "aca804a1-2dc7-4464-8059-684b3593f992"
     },
     {
       "ruralProducer": "Moore Estado",
       "good": "Azúcar",
       "destinationCity": "Memphis",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "productionFactor": 0.5046699825639616
+      "productionFactor": 0.5046699825639616,
+      "type": "ProviderConnection",
+      "id": "6ed91902-4d35-4bd7-9838-270b19766fda"
     },
     {
       "ruralProducer": "Moore Estado",
       "good": "Azúcar",
       "destinationCity": "Nashville",
       "lastRun": "1912-10-15T00:00:00.000Z",
-      "productionFactor": 0.22286958487308103
+      "productionFactor": 0.22286958487308103,
+      "type": "ProviderConnection",
+      "id": "68ee6674-a6e5-4df4-b5dc-a16d068654f7"
     },
     {
       "ruralProducer": "Johnson Rancho",
       "good": "Leche",
       "destinationCity": "Memphis",
       "productionFactor": 0.29474481751226933,
-      "lastRun": "1912-09-29T00:00:00.000Z"
+      "lastRun": "1912-09-29T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "52e8a11b-9acb-4d89-b339-0c0a65fca837"
     },
     {
       "ruralProducer": "Johnson Rancho",
       "good": "Leche",
       "destinationCity": "Nashville",
       "productionFactor": 0,
-      "lastRun": "1912-08-10T00:00:00.000Z"
+      "lastRun": "1912-08-10T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "c2fc94cd-c261-4e66-9a0e-55f7f73f0db0"
     },
     {
       "ruralProducer": "Johnson Rancho",
       "good": "Leche",
       "destinationCity": "Louisville",
       "productionFactor": 0.34817034463458085,
-      "lastRun": "1912-07-09T00:00:00.000Z"
+      "lastRun": "1912-07-09T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "0d46da41-4fa1-4e4f-b94f-c6800f836f92"
     },
     {
       "ruralProducer": "Mason Granja",
       "good": "Fruta",
       "destinationCity": "Des Moines",
       "productionFactor": 0.15875024012366676,
-      "lastRun": "1912-10-13T00:00:00.000Z"
+      "lastRun": "1912-10-13T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "690c80e7-b386-40e1-9a45-4108fd337261"
     },
     {
       "ruralProducer": "Moore Estado",
       "good": "Azúcar",
       "destinationCity": "Louisville",
       "productionFactor": 0.2724604325629574,
-      "lastRun": "1912-10-21T00:00:00.000Z"
+      "lastRun": "1912-10-21T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "e95db73e-ca87-40f1-a7f1-b80777c38c2f"
     },
     {
       "ruralProducer": "White Cría",
       "good": "Leche",
       "destinationCity": "Des Moines",
       "productionFactor": 0.24414103889251684,
-      "lastRun": "1912-10-15T00:00:00.000Z"
+      "lastRun": "1912-10-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "f41ecc9f-64e1-43ea-adc2-b145ebc89355"
     },
     {
       "ruralProducer": "White Cría",
       "good": "Leche",
       "destinationCity": "Columbia",
-      "productionFactor": 0.28139014907428633
+      "productionFactor": 0.28139014907428633,
+      "type": "ProviderConnection",
+      "id": "f4effbcd-e3cf-4f28-a4ed-f7e8474fe7bc"
     },
     {
       "ruralProducer": "Martin Conservar",
       "good": "Azúcar",
       "destinationCity": "Omaha",
       "lastRun": "1912-06-28T00:00:00.000Z",
-      "productionFactor": 0.33348784188268976
+      "productionFactor": 0.33348784188268976,
+      "type": "ProviderConnection",
+      "id": "bcaa5160-0c19-4009-8071-76ac37ed9af4"
     },
     {
       "ruralProducer": "Chaplin Zanha",
@@ -2324,42 +2586,54 @@
       "destinationCity": "Rochester",
       "productionFactor": 0.2851099278037307,
       "lastRun": "1912-10-19T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "a80d1d96-6866-4b8b-9d59-d119473723a6"
     },
     {
       "ruralProducer": "Martin Conservar",
       "good": "Azúcar",
       "destinationCity": "Sioux Falls",
       "productionFactor": 0.39758468142924025,
-      "lastRun": "1912-10-28T00:00:00.000Z"
+      "lastRun": "1912-10-28T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "72142714-744f-4e3d-a32b-ce069e0a991e"
     },
     {
       "ruralProducer": "Johnson Rancho",
       "good": "Leche",
       "destinationCity": "Fayetteville",
       "productionFactor": 0.35708483785314976,
-      "lastRun": "1912-10-19T00:00:00.000Z"
+      "lastRun": "1912-10-19T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "8e11b851-37ad-4eb4-86a1-2053e369b3c3"
     },
     {
       "ruralProducer": "Collins Estado",
       "good": "Maíz",
       "destinationCity": "Knoxville",
       "productionFactor": 0.11629754961052158,
-      "lastRun": "1912-07-05T00:00:00.000Z"
+      "lastRun": "1912-07-05T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "9e80e16e-5da3-4f89-a6a1-c421c700115e"
     },
     {
       "ruralProducer": "Adams Granja",
       "good": "Algodón",
       "destinationCity": "Grand Rapids",
       "demandFactor": 0.5,
-      "lastRun": "1912-10-08T00:00:00.000Z"
+      "lastRun": "1912-10-08T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "0c326f9b-41dd-48e9-adbf-f7f6acf29f25"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "Des Moines",
       "productionFactor": 0.11769906941402664,
-      "lastRun": "1912-10-29T00:00:00.000Z"
+      "lastRun": "1912-10-29T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "bb0b4917-4c7a-4bc4-b40c-cc34504855c7"
     },
     {
       "ruralProducer": "Martin Conservar",
@@ -2367,7 +2641,9 @@
       "destinationCity": "Des Moines",
       "productionFactor": 0.26892747668807,
       "lastRun": "1912-07-18T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "18f7d5ab-f0f5-479e-8b94-cd741adec066"
     },
     {
       "ruralProducer": "Robinson Granja",
@@ -2375,7 +2651,9 @@
       "destinationCity": "Madison",
       "demandFactor": 0.5,
       "lastRun": "1912-07-23T00:00:00.000Z",
-      "productionFactor": 0.25503746895911905
+      "productionFactor": 0.25503746895911905,
+      "type": "ProviderConnection",
+      "id": "7248ab13-dab2-44aa-8e33-75a96ea6c6c5"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
@@ -2383,14 +2661,18 @@
       "destinationCity": "Indianápolis",
       "productionFactor": 0.1913980857257929,
       "lastRun": "1912-10-01T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "2e946f00-1252-45ec-804d-06951f4f07c2"
     },
     {
       "ruralProducer": "Stark Conservar",
       "good": "Verduras",
       "destinationCity": "Columbia",
       "productionFactor": 0.1587293548075903,
-      "lastRun": "1912-10-08T00:00:00.000Z"
+      "lastRun": "1912-10-08T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "c1ca37aa-16af-4f05-95c3-c0de7b29f43c"
     },
     {
       "ruralProducer": "Robinson Granja",
@@ -2398,7 +2680,9 @@
       "destinationCity": "Rochester",
       "productionFactor": 0.241927937869002,
       "lastRun": "1912-08-03T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "00cfcc27-143f-4a17-8484-61a41b021a25"
     },
     {
       "ruralProducer": "Stewards Mansión",
@@ -2406,55 +2690,71 @@
       "destinationCity": "Rochester",
       "productionFactor": 0.33869089968307353,
       "demandFactor": 0.5,
-      "lastRun": "1912-10-15T00:00:00.000Z"
+      "lastRun": "1912-10-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "9347090d-8bc2-485e-bf49-cc0f9790cfbb"
     },
     {
       "ruralProducer": "Campbell Rancho",
       "good": "Ganado",
       "destinationCity": "Chicago",
       "lastRun": "1912-11-17T00:00:00.000Z",
-      "demandFactor": 0.3
+      "demandFactor": 0.3,
+      "type": "ProviderConnection",
+      "id": "4aa712e8-b946-4867-ae47-4a8f45f86847"
     },
     {
       "ruralProducer": "Mason Granja",
       "good": "Fruta",
       "destinationCity": "Duluth",
       "productionFactor": 0.19331129112486892,
-      "lastRun": "1912-10-18T00:00:00.000Z"
+      "lastRun": "1912-10-18T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "82e9f5cc-d2d0-474d-8e78-ed1af5021f81"
     },
     {
       "ruralProducer": "Chaplin Zanha",
       "good": "Cemento",
       "destinationCity": "Kansas City",
-      "productionFactor": 0.36063288795966597
+      "productionFactor": 0.36063288795966597,
+      "type": "ProviderConnection",
+      "id": "bab3670e-d8f6-4c4a-9a3f-277f2d6c5ca3"
     },
     {
       "ruralProducer": "Chaplin Zanha",
       "good": "Cemento",
       "destinationCity": "Columbia",
       "lastRun": "1912-08-12T00:00:00.000Z",
-      "productionFactor": 0.3542571842366034
+      "productionFactor": 0.3542571842366034,
+      "type": "ProviderConnection",
+      "id": "861f969a-7edd-4e89-81b4-2d51ae185dab"
     },
     {
       "ruralProducer": "Chaplin Zanha",
       "good": "Cemento",
       "destinationCity": "Fayetteville",
       "lastRun": "1912-10-19T00:00:00.000Z",
-      "productionFactor": 0
+      "productionFactor": 0,
+      "type": "ProviderConnection",
+      "id": "83418228-991d-4bf6-ad69-85241b69b92f"
     },
     {
       "ruralProducer": "Nolan Estado",
       "good": "Fruta",
       "destinationCity": "Toledo",
       "lastRun": "1912-11-01T00:00:00.000Z",
-      "demandFactor": 0.8
+      "demandFactor": 0.8,
+      "type": "ProviderConnection",
+      "id": "a945a638-e5c1-411c-bfd7-fa8de64b4905"
     },
     {
       "ruralProducer": "Norris Conservar",
       "good": "Fruta",
       "destinationCity": "Fayetteville",
       "lastRun": "1912-08-21T00:00:00.000Z",
-      "productionFactor": 0.4547778009597329
+      "productionFactor": 0.4547778009597329,
+      "type": "ProviderConnection",
+      "id": "778abf9e-8d10-4a42-8c45-0c72de529201"
     },
     {
       "ruralProducer": "Robinson Granja",
@@ -2462,14 +2762,18 @@
       "destinationCity": "Des Moines",
       "productionFactor": 0.14790573164929952,
       "lastRun": "1912-09-05T00:00:00.000Z",
-      "demandFactor": 0.5
+      "demandFactor": 0.5,
+      "type": "ProviderConnection",
+      "id": "7687edb3-fff3-4f9d-b805-0cef2167d195"
     },
     {
       "ruralProducer": "Carter Surco",
       "good": "Cemento",
       "destinationCity": "Duluth",
       "productionFactor": 0.5554602872763081,
-      "lastRun": "1912-09-15T00:00:00.000Z"
+      "lastRun": "1912-09-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "4d501f02-2b1c-41c2-a941-58dab9c5c1ba"
     },
     {
       "ruralProducer": "Young Tala",
@@ -2477,64 +2781,84 @@
       "destinationCity": "Rochester",
       "lastRun": "1912-11-17T00:00:00.000Z",
       "productionFactor": 0.7078931495266321,
-      "demandFactor": 0.9
+      "demandFactor": 0.9,
+      "type": "ProviderConnection",
+      "id": "5d336451-e7ba-47ad-a2ce-9c78c0e378f5"
     },
     {
       "ruralProducer": "Norris Conservar",
       "good": "Fruta",
       "destinationCity": "Kansas City",
       "productionFactor": 0.545222199040267,
-      "lastRun": "1912-09-28T00:00:00.000Z"
+      "lastRun": "1912-09-28T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "07aa4fe4-bb3e-45b2-be1c-8e724c929e1d"
     },
     {
       "ruralProducer": "White Cría",
       "good": "Leche",
       "destinationCity": "Omaha",
       "productionFactor": 0.1880143754838319,
-      "lastRun": "1912-09-29T00:00:00.000Z"
+      "lastRun": "1912-09-29T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "129a5c6d-4a50-4cf4-bf71-5e05c5509112"
     },
     {
       "ruralProducer": "Hall Granja",
       "good": "Algodón",
       "destinationCity": "Des Moines",
-      "lastRun": "1912-10-15T00:00:00.000Z"
+      "lastRun": "1912-10-15T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "a897f9b3-716e-475e-a638-76ced8ceee9c"
     },
     {
       "ruralProducer": "Robinson Granja",
       "good": "Azúcar",
       "destinationCity": "Duluth",
       "productionFactor": 0.35512886152257944,
-      "lastRun": "1912-10-12T00:00:00.000Z"
+      "lastRun": "1912-10-12T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "6b53d85a-4315-4881-a30e-bcf679517a12"
     },
     {
       "ruralProducer": "Mason Granja",
       "good": "Fruta",
       "destinationCity": "Sioux Falls",
       "productionFactor": 0.14357318623811036,
-      "lastRun": "1912-10-08T00:00:00.000Z"
+      "lastRun": "1912-10-08T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "3bdca3e1-460f-4be9-a741-663a991dabfe"
     },
     {
       "ruralProducer": "López Carbonería",
       "good": "Carbón",
       "destinationCity": "Rock Island",
-      "productionFactor": 0.25
+      "productionFactor": 0.25,
+      "type": "ProviderConnection",
+      "id": "98df23f7-c7be-430c-94c1-08397b15b0b6"
     },
     {
       "ruralProducer": "Wilson Cebado",
       "good": "Leche",
       "destinationCity": "Sioux Falls",
-      "productionFactor": 0.15182785210649805
+      "productionFactor": 0.15182785210649805,
+      "type": "ProviderConnection",
+      "id": "8e6c4fd6-a1e0-4023-be1a-16867e417c3e"
     },
     {
       "ruralProducer": "Chaplin Zanha",
       "good": "Cemento",
-      "destinationCity": "Des Moines"
+      "destinationCity": "Des Moines",
+      "type": "ProviderConnection",
+      "id": "14970771-6297-45e4-8043-5f79edc3b2ab"
     },
     {
       "ruralProducer": "Wood Mansión",
       "good": "Algodón",
       "destinationCity": "Grand Rapids",
-      "lastRun": "1912-10-19T00:00:00.000Z"
+      "lastRun": "1912-10-19T00:00:00.000Z",
+      "type": "ProviderConnection",
+      "id": "779df848-558f-4884-b071-b36ccedb2c45"
     }
   ],
   "directLines": [
@@ -2545,7 +2869,8 @@
       "miles": 45,
       "cost": 26905,
       "lastRun": "1910-11-06T00:00:00.000Z",
-      "id": "2a8d06cc-ef63-41ec-b438-1d6647335fd2"
+      "type": "DirectLine",
+      "id": "55013804-33e4-4f3e-ab65-50f3806b49e0"
     },
     {
       "ruralProducer": "Bishop Pozo",
@@ -2554,7 +2879,8 @@
       "miles": 54,
       "cost": 34830,
       "lastRun": "1910-08-10T00:00:00.000Z",
-      "id": "f8f0d027-6660-40b5-80f2-f32f4c88ee9b"
+      "type": "DirectLine",
+      "id": "9a6d9124-876e-45a3-82db-270cbe8fca83"
     },
     {
       "ruralProducer": "Thompson Mansión",
@@ -2563,7 +2889,8 @@
       "miles": 75,
       "cost": 54729,
       "lastRun": "1910-09-04T00:00:00.000Z",
-      "id": "495f422a-086c-4b15-a8f7-72780e38e822"
+      "type": "DirectLine",
+      "id": "1b6d7fab-485a-4346-bf91-73a85435ac82"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -2572,7 +2899,8 @@
       "miles": 127,
       "cost": 100446,
       "lastRun": "1910-11-12T00:00:00.000Z",
-      "id": "eaa279e6-2c3a-412e-8ed5-49856b6ed351"
+      "type": "DirectLine",
+      "id": "3500f310-58a2-4db1-9a65-6957066c7abe"
     },
     {
       "ruralProducer": "Walker Cría",
@@ -2581,7 +2909,8 @@
       "miles": 117,
       "cost": 101400,
       "lastRun": "1910-10-05T00:00:00.000Z",
-      "id": "5ed0481d-0fb1-42c5-95a2-54be639ed18d"
+      "type": "DirectLine",
+      "id": "80c64b7f-af32-4511-9995-b20a1df2a1d9"
     },
     {
       "ruralProducer": "Williams Ganado",
@@ -2590,7 +2919,8 @@
       "miles": 72,
       "cost": 49925,
       "lastRun": "1910-11-11T00:00:00.000Z",
-      "id": "357d8562-c71d-483f-82b3-90ee6c575866"
+      "type": "DirectLine",
+      "id": "13dce4aa-19a5-4d2c-b5d6-a9a1bc97f17f"
     },
     {
       "ruralProducer": "Miller Mansion",
@@ -2599,7 +2929,8 @@
       "miles": 113,
       "cost": 97319,
       "lastRun": "1910-10-05T00:00:00.000Z",
-      "id": "0d1b1c28-4c91-47b6-bbc1-897235a5d34f"
+      "type": "DirectLine",
+      "id": "4def2fbb-085d-4f0b-884c-e0f87b9afd5f"
     },
     {
       "ruralProducer": "Stevens Granja",
@@ -2608,7 +2939,8 @@
       "miles": 83,
       "cost": 63852,
       "lastRun": "1910-10-19T00:00:00.000Z",
-      "id": "01890b96-0955-41b1-9ce4-e6ad0d427c3a"
+      "type": "DirectLine",
+      "id": "fe38bc9d-9f67-489a-be3c-8581fd2e148e"
     },
     {
       "ruralProducer": "Stewards Mansión",
@@ -2617,7 +2949,8 @@
       "miles": 60,
       "cost": 37421,
       "lastRun": "1910-08-11T00:00:00.000Z",
-      "id": "82ba760f-0776-47de-9bf5-3a53b6d4efb3"
+      "type": "DirectLine",
+      "id": "3a568f56-043e-4442-862a-b30798829e9f"
     },
     {
       "ruralProducer": "Howard Cría",
@@ -2626,7 +2959,8 @@
       "miles": 52,
       "cost": 153865,
       "lastRun": "1910-10-22T00:00:00.000Z",
-      "id": "d090db8a-db7e-4d4b-a4c8-1700c198b548"
+      "type": "DirectLine",
+      "id": "c486a54c-ea3e-4aa7-a74f-52fcfe86e081"
     },
     {
       "ruralProducer": "Stewards Mansión",
@@ -2635,7 +2969,8 @@
       "miles": 70,
       "cost": 45233,
       "lastRun": "1910-10-05T00:00:00.000Z",
-      "id": "9f4d7847-0a65-4d19-8c7f-9c6aaa4bbc4e"
+      "type": "DirectLine",
+      "id": "0eaff2dd-2513-4d34-83a3-edcbe4ea336a"
     },
     {
       "ruralProducer": "Anderson Estado",
@@ -2644,7 +2979,8 @@
       "miles": 64,
       "cost": 41692,
       "lastRun": "1910-09-22T00:00:00.000Z",
-      "id": "8c4f58ec-4f50-4aee-8bde-aa49c857de7a"
+      "type": "DirectLine",
+      "id": "1b6bfaec-26b3-411e-aab3-5981d347f99f"
     },
     {
       "ruralProducer": "Young Tala",
@@ -2653,7 +2989,8 @@
       "miles": 92,
       "cost": 53051,
       "lastRun": "1910-06-16T00:00:00.000Z",
-      "id": "9699ebd2-05f5-4530-92e6-6a5845b7bcda"
+      "type": "DirectLine",
+      "id": "5236de9b-735d-44ba-8583-8b8e27db9961"
     },
     {
       "ruralProducer": "Cox Conservar",
@@ -2662,7 +2999,8 @@
       "miles": 69,
       "cost": 59211,
       "lastRun": "1910-07-17T00:00:00.000Z",
-      "id": "8b47be95-3eb6-4bf6-bdbf-41c8ebe55839"
+      "type": "DirectLine",
+      "id": "34012386-56cf-4b6a-a0a3-d796b04cfcfa"
     },
     {
       "ruralProducer": "Howard Cría",
@@ -2671,7 +3009,8 @@
       "miles": 132,
       "cost": 82351,
       "lastRun": "1910-09-26T00:00:00.000Z",
-      "id": "3bf6bd47-932d-4d8a-89fe-184b859aa3f2"
+      "type": "DirectLine",
+      "id": "9098409f-a99e-460a-9edc-066e818a4006"
     },
     {
       "ruralProducer": "Thompson Mansión",
@@ -2680,7 +3019,8 @@
       "miles": 60,
       "cost": 35726,
       "lastRun": "1910-11-07T00:00:00.000Z",
-      "id": "98d55440-6c5c-49fb-a064-3cba8fc2442a"
+      "type": "DirectLine",
+      "id": "6dcf0141-c5ca-4b1f-ae72-4f2a21971376"
     },
     {
       "ruralProducer": "Perry Granja",
@@ -2689,7 +3029,8 @@
       "miles": 56,
       "cost": 35878,
       "lastRun": "1910-11-06T00:00:00.000Z",
-      "id": "48c3463c-de76-41cf-af5a-c010f89ab040"
+      "type": "DirectLine",
+      "id": "bc5a6e0c-8c3d-49a1-80ff-8badd1ad421c"
     },
     {
       "ruralProducer": "Cole Mansión",
@@ -2698,7 +3039,8 @@
       "miles": 103,
       "cost": 69373,
       "lastRun": "1910-10-02T00:00:00.000Z",
-      "id": "2c802c90-f5cf-4d68-9c33-38252cc325f8"
+      "type": "DirectLine",
+      "id": "d08c84c0-8cf2-43ed-bf95-375ec27e2ec5"
     },
     {
       "ruralProducer": "Collins Estado",
@@ -2707,7 +3049,8 @@
       "miles": 35,
       "cost": 22077,
       "lastRun": "1910-08-13T00:00:00.000Z",
-      "id": "529e92f7-a9d9-4340-8049-a06604efbb43"
+      "type": "DirectLine",
+      "id": "df2b3816-e3e0-435a-ba4c-6f1acfeff63b"
     },
     {
       "ruralProducer": "Foster Granja",
@@ -2716,7 +3059,8 @@
       "miles": 75,
       "cost": 119109,
       "lastRun": "1910-11-12T00:00:00.000Z",
-      "id": "84c36d02-6a6b-45ce-a2e5-61cf708be618"
+      "type": "DirectLine",
+      "id": "c2c4da77-ba66-448d-a91d-1b2cedfc013c"
     },
     {
       "ruralProducer": "Howard Cría",
@@ -2725,7 +3069,8 @@
       "miles": 46,
       "cost": 30234,
       "lastRun": "1910-10-02T00:00:00.000Z",
-      "id": "031a758c-7d58-425d-b532-3100dc1e2e8a"
+      "type": "DirectLine",
+      "id": "3b79ca3b-d917-4e2c-852d-cec6a317fd14"
     },
     {
       "ruralProducer": "Cook Talla",
@@ -2734,7 +3079,8 @@
       "miles": 83,
       "cost": 53137,
       "lastRun": "1910-09-02T00:00:00.000Z",
-      "id": "afb2e562-95ec-4cec-b057-80b5ddd61664"
+      "type": "DirectLine",
+      "id": "7d0c5512-009d-484a-b681-b96ad6137f82"
     },
     {
       "ruralProducer": "Green Senderos del bosque",
@@ -2743,7 +3089,8 @@
       "miles": 76,
       "cost": 66966,
       "lastRun": "1910-08-14T00:00:00.000Z",
-      "id": "6eff7d46-8307-41dc-a5ad-30bf7329170b"
+      "type": "DirectLine",
+      "id": "36a48ade-5439-4388-8e9b-6fd47b3ad02c"
     },
     {
       "ruralProducer": "Ward Estado",
@@ -2752,7 +3099,8 @@
       "miles": 73,
       "cost": 57407,
       "lastRun": "1910-10-02T00:00:00.000Z",
-      "id": "bb654035-7208-4f99-a5e2-46cf3cdd7b34"
+      "type": "DirectLine",
+      "id": "839b8da5-05a9-4935-80f9-d5a83161960b"
     },
     {
       "ruralProducer": "Harris Tala",
@@ -2761,7 +3109,8 @@
       "miles": 44,
       "cost": 27493,
       "lastRun": "1910-09-21T00:00:00.000Z",
-      "id": "a8d5ca83-87f6-41db-b097-24bffcc8a7be"
+      "type": "DirectLine",
+      "id": "c15ed007-b6b2-40e6-ba5e-f3e9b028766a"
     },
     {
       "ruralProducer": "Stevens Granja",
@@ -2770,7 +3119,8 @@
       "miles": 68,
       "cost": 60296,
       "lastRun": "1910-11-11T00:00:00.000Z",
-      "id": "dcae4692-9ede-49f8-9442-739bed46382f"
+      "type": "DirectLine",
+      "id": "35a82c55-7d3b-4248-be70-b148c51861db"
     },
     {
       "ruralProducer": "Reed Ganado",
@@ -2779,7 +3129,8 @@
       "miles": 49,
       "cost": 69801,
       "lastRun": "1910-11-05T00:00:00.000Z",
-      "id": "564cb40b-f1da-4fb9-9c5a-17e61d53fe10"
+      "type": "DirectLine",
+      "id": "da46d01c-1707-4116-b87d-510543c61d08"
     },
     {
       "ruralProducer": "Anderson Estado",
@@ -2788,7 +3139,8 @@
       "miles": 168,
       "cost": 115579,
       "lastRun": "1910-05-09T00:00:00.000Z",
-      "id": "3e759639-1d42-4d50-92b2-da2bf619ca08"
+      "type": "DirectLine",
+      "id": "6235f181-4ea9-424b-b072-cc2d4b15cce6"
     },
     {
       "ruralProducer": "Lewis Cebado",
@@ -2797,7 +3149,8 @@
       "miles": 65,
       "cost": 93755,
       "lastRun": "1910-09-12T00:00:00.000Z",
-      "id": "b7311d9e-a440-477e-9e8d-895da9dd4f74"
+      "type": "DirectLine",
+      "id": "2b80d435-2779-4c7d-8d5e-be6288c35468"
     },
     {
       "ruralProducer": "Evans Conservar",
@@ -2806,7 +3159,8 @@
       "miles": 105,
       "cost": 88817,
       "lastRun": "1910-10-02T00:00:00.000Z",
-      "id": "4b094761-45f4-4e0e-8bfd-be54306d1f74"
+      "type": "DirectLine",
+      "id": "9aebfa53-4f1a-4cd8-83d0-8a907ff6b886"
     },
     {
       "ruralProducer": "Cooper Mansión",
@@ -2815,7 +3169,8 @@
       "miles": 62,
       "cost": 41539,
       "lastRun": "1910-09-14T00:00:00.000Z",
-      "id": "c1aff0d0-9209-4271-ba0c-be78b263c653"
+      "type": "DirectLine",
+      "id": "73907941-bd89-4fad-91a2-ee69b75664ba"
     },
     {
       "ruralProducer": "Mason Granja",
@@ -2824,7 +3179,8 @@
       "miles": 102,
       "cost": 69802,
       "lastRun": "1910-10-02T00:00:00.000Z",
-      "id": "786e58a0-130a-4277-8a81-2005cb9853e6"
+      "type": "DirectLine",
+      "id": "b1eac510-f5ae-44c1-a295-698d9f873031"
     },
     {
       "ruralProducer": "Archer Conservar",
@@ -2833,7 +3189,8 @@
       "miles": 48,
       "cost": 34375,
       "lastRun": "1910-10-18T00:00:00.000Z",
-      "id": "4e0cbb1f-92e8-4ce7-b239-b287e46240af"
+      "type": "DirectLine",
+      "id": "3e46725f-95dc-4087-a33e-097bd6ae59a9"
     },
     {
       "ruralProducer": "Stevens Granja",
@@ -2842,7 +3199,8 @@
       "miles": 46,
       "cost": 40120,
       "lastRun": "1910-10-24T00:00:00.000Z",
-      "id": "7d2a7f34-fcc7-4059-8d21-5e31ce1917a5"
+      "type": "DirectLine",
+      "id": "a80a3ec6-8346-4d13-b61e-c3898a589c32"
     },
     {
       "ruralProducer": "Miller Mansion",
@@ -2851,7 +3209,8 @@
       "miles": 50,
       "cost": 31963,
       "lastRun": "1910-08-27T00:00:00.000Z",
-      "id": "be12608b-ff9d-4efb-842f-7b1d86f7de03"
+      "type": "DirectLine",
+      "id": "15d05712-b423-4239-9366-d1d4453e07f3"
     },
     {
       "ruralProducer": "Archer Conservar",
@@ -2860,7 +3219,8 @@
       "miles": 83,
       "cost": 122502,
       "lastRun": "1910-10-24T00:00:00.000Z",
-      "id": "7725e770-a3d1-45e1-b89e-d0aab19ea5dc"
+      "type": "DirectLine",
+      "id": "a81c26d3-b1f8-4dcf-80a9-6a0342ac13b5"
     },
     {
       "ruralProducer": "Evans Conservar",
@@ -2869,7 +3229,8 @@
       "miles": 73,
       "cost": 41954,
       "lastRun": "1910-07-21T00:00:00.000Z",
-      "id": "dec4c94b-0bcb-4888-bc74-caddd2fa5bd8"
+      "type": "DirectLine",
+      "id": "e65fbb98-1e9b-40b0-885f-0c248c4ca3b6"
     },
     {
       "ruralProducer": "Cole Mansión",
@@ -2878,7 +3239,8 @@
       "miles": 34,
       "cost": 20962,
       "lastRun": "1910-08-25T00:00:00.000Z",
-      "id": "bba37ff3-5edf-4e7a-8666-1e84d580c58f"
+      "type": "DirectLine",
+      "id": "dbc3ad5b-d337-49dc-8116-6c691251a8db"
     },
     {
       "ruralProducer": "Perry Granja",
@@ -2887,7 +3249,8 @@
       "miles": 58,
       "cost": 48487,
       "lastRun": "1910-11-12T00:00:00.000Z",
-      "id": "038f9b5e-ab79-41c1-a7eb-fd63e36ed38e"
+      "type": "DirectLine",
+      "id": "fe5581e9-f2e3-4c03-a639-04196e6db902"
     },
     {
       "ruralProducer": "Parker Granja",
@@ -2896,7 +3259,8 @@
       "miles": 84,
       "cost": 82117,
       "lastRun": "1910-10-24T00:00:00.000Z",
-      "id": "6a58c966-e94d-4653-9574-da2bb60ecb75"
+      "type": "DirectLine",
+      "id": "d323dfd5-8630-4d79-ae5e-a3904429091a"
     },
     {
       "ruralProducer": "Lee Rancho",
@@ -2905,7 +3269,8 @@
       "miles": 79,
       "cost": 106331,
       "lastRun": "1910-11-06T00:00:00.000Z",
-      "id": "6154db62-1b84-41bc-87c4-3fd35dc84ca0"
+      "type": "DirectLine",
+      "id": "2f3037fc-b63e-45c3-ab62-7d9320a62157"
     },
     {
       "ruralProducer": "Cooper Mansión",
@@ -2914,7 +3279,8 @@
       "miles": 143,
       "cost": 101876,
       "lastRun": "1910-10-24T00:00:00.000Z",
-      "id": "1543cd17-a575-4c1b-befb-746878f8e9a7"
+      "type": "DirectLine",
+      "id": "f40487af-df32-4185-94fa-e3d65557d342"
     },
     {
       "ruralProducer": "Carter Surco",
@@ -2922,7 +3288,8 @@
       "destinationCity": "Rochester",
       "miles": 51,
       "cost": 160936,
-      "id": "458c0d83-6a4f-471a-8e0e-d4a5b591892d"
+      "type": "DirectLine",
+      "id": "53711d6a-330b-4966-ae8f-e779c0be77c1"
     },
     {
       "ruralProducer": "Wilson Cebado",
@@ -2931,7 +3298,8 @@
       "miles": 67,
       "cost": 176877,
       "lastRun": "1910-08-28T00:00:00.000Z",
-      "id": "892c117f-7f4e-41db-b2c5-f4ee9624f986"
+      "type": "DirectLine",
+      "id": "624af33d-fa7a-48ad-876f-bcf069b82ca6"
     },
     {
       "ruralProducer": "Cook Talla",
@@ -2940,7 +3308,8 @@
       "miles": 94,
       "cost": 60718,
       "lastRun": "1910-09-06T00:00:00.000Z",
-      "id": "24b9b273-4b43-49f1-8e20-feaac0ecc6f9"
+      "type": "DirectLine",
+      "id": "a8d1a24e-00da-4fde-976a-52d26b0b50f3"
     },
     {
       "ruralProducer": "Scott Limpieza",
@@ -2949,7 +3318,8 @@
       "miles": 70,
       "cost": 54432,
       "lastRun": "1910-10-12T00:00:00.000Z",
-      "id": "c6e86437-8f2e-458e-a73c-14a379275fb7"
+      "type": "DirectLine",
+      "id": "2691a09b-9033-4b08-8956-f37682471ab7"
     },
     {
       "ruralProducer": "Thompson Mansión",
@@ -2958,7 +3328,8 @@
       "miles": 79,
       "cost": 111050,
       "lastRun": "1910-09-14T00:00:00.000Z",
-      "id": "45c753c1-d72b-4f04-b418-2c1856cc9e07"
+      "type": "DirectLine",
+      "id": "79473d14-59a8-404e-9f65-2948d7d23570"
     }
   ]
 }
