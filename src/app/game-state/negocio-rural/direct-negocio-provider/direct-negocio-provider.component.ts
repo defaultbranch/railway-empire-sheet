@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NEVER, Observable, concatMap, from, map, switchMap, take, toArray } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../../concepts';
 import { todosLosCiudades } from '../../ngrx/ciudades.ngrx';
@@ -62,7 +63,7 @@ export class DirectNegocioProviderComponent implements OnInit {
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad }) {
-    this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
+    this.store.dispatch(addProviderConnection({ line: { type: 'ProviderConnection', id: uuidv4(), ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
   }
 
   sortByDestination() {

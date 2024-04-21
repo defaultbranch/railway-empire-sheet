@@ -53,7 +53,7 @@ export type CityBusiness = {
 export type DirectLine = {
 
   type?: 'DirectLine',
-  id?: string,
+  id: string,
 
   ruralProducer: string,
   destinationCity: CityName,
@@ -71,7 +71,7 @@ export function requireDirectline(x: unknown): x is DirectLine {
 export type ProviderConnection = {
 
   type?: 'ProviderConnection',
-  id?: string,
+  id: string,
 
   ruralProducer: string,
   destinationCity: CityName,

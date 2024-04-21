@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NEVER, Observable, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../concepts';
 import { todosLosNegociosRurales } from '../ngrx/negocios-rurales.ngrx';
@@ -73,8 +74,8 @@ export class DirectLinesComponent implements OnInit {
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad, miles: number, cost: number }) {
-    this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
-    this.store.dispatch(addDirectLine({ line: { ruralProducer: p.ruralProducer.name, destinationCity: p.destinationCity.name, miles: p.miles, cost: p.cost } }));
+    this.store.dispatch(addProviderConnection({ line: { type: 'ProviderConnection', id: uuidv4(), ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
+    this.store.dispatch(addDirectLine({ line: { type: 'DirectLine', id: uuidv4(), ruralProducer: p.ruralProducer.name, destinationCity: p.destinationCity.name, miles: p.miles, cost: p.cost } }));
   }
 
   sortByCost() {

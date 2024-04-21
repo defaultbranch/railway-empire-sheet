@@ -48,9 +48,7 @@ export const {
 
 // NgRx entity adapter
 
-const toId = (line: ProviderConnection) => `${line.ruralProducer}---${line.good}---${line.destinationCity}`;
-
-const adapter = createEntityAdapter<ProviderConnection>({ selectId: line => toId(line) });
+const adapter = createEntityAdapter<ProviderConnection>();
 
 // NgRx reducer
 
@@ -59,14 +57,14 @@ const PROVIDER_CONNECTIONS_REDUCER = createReducer(
   adapter.getInitialState(),
 
   on(actions.addProviderConnection, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection }): EntityState<ProviderConnection> => adapter.addOne(p.line, state)),
-  on(actions.removeProviderConnection, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection }): EntityState<ProviderConnection> => adapter.removeOne(toId(p.line), state)),
+  on(actions.removeProviderConnection, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection }): EntityState<ProviderConnection> => adapter.removeOne(p.line.id, state)),
   on(actions.setProviderConnections, (state: EntityState<ProviderConnection>, p: { lines: ProviderConnection[] }): EntityState<ProviderConnection> => adapter.setAll(p.lines, state)),
 
-  on(actions.updateDemandFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: toId(p.line), map: it => ({ ...it, demandFactor: p.factor }) }, state)),
-  on(actions.updateProductionFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: toId(p.line), map: it => ({ ...it, productionFactor: p.factor }) }, state)),
+  on(actions.updateDemandFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: p.line.id, map: it => ({ ...it, demandFactor: p.factor }) }, state)),
+  on(actions.updateProductionFactor, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, factor: number }): EntityState<ProviderConnection> => adapter.mapOne({ id: p.line.id, map: it => ({ ...it, productionFactor: p.factor }) }, state)),
 
   on(actions.runProviderConnectionNow, (state: EntityState<ProviderConnection>, p: { line: ProviderConnection, date: Date }): EntityState<ProviderConnection> => adapter.mapOne({
-    id: toId(p.line),
+    id: p.line.id,
     map: line => ({
       ...line,
       lastRun: p.date

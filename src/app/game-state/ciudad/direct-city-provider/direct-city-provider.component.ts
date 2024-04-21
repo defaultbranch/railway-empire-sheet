@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NEVER, Observable, ReplaySubject, combineLatest, map, take } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Ciudad, Good, RuralBusiness, ProviderConnection } from '../../../concepts';
 import { todosLosNegociosRurales } from '../../ngrx/negocios-rurales.ngrx';
@@ -66,7 +67,7 @@ export class DirectCityProviderComponent implements OnInit {
   readonly nextRun$ = (provider: ProviderConnection) => this.store.select(nextRun(provider));
 
   addLine(p: { ruralProducer: RuralBusiness, good: string, destinationCity: Ciudad }) {
-    this.store.dispatch(addProviderConnection({ line: { ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
+    this.store.dispatch(addProviderConnection({ line: { type: 'ProviderConnection', id: uuidv4(), ruralProducer: p.ruralProducer.name, good: p.good, destinationCity: p.destinationCity.name } }));
   }
 
   sortByGood() {

@@ -39,9 +39,7 @@ export const {
 
 // NgRx entity adapter
 
-const toId = (line: DirectLine) => `${line.ruralProducer}---${line.destinationCity}`;
-
-const adapter = createEntityAdapter<DirectLine>({ selectId: line => toId(line) });
+const adapter = createEntityAdapter<DirectLine>();
 
 // NgRx reducer
 
@@ -50,7 +48,7 @@ const DIRECT_LINES_REDUCER = createReducer(
   adapter.getInitialState(),
 
   on(actions.addDirectLine, (state: EntityState<DirectLine>, p: { line: DirectLine }): EntityState<DirectLine> => adapter.addOne(p.line, state)),
-  on(actions.removeDirectLine, (state: EntityState<DirectLine>, p: { line: DirectLine }): EntityState<DirectLine> => adapter.removeOne(toId(p.line), state)),
+  on(actions.removeDirectLine, (state: EntityState<DirectLine>, p: { line: DirectLine }): EntityState<DirectLine> => adapter.removeOne(p.line.id, state)),
   on(actions.setDirectLines, (state: EntityState<DirectLine>, p: { lines: DirectLine[] }): EntityState<DirectLine> => adapter.setAll(p.lines, state)),
 );
 
