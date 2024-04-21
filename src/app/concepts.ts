@@ -61,9 +61,14 @@ export type DirectLine = {
   cost: number,
 }
 
-export function requireDirectline(x: unknown): x is DirectLine {
+export function isDirectline(x: unknown): x is DirectLine {
   const cand = x as DirectLine;
   const val = cand.type === 'DirectLine' && cand.id !== undefined && cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.miles !== undefined && cand.cost !== undefined;
+  return val;
+}
+
+export function requireDirectline(x: unknown): x is DirectLine {
+  const val = isDirectline(x);
   if (!val) throw new Error('DirectLine required');
   return val;
 }
@@ -81,9 +86,30 @@ export type ProviderConnection = {
   lastRun?: Date,
 }
 
-export function requireProviderConnection(x: unknown): x is ProviderConnection {
+export function isProviderConnection(x: unknown): x is ProviderConnection {
   const cand = x as ProviderConnection;
   const val = cand.type === 'ProviderConnection' && cand.id !== undefined && cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.good !== undefined;
+  return val;
+}
+
+export function requireProviderConnection(x: unknown): x is ProviderConnection {
+  const val = isProviderConnection(x);
+  if (!val) throw new Error('ProviderConnection required');
+  return val;
+}
+
+export type Line
+  = DirectLine
+  | ProviderConnection
+  ;
+
+export function isLine(x: unknown): x is Line {
+  const val = isDirectline(x) || isProviderConnection(x);
+  return val;
+}
+
+export function requireLine(x: unknown): x is Line {
+  const val = isLine(x);
   if (!val) throw new Error('ProviderConnection required');
   return val;
 }
