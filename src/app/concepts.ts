@@ -57,6 +57,7 @@ export type DirectLine = {
 
   ruralProducer: string,
   destinationCity: CityName,
+
   miles: number,
   cost: number,
 }
@@ -81,9 +82,13 @@ export type ProviderConnection = {
   ruralProducer: string,
   destinationCity: CityName,
   good: Good,
+
   productionFactor?: number,
   demandFactor?: number,
   lastRun?: Date,
+
+  miles?: number,
+  cost?: number,
 }
 
 export function isProviderConnection(x: unknown): x is ProviderConnection {

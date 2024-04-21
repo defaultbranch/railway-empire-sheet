@@ -1,12 +1,13 @@
 import { NgModule, inject } from "@angular/core";
-import { map, switchMap, take, tap } from "rxjs";
+import { flatMap, map, switchMap, take, tap } from "rxjs";
 import { Store, StoreModule, createActionGroup, createFeatureSelector, createReducer, createSelector, emptyProps, on, props } from "@ngrx/store";
-import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
+import { Actions, EffectsModule, act, createEffect, ofType } from "@ngrx/effects";
 import { EntityState, createEntityAdapter } from "@ngrx/entity";
 
 import { Line, requireLine } from "../../concepts";
 import { CiudadesNgrxModule } from "./ciudades.ngrx";
 import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
+import { setProviderConnections } from "./provider-connections.ngrx";
 
 
 // NgRx feature key
@@ -22,6 +23,7 @@ const actions = createActionGroup({
     addLine: props<{ line: Line }>(),
     removeLine: props<{ line: Line }>(),
     setLines: props<{ lines: Line[] }>(),
+    upsertLines: props<{ lines: Line[] }>(),
 
     persistLines: emptyProps(),
     loadLines: emptyProps(),
@@ -47,6 +49,7 @@ const LINES_REDUCER = createReducer(
   on(actions.addLine, (state: EntityState<Line>, p: { line: Line }): EntityState<Line> => adapter.addOne(p.line, state)),
   on(actions.removeLine, (state: EntityState<Line>, p: { line: Line }): EntityState<Line> => adapter.removeOne(p.line.id, state)),
   on(actions.setLines, (state: EntityState<Line>, p: { lines: Line[] }): EntityState<Line> => adapter.setAll(p.lines, state)),
+  on(actions.upsertLines, (state: EntityState<Line>, p: { lines: Line[] }): EntityState<Line> => adapter.upsertMany(p.lines, state)),
 );
 
 // NgRx selectors
@@ -73,6 +76,7 @@ const linesChangedEffect = createEffect(
     ofType(
       actions.addLine,
       actions.removeLine,
+      actions.upsertLines,
     ),
     map(() => actions.persistLines()),
   ),
@@ -104,10 +108,21 @@ const loadLinesEffect = createEffect(
   { functional: true }
 );
 
+const setProviderConnectionsEffect = createEffect(
+  (actions$ = inject(Actions)) => actions$.pipe(
+    ofType(setProviderConnections),
+    map(p => actions.upsertLines(p))
+  ),
+  { functional: true }
+)
+
 const linesEffects = {
   providerConnectionsChangedEffect: linesChangedEffect,
   persistLinesEffect,
   loadLinesEffect,
+
+  // temporary, for syncing provider connections to lines
+  setProviderConnectionsEffect,
 }
 
 // Angular module

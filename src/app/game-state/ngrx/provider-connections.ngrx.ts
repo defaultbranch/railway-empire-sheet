@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Good, ProviderConnection, requireProviderConnection } from "../../concepts";
 import { CiudadesNgrxModule } from "./ciudades.ngrx";
 import { NegociosRuralesNgrxModule } from "./negocios-rurales.ngrx";
+import { LinesNgrxModule } from "./lines.ngrx";
 
 
 // NgRx feature key
@@ -137,10 +138,14 @@ const providerConnectionsEffects = {
   loadProviderConnectionsEffect,
 }
 
+// temporary, only needed to sync lines when provider connections change
+export const setProviderConnections = actions.setProviderConnections;
+
 // Angular module
 
 @NgModule({
   imports: [
+    LinesNgrxModule,
     CiudadesNgrxModule,
     NegociosRuralesNgrxModule,
     StoreModule.forFeature(PROVIDER_CONNECTIONS_FEATURE_KEY, PROVIDER_CONNECTIONS_REDUCER),
