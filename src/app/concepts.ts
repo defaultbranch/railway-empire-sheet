@@ -1,3 +1,4 @@
+import { DirectLinesComponent } from "./game-state/direct-lines/direct-lines.component";
 
 
 
@@ -59,6 +60,14 @@ export type DirectLine = {
   miles: number,
   cost: number,
 }
+
+export function requireDirectline(x: unknown): x is DirectLine {
+  const cand = x as DirectLine;
+  const val = cand.ruralProducer !== undefined && cand.destinationCity !== undefined && cand.miles !== undefined && cand.cost !== undefined;
+  if (!val) throw new Error('DirectLine required');
+  return val;
+}
+
 
 export type ProviderConnection = {
 

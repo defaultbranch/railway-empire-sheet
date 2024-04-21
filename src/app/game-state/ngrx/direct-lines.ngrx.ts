@@ -1,12 +1,13 @@
-import { StoreModule, createActionGroup, emptyProps, props } from "@ngrx/store";
-import { EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { NgModule, inject } from "@angular/core";
 import { map, switchMap, take, tap } from "rxjs";
+import { Store, StoreModule, createActionGroup, emptyProps, props,createFeatureSelector, createReducer, createSelector, on } from "@ngrx/store";
 import { Actions, EffectsModule, createEffect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
+import { v4 as uuidv4 } from 'uuid';
+
+import { DirectLine, requireDirectline } from "../../concepts";
 import { ProviderConnectionsNgrxModule } from "./provider-connections.ngrx";
-import { DirectLine } from "../../concepts";
+
 
 
 // NgRx feature key
@@ -100,7 +101,9 @@ const loadDirectLinesEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadDirectLines),
     map(() => {
-      const lines = JSON.parse(localStorage.getItem('direct-lines') as string ?? '[]');
+      const raw = JSON.parse(localStorage.getItem('direct-lines') as string ?? '[]');
+      if (!Array.isArray(raw)) throw new Error('require array');
+      const lines = raw.filter(requireDirectline).map(it => it.id ? it : {...it, id: uuidv4()});
       return actions.setDirectLines({ lines });
     }),
   ),
