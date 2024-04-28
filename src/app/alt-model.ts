@@ -1,7 +1,9 @@
 
+const throwUndefined: () => never = () => { throw new Error('undefined'); }
+const throwWrongType: () => never = () => { throw new Error('wrong type'); }
 
 type Good = string;
-type Size = 1 | 2 | 3 | 4 | 5;
+type Size = number;
 
 const RuralProductionCapacity = {
     "Madera": [3.2, 6.4, 12.8, undefined, undefined],
@@ -20,15 +22,26 @@ const RuralProductionCapacity = {
 } as const;
 
 type RuralProduct = keyof typeof RuralProductionCapacity;
+function isRuralProduct(good: Good): good is RuralProduct { return RuralProductionCapacity[good as RuralProduct] !== undefined; }
+function asRuralProduct(good: Good): RuralProduct { return isRuralProduct(good) ? good : throwWrongType(); }
 
 export type RuralBusiness = {
-    type: 'Farm',
+    type: 'RuralBusiness',
     name: string,
     product: RuralProduct,
     size: Size,
 }
 
-type Producer = unknown;
+type Producer = RuralBusiness;
+
+export const weeklyProduction
+    : (producer: Producer, good: Good) => number
+    = (producer, good) => {
+        switch (producer.type) {
+            case 'RuralBusiness': return RuralProductionCapacity[asRuralProduct(good)][producer.size - 1] ?? throwUndefined();
+            default: throw new Error(`not implemented: ${producer.type}`);
+        }
+    }
 
 type Consumer = unknown;
 
@@ -41,10 +54,6 @@ type LineX = {
 }
 
 type Line = LineX;
-
-export const weeklyProduction
-    : (producer: Producer, good: Good) => number
-    = () => { throw new Error("not implemented"); }
 
 const weeklyConsumption
     : (consumer: Consumer, good: Good) => number

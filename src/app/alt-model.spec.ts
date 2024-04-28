@@ -4,7 +4,7 @@ describe('weeklyProuction', () => {
 
     describe('of Madera farm size 2', () => {
         const farm: RuralBusiness = {
-            type: "Farm",
+            type: "RuralBusiness",
             name: "test farm",
             product: "Madera",
             size: 2
