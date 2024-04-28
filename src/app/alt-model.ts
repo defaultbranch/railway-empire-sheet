@@ -17,12 +17,14 @@ const RuralProductionCapacity = {
     "Carbón": [0.8, 1.6, undefined, undefined, undefined],
     "Hierro": [0.8, 1.6, undefined, undefined, undefined],
     "Aceite": [1.2, undefined, undefined, undefined, undefined],
-}
+} as const;
 
-type RuralBusiness = {
+type RuralProduct = keyof typeof RuralProductionCapacity;
+
+export type RuralBusiness = {
     type: 'Farm',
     name: string,
-    product: Good,
+    product: RuralProduct,
     size: Size,
 }
 
@@ -40,7 +42,7 @@ type LineX = {
 
 type Line = LineX;
 
-const weeklyProduction
+export const weeklyProduction
     : (producer: Producer, good: Good) => number
     = () => { throw new Error("not implemented"); }
 
