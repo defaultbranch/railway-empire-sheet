@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "start": "nx serve",
+    "build": "nx build",
+    "watch": "nx build --watch --configuration development"
   },
   "private": true,
   "dependencies": {
@@ -28,10 +28,16 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.2.0",
+    "@angular-devkit/core": "^17.2.0",
+    "@angular-devkit/schematics": "^17.2.0",
     "@angular/cli": "^17.2.0",
     "@angular/compiler-cli": "^17.2.1",
+    "@nx/angular": "18.0.4",
+    "@nx/workspace": "18.0.4",
+    "@schematics/angular": "^17.2.0",
     "@types/jasmine": "~5.1.0",
     "@types/jsoneditor": "^9.9.5",
+    "nx": "18.0.4",
     "typescript": "~5.3.3"
   }
 }
