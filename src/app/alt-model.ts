@@ -1,5 +1,7 @@
 import { ArrayType } from "@angular/compiler";
 
+type KeysOfUnion<T> = T extends unknown ? keyof T : never;
+
 const throwUndefined: () => never = () => { throw new Error('undefined'); }
 const throwWrongType: () => never = () => { throw new Error('wrong type'); }
 
@@ -33,83 +35,97 @@ export type RuralBusiness = {
   size: Size,
 }
 
-type Producer = RuralBusiness;
+const IndustrialProductionCapacity = {
+  "Industria cárnica": {
+    "materiasPrimas": { "Ganado": [3.6, 7.2, 14.4, undefined, undefined] },
+    "productos": { "Carne": [2.4, 4.8, 9.6, undefined, undefined] },
+  },
+  "Bodegas": {
+    "materiasPrimas": { "Cereales": [0.8, 1.6, 3.2, 5.5, undefined] },
+    "productos": { "Cerveza": [1.6, 3.2, 6.4, 11.1, undefined] },
+  },
+  "Sastres": {
+    "materiasPrimas": { "Algodón": [1.6, 3.2, undefined, undefined, undefined] },
+    "productos": { "Ropa": [1.6, 3.2, undefined, undefined, undefined] },
+  },
+  "Fábrica de caramelos": {
+    "materiasPrimas": {
+      "Azúcar": [0.4, undefined, undefined, undefined, undefined],
+      "Cereales": [0.4, undefined, undefined, undefined, undefined],
+    },
+    "productos": { "Caramelos": [0.8, undefined, undefined, undefined, undefined] },
+  },
+  "Industria del acero": {
+    "materiasPrimas": {
+      "Carbón": [0.4, 0.8, undefined, undefined, undefined],
+      "Hierro": [0.8, 1.6, undefined, undefined, undefined],
+    },
+    "productos": { "Acero": [0.8, 1.6, undefined, undefined, undefined] },
+  },
+  "Editoriales": {
+    "materiasPrimas": { "Papel": [0.8, undefined, undefined, undefined, undefined] },
+    "productos": { "Periódicos": [0.8, undefined, undefined, undefined, undefined] },
+  },
+  "Fábrica de papel": {
+    "materiasPrimas": { "Madera": [0.8, 1.6, 3.2, undefined, undefined] },
+    "productos": { "Papel": [1.6, 3.2, 6.4, undefined, undefined] },
+  },
+  "Industria mobiliaria": {
+    "materiasPrimas": { "Madera": [0.8, undefined, undefined, undefined, undefined] },
+    "productos": { "Mobiliario": [1.6, undefined, undefined, undefined, undefined] },
+  },
+  "Fábricas químicas": {
+    "materiasPrimas": { "Carbón": [0.4, undefined, undefined, undefined, undefined] },
+    "productos": { "Productos químicos": [0.8, undefined, undefined, undefined, undefined] },
+  },
+  "Indusria juguetera": {
+    "materiasPrimas": {
+      "Acero": [0.4, undefined, undefined, undefined, undefined],
+      "Madera": [0.4, undefined, undefined, undefined, undefined]
+    },
+    "productos": { "Juguetes": [0.8, undefined, undefined, undefined, undefined] },
+  },
+  "Refinerías": {
+    "materiasPrimas": { "Aceite": [1.2, 2.4, undefined, undefined, undefined] },
+    "productos": { "Gasolina": [1.2, 2.4, undefined, undefined, undefined] },
+  },
+  "Industria automovilística": {
+    "materiasPrimas": {
+      "Acero": [0.4, undefined, undefined, undefined, undefined],
+      "Gasolina": [0.4, undefined, undefined, undefined, undefined]
+    },
+    "productos": { "Automóviles": [0.8, undefined, undefined, undefined, undefined] },
+  }
+} as const;
+
+type IndustryType = keyof typeof IndustrialProductionCapacity;
+type Industry = typeof IndustrialProductionCapacity[IndustryType];
+type IndustrialEduct = KeysOfUnion<typeof IndustrialProductionCapacity[IndustryType]["materiasPrimas"]>;
+type IndustrialProduct = KeysOfUnion<typeof IndustrialProductionCapacity[IndustryType]["productos"]>;
+
+export type Factory = {
+  type: 'Factory';
+  id: string,
+  industryType: IndustryType,
+  size: Size,
+}
+
+type Producer = RuralBusiness | Factory | { type?: undefined };
 
 export const weeklyProduction
   : (producer: Producer, good: Good) => number
   = (producer, good) => {
     switch (producer.type) {
       case 'RuralBusiness': return RuralProductionCapacity[asRuralProduct(good)][producer.size - 1] ?? throwUndefined();
+      case 'Factory': {
+        const industry = IndustrialProductionCapacity[producer.industryType];
+        const productos = industry.productos as Readonly<Record<Good, Readonly<(number|undefined)[]>>>;
+        const amounts = productos[good];
+        return amounts ? amounts[producer.size - 1] ?? throwUndefined() : 0;
+      }
       default: throw new Error(`not implemented: ${producer.type}`);
     }
   }
-
-const IndustrialProductionCapacity = {
-  "Industria cárnica": {
-    "materiasPrimas": [{ "Ganado": [3.6, 7.2, 14.4, undefined, undefined] }],
-    "productos": [{ "Carne": [2.4, 4.8, 9.6, undefined, undefined] }]
-  },
-  "Bodegas": {
-    "materiasPrimas": [{ "Cereales": [0.8, 1.6, 3.2, 5.5, undefined] }],
-    "productos": [{ "Cerveza": [1.6, 3.2, 6.4, 11.1, undefined] }]
-  },
-  "Sastres": {
-    "materiasPrimas": [{ "Algodón": [1.6, 3.2, undefined, undefined, undefined] }],
-    "productos": [{ "Ropa": [1.6, 3.2, undefined, undefined, undefined] }]
-  },
-  "Fábrica de caramelos": {
-    "materiasPrimas": [
-      { "Azúcar": [0.4, undefined, undefined, undefined, undefined] },
-      { "Cereales": [0.4, undefined, undefined, undefined, undefined] }
-    ],
-    "productos": [{ "Caramelos": [0.8, undefined, undefined, undefined, undefined] }]
-  },
-  "Industria del acero": {
-    "materiasPrimas": [
-      { "Carbón": [0.4, 0.8, undefined, undefined, undefined] },
-      { "Hierro": [0.8, 1.6, undefined, undefined, undefined] }
-    ],
-    "productos": [{ "Acero": [0.8, 1.6, undefined, undefined, undefined] }]
-  },
-  "Editoriales": {
-    "materiasPrimas": [{ "Papel": [0.8, undefined, undefined, undefined, undefined] }],
-    "productos": [{ "Periódicos": [0.8, undefined, undefined, undefined, undefined] }]
-  },
-  "Fábrica de papel": {
-    "materiasPrimas": [{ "Madera": [0.8, 1.6, 3.2, undefined, undefined] }],
-    "productos": [{ "Papel": [1.6, 3.2, 6.4, undefined, undefined] }]
-  },
-  "Industria mobiliaria": {
-    "materiasPrimas": [{ "Madera": [0.8, undefined, undefined, undefined, undefined] }],
-    "productos": [{ "Mobiliario": [1.6, undefined, undefined, undefined, undefined] }]
-  },
-  "Fábricas químicas": {
-    "materiasPrimas": [{ "Carbón": [0.4, undefined, undefined, undefined, undefined] }],
-    "productos": [{ "Productos químicos": [0.8, undefined, undefined, undefined, undefined] }]
-  },
-  "Indusria juguetera": {
-    "materiasPrimas": [
-      { "Acero": [0.4, undefined, undefined, undefined, undefined] },
-      { "Madera": [0.4, undefined, undefined, undefined, undefined] }
-    ],
-    "productos": [{ "Juguetes": [0.8, undefined, undefined, undefined, undefined] }]
-  },
-  "Refinerías": {
-    "materiasPrimas": [{ "Aceite": [1.2, 2.4, undefined, undefined, undefined] }],
-    "productos": [{ "Gasolina": [1.2, 2.4, undefined, undefined, undefined] }]
-  },
-  "Industria automovilística": {
-    "materiasPrimas": [
-      { "Acero": [0.4, undefined, undefined, undefined, undefined] },
-      { "Gasolina": [0.4, undefined, undefined, undefined, undefined] }
-    ],
-    "productos": [{ "Automóviles": [0.8, undefined, undefined, undefined, undefined] }]
-  }
-} as const;
-
-type IndustryType = keyof typeof IndustrialProductionCapacity;
-type N<ArrayType extends readonly unknown[]> = ArrayType extends readonly(infer ElementType)[] ? keyof ElementType : never;
-type IndustrialProduct = N<typeof IndustrialProductionCapacity[IndustryType]["productos"]>;
 
 
 const CityPopulationDemand = {
@@ -201,7 +217,7 @@ export type City = {
   population: number,
 }
 
-type Consumer = City;
+type Consumer = City | Factory | { type?: undefined };
 
 export const weeklyConsumption
   : (consumer: Consumer, good: Good) => number
@@ -210,6 +226,12 @@ export const weeklyConsumption
       case 'City': {
         const demand = CityPopulationDemand[asConsumerProduct(good)] ?? throwUndefined();
         return demand.minCityPopulation <= consumer.population ? demand.wagonsPerMillion * consumer.population * 1e-6 : 0;
+      }
+      case 'Factory': {
+        const industry = IndustrialProductionCapacity[consumer.industryType];
+        const matriasPrimas = industry.materiasPrimas as Readonly<Record<Good, Readonly<(number|undefined)[]>>>;
+        const amounts = matriasPrimas[good];
+        return amounts ? amounts[consumer.size - 1] ?? throwUndefined() : 0;
       }
       default: throw new Error(`not implemented: ${consumer.type}`);
     }
