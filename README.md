@@ -3,6 +3,15 @@
 _This is about the game [Railway Empire](https://de.wikipedia.org/wiki/Railway_Empire)._
 
 
+## Building
+
+```
+nx run railway-empire-sheet:test
+```
+
+
+
+
 ## Concepts
 
 

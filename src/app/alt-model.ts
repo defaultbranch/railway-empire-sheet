@@ -1,5 +1,3 @@
-import { ArrayType } from "@angular/compiler";
-
 type KeysOfUnion<T> = T extends unknown ? keyof T : never;
 
 const throwUndefined: () => never = () => { throw new Error('undefined'); }
@@ -105,28 +103,9 @@ type IndustrialProduct = KeysOfUnion<typeof IndustrialProductionCapacity[Industr
 
 export type Factory = {
   type: 'Factory';
-  id: string,
   industryType: IndustryType,
   size: Size,
 }
-
-type Producer = RuralBusiness | Factory | { type?: undefined };
-
-export const weeklyProduction
-  : (producer: Producer, good: Good) => number
-  = (producer, good) => {
-    switch (producer.type) {
-      case 'RuralBusiness': return RuralProductionCapacity[asRuralProduct(good)][producer.size - 1] ?? throwUndefined();
-      case 'Factory': {
-        const industry = IndustrialProductionCapacity[producer.industryType];
-        const productos = industry.productos as Readonly<Record<Good, Readonly<(number|undefined)[]>>>;
-        const amounts = productos[good];
-        return amounts ? amounts[producer.size - 1] ?? throwUndefined() : 0;
-      }
-      default: throw new Error(`not implemented: ${producer.type}`);
-    }
-  }
-
 
 const CityPopulationDemand = {
   "Cereales": {
@@ -215,23 +194,45 @@ export type City = {
   type: 'City',
   name: string,
   population: number,
+  factories: readonly [Factory | undefined, Factory | undefined, Factory | undefined],
 }
 
-type Consumer = City | Factory | { type?: undefined };
+type Producer = RuralBusiness | Factory | City | { type?: undefined };
+
+export const weeklyProduction
+  : (producer: Producer, good: Good) => number
+  = (producer, good) => {
+    switch (producer.type) {
+      case 'RuralBusiness':
+        return RuralProductionCapacity[asRuralProduct(good)][producer.size - 1] ?? throwUndefined();
+      case 'Factory': {
+        const industry = IndustrialProductionCapacity[producer.industryType];
+        const productos = industry.productos as Readonly<Record<Good, Readonly<(number | undefined)[]>>>;
+        const amounts = productos[good];
+        return amounts ? amounts[producer.size - 1] ?? throwUndefined() : 0;
+      }
+      case 'City':
+        return producer.factories.reduce((total, factory) => { return total + (factory ? weeklyProduction(factory, good) : 0) }, 0)
+      default:
+        throw new Error(`not implemented: ${producer.type}`);
+    }
+  }
+
+type Consumer = Factory | City | { type?: undefined };
 
 export const weeklyConsumption
   : (consumer: Consumer, good: Good) => number
   = (consumer, good) => {
     switch (consumer.type) {
+      case 'Factory': {
+        const industry = IndustrialProductionCapacity[consumer.industryType];
+        const matriasPrimas = industry.materiasPrimas as Readonly<Record<Good, Readonly<(number | undefined)[]>>>;
+        const amounts = matriasPrimas[good];
+        return amounts ? amounts[consumer.size - 1] ?? throwUndefined() : 0;
+      }
       case 'City': {
         const demand = CityPopulationDemand[asConsumerProduct(good)] ?? throwUndefined();
         return demand.minCityPopulation <= consumer.population ? demand.wagonsPerMillion * consumer.population * 1e-6 : 0;
-      }
-      case 'Factory': {
-        const industry = IndustrialProductionCapacity[consumer.industryType];
-        const matriasPrimas = industry.materiasPrimas as Readonly<Record<Good, Readonly<(number|undefined)[]>>>;
-        const amounts = matriasPrimas[good];
-        return amounts ? amounts[consumer.size - 1] ?? throwUndefined() : 0;
       }
       default: throw new Error(`not implemented: ${consumer.type}`);
     }
