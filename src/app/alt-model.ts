@@ -212,7 +212,7 @@ export const weeklyProduction
         return amounts ? amounts[producer.size - 1] ?? throwUndefined() : 0;
       }
       case 'City':
-        return producer.factories.reduce((total, factory) => { return total + (factory ? weeklyProduction(factory, good) : 0) }, 0)
+        return producer.factories.reduce((total, factory) => { return total + (factory ? weeklyProduction(factory, good) : 0) }, 0);
       default:
         throw new Error(`not implemented: ${producer.type}`);
     }
@@ -232,7 +232,8 @@ export const weeklyConsumption
       }
       case 'City': {
         const demand = CityPopulationDemand[asConsumerProduct(good)] ?? throwUndefined();
-        return demand.minCityPopulation <= consumer.population ? demand.wagonsPerMillion * consumer.population * 1e-6 : 0;
+        const populationConsumption = demand.minCityPopulation <= consumer.population ? demand.wagonsPerMillion * consumer.population * 1e-6 : 0;
+        return populationConsumption + consumer.factories.reduce((total, factory) => { return total + (factory ? weeklyConsumption(factory, good) : 0) }, 0);
       }
       default: throw new Error(`not implemented: ${consumer.type}`);
     }
