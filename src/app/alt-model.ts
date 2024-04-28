@@ -1,3 +1,4 @@
+import { ArrayType } from "@angular/compiler";
 
 const throwUndefined: () => never = () => { throw new Error('undefined'); }
 const throwWrongType: () => never = () => { throw new Error('wrong type'); }
@@ -42,6 +43,74 @@ export const weeklyProduction
       default: throw new Error(`not implemented: ${producer.type}`);
     }
   }
+
+const IndustrialProductionCapacity = {
+  "Industria cárnica": {
+    "materiasPrimas": [{ "Ganado": [3.6, 7.2, 14.4, undefined, undefined] }],
+    "productos": [{ "Carne": [2.4, 4.8, 9.6, undefined, undefined] }]
+  },
+  "Bodegas": {
+    "materiasPrimas": [{ "Cereales": [0.8, 1.6, 3.2, 5.5, undefined] }],
+    "productos": [{ "Cerveza": [1.6, 3.2, 6.4, 11.1, undefined] }]
+  },
+  "Sastres": {
+    "materiasPrimas": [{ "Algodón": [1.6, 3.2, undefined, undefined, undefined] }],
+    "productos": [{ "Ropa": [1.6, 3.2, undefined, undefined, undefined] }]
+  },
+  "Fábrica de caramelos": {
+    "materiasPrimas": [
+      { "Azúcar": [0.4, undefined, undefined, undefined, undefined] },
+      { "Cereales": [0.4, undefined, undefined, undefined, undefined] }
+    ],
+    "productos": [{ "Caramelos": [0.8, undefined, undefined, undefined, undefined] }]
+  },
+  "Industria del acero": {
+    "materiasPrimas": [
+      { "Carbón": [0.4, 0.8, undefined, undefined, undefined] },
+      { "Hierro": [0.8, 1.6, undefined, undefined, undefined] }
+    ],
+    "productos": [{ "Acero": [0.8, 1.6, undefined, undefined, undefined] }]
+  },
+  "Editoriales": {
+    "materiasPrimas": [{ "Papel": [0.8, undefined, undefined, undefined, undefined] }],
+    "productos": [{ "Periódicos": [0.8, undefined, undefined, undefined, undefined] }]
+  },
+  "Fábrica de papel": {
+    "materiasPrimas": [{ "Madera": [0.8, 1.6, 3.2, undefined, undefined] }],
+    "productos": [{ "Papel": [1.6, 3.2, 6.4, undefined, undefined] }]
+  },
+  "Industria mobiliaria": {
+    "materiasPrimas": [{ "Madera": [0.8, undefined, undefined, undefined, undefined] }],
+    "productos": [{ "Mobiliario": [1.6, undefined, undefined, undefined, undefined] }]
+  },
+  "Fábricas químicas": {
+    "materiasPrimas": [{ "Carbón": [0.4, undefined, undefined, undefined, undefined] }],
+    "productos": [{ "Productos químicos": [0.8, undefined, undefined, undefined, undefined] }]
+  },
+  "Indusria juguetera": {
+    "materiasPrimas": [
+      { "Acero": [0.4, undefined, undefined, undefined, undefined] },
+      { "Madera": [0.4, undefined, undefined, undefined, undefined] }
+    ],
+    "productos": [{ "Juguetes": [0.8, undefined, undefined, undefined, undefined] }]
+  },
+  "Refinerías": {
+    "materiasPrimas": [{ "Aceite": [1.2, 2.4, undefined, undefined, undefined] }],
+    "productos": [{ "Gasolina": [1.2, 2.4, undefined, undefined, undefined] }]
+  },
+  "Industria automovilística": {
+    "materiasPrimas": [
+      { "Acero": [0.4, undefined, undefined, undefined, undefined] },
+      { "Gasolina": [0.4, undefined, undefined, undefined, undefined] }
+    ],
+    "productos": [{ "Automóviles": [0.8, undefined, undefined, undefined, undefined] }]
+  }
+} as const;
+
+type IndustryType = keyof typeof IndustrialProductionCapacity;
+type N<ArrayType extends readonly unknown[]> = ArrayType extends readonly(infer ElementType)[] ? keyof ElementType : never;
+type IndustrialProduct = N<typeof IndustrialProductionCapacity[IndustryType]["productos"]>;
+
 
 const CityPopulationDemand = {
   "Cereales": {
