@@ -122,7 +122,10 @@ const persistProviderConnectionsEffect = createEffect(
 const loadProviderConnectionsEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadProviderConnections),
-    map(() => actions.setProviderConnections({ lines: JSON.parse(localStorage.getItem('provider-connections') as string ?? '[]') })),
+    map(() => {
+      const lines = JSON.parse(localStorage.getItem('provider-connections') as string ?? '[]');
+      return actions.setProviderConnections({ lines });
+    }),
   ),
   { functional: true }
 );

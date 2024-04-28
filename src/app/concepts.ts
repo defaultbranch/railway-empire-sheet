@@ -50,6 +50,10 @@ export type CityBusiness = {
 }
 
 export type DirectLine = {
+
+  type?: 'DirectLine',
+  id?: string,
+
   ruralProducer: string,
   destinationCity: CityName,
   miles: number,
@@ -57,6 +61,10 @@ export type DirectLine = {
 }
 
 export type ProviderConnection = {
+
+  type?: 'DirectLine',
+  id?: string,
+
   ruralProducer: string,
   destinationCity: CityName,
   good: Good,

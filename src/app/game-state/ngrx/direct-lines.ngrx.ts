@@ -99,7 +99,10 @@ const persistDirectLinesEffect = createEffect(
 const loadDirectLinesEffect = createEffect(
   (actions$ = inject(Actions)) => actions$.pipe(
     ofType(actions.loadDirectLines),
-    map(() => actions.setDirectLines({ lines: JSON.parse(localStorage.getItem('direct-lines') as string ?? '[]') })),
+    map(() => {
+      const lines = JSON.parse(localStorage.getItem('direct-lines') as string ?? '[]');
+      return actions.setDirectLines({ lines });
+    }),
   ),
   { functional: true }
 );

@@ -1762,7 +1762,7 @@
       "ruralProducer": "Harris Tala",
       "good": "Madera",
       "destinationCity": "Grand Rapids",
-      "lastRun": "1912-09-19T00:00:00.000Z",
+      "lastRun": "1912-11-22T00:00:00.000Z",
       "productionFactor": 0.15887008971496583
     },
     {
@@ -2086,7 +2086,7 @@
       "ruralProducer": "Cook Talla",
       "good": "Madera",
       "destinationCity": "Columbia",
-      "lastRun": "1912-08-17T00:00:00.000Z",
+      "lastRun": "1912-11-22T00:00:00.000Z",
       "productionFactor": 0.17948281401011815
     },
     {
@@ -2137,7 +2137,7 @@
       "good": "Madera",
       "destinationCity": "Omaha",
       "productionFactor": 0.09837549363478935,
-      "lastRun": "1912-06-29T00:00:00.000Z"
+      "lastRun": "1912-11-22T00:00:00.000Z"
     },
     {
       "ruralProducer": "Cook Talla",
@@ -2214,7 +2214,7 @@
       "good": "Leche",
       "destinationCity": "Kansas City",
       "productionFactor": 0.2864544365493649,
-      "lastRun": "1912-07-03T00:00:00.000Z"
+      "lastRun": "1912-11-22T00:00:00.000Z"
     },
     {
       "ruralProducer": "Thomas Conservar",
