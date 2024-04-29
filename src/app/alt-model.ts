@@ -239,22 +239,42 @@ export const weeklyConsumption
     }
   }
 
-type LineX = {
-  type: 'LineX',
-  producer: Producer,
+/**
+ * For the middle game, where stations and tracks already exist, and trains running from farm to city are destroyed after delivery.
+ */
+type OneShotLine = {
+  type: 'OneShotLine',
+  producer: Readonly<RuralBusiness>,
   productionShare: number,
-  consumer: Consumer,
+  consumer: Readonly<City>,
   consumptionShare: number,
+  lastRun?: Date,
 }
 
-type Line = LineX;
+/**
+ * For the end game, where station, tracks and trains are permanent.
+ */
+type CirculatingLine = {
+  type: 'CirculatingLine',
+  producer: Readonly<Producer>,
+  productionShare: number,
+  consumer: Readonly<Consumer>,
+  consumptionShare: number,
+  cycleDays: number,
+  trains: number,
+}
+
+type Line = OneShotLine | CirculatingLine | { type?: undefined };
 
 const weeklyWagonsProduced
   : (line: Line, good: Good) => number
   = (line, good) => {
     switch (line.type) {
-      case 'LineX': return weeklyProduction(line.producer, good) * line.productionShare;
-      default: throw new Error(`not implemented: ${line.type}`);
+      case 'OneShotLine':
+      case 'CirculatingLine':
+        return weeklyProduction(line.producer, good) * line.productionShare;
+      default:
+        throw new Error(`not implemented: ${line.type}`);
     }
   }
 
@@ -262,8 +282,11 @@ const weeklyWagonsConsumed
   : (line: Line, good: Good) => number
   = (line, good) => {
     switch (line.type) {
-      case 'LineX': return weeklyConsumption(line.consumer, good) * line.consumptionShare;
-      default: throw new Error(`not implemented: ${line.type}`);
+      case 'OneShotLine':
+      case 'CirculatingLine':
+        return weeklyConsumption(line.consumer, good) * line.consumptionShare;
+      default:
+        throw new Error(`not implemented: ${line.type}`);
     }
   }
 
@@ -273,3 +296,15 @@ const weeklyWagonsTurnedOver
     weeklyWagonsProduced(line, good),
     weeklyWagonsConsumed(line, good)
   );
+
+/**
+ * For the beginning of the game, where stations and tracks are constructed for the duration of the train run from farm to city.
+ */
+type OneShotConnection = {
+  type: 'ConnectionLine',
+  producer: Readonly<RuralBusiness>,
+  consumer: Readonly<City>,
+  lastRun?: Date,
+  miles?: number,
+  cost?: number,
+}
