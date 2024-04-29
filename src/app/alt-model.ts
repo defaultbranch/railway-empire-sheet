@@ -241,8 +241,12 @@ export const weeklyConsumption
 
 /**
  * For the middle game, where stations and tracks already exist, and trains running from farm to city are destroyed after delivery.
+ *
+ * These run on demand, just preventing the consumer from running out of the transported good.
+ *
+ * These run always fully loaded with one type of good, to maximize income, at the price of manual management.
  */
-type OneShotLine = {
+export type OneShotLine = {
   type: 'OneShotLine',
   producer: Readonly<RuralBusiness>,
   productionShare: number,
@@ -253,8 +257,10 @@ type OneShotLine = {
 
 /**
  * For the end game, where station, tracks and trains are permanent.
+ *
+ * These run continuously, even if production is insufficient or demand is saturated, to minimize manual management.
  */
-type CirculatingLine = {
+export type CirculatingLine = {
   type: 'CirculatingLine',
   producer: Readonly<Producer>,
   productionShare: number,
@@ -266,36 +272,25 @@ type CirculatingLine = {
 
 type Line = OneShotLine | CirculatingLine | { type?: undefined };
 
-const weeklyWagonsProduced
+export const weeklyTurnOver
   : (line: Line, good: Good) => number
   = (line, good) => {
     switch (line.type) {
       case 'OneShotLine':
+        return Math.min(
+          weeklyProduction(line.producer, good) * line.productionShare,
+          weeklyConsumption(line.consumer, good) * line.consumptionShare
+        );
       case 'CirculatingLine':
-        return weeklyProduction(line.producer, good) * line.productionShare;
+        return Math.min(
+          weeklyProduction(line.producer, good) * line.productionShare,
+          weeklyConsumption(line.consumer, good) * line.consumptionShare,
+          56 * line.trains / line.cycleDays,
+        );
       default:
         throw new Error(`not implemented: ${line.type}`);
     }
   }
-
-const weeklyWagonsConsumed
-  : (line: Line, good: Good) => number
-  = (line, good) => {
-    switch (line.type) {
-      case 'OneShotLine':
-      case 'CirculatingLine':
-        return weeklyConsumption(line.consumer, good) * line.consumptionShare;
-      default:
-        throw new Error(`not implemented: ${line.type}`);
-    }
-  }
-
-const weeklyWagonsTurnedOver
-  : (line: Line, good: Good) => number
-  = (line, good) => Math.min(
-    weeklyWagonsProduced(line, good),
-    weeklyWagonsConsumed(line, good)
-  );
 
 /**
  * For the beginning of the game, where stations and tracks are constructed for the duration of the train run from farm to city.
