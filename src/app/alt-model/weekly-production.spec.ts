@@ -1,4 +1,5 @@
-import { City, Factory, RuralBusiness, weeklyProduction } from "./alt-model";
+import { City, Factory, RuralBusiness } from "./alt-model";
+import { weeklyProduction } from "./weekly-production";
 
 describe('weeklyProduction', () => {
 

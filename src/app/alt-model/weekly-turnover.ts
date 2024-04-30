@@ -1,5 +1,6 @@
-import { weeklyConsumption } from "../alt-model";
-import { Good, Line, weeklyProduction } from "./alt-model";
+import { Good, Line } from "./alt-model";
+import { weeklyConsumption } from "./weekly-consumption";
+import { weeklyProduction } from "./weekly-production";
 
 export const weeklyTurnOver
   : (line: Line, good: Good) => number
