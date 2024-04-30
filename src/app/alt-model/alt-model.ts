@@ -26,12 +26,12 @@ type RuralProduct = keyof typeof RuralProductionCapacity;
 export function isRuralProduct(good: Good): good is RuralProduct { return RuralProductionCapacity[good as RuralProduct] !== undefined; }
 export function asRuralProduct(good: Good): RuralProduct { return isRuralProduct(good) ? good : throwWrongType(); }
 
-export type RuralBusiness = {
+export type RuralBusiness = Readonly<{
   type: 'RuralBusiness',
   name: string,
   product: RuralProduct,
   size: Size,
-}
+}>;
 
 export const IndustrialProductionCapacity = {
   "Industria cárnica": {
@@ -101,11 +101,11 @@ type Industry = typeof IndustrialProductionCapacity[IndustryType];
 type IndustrialEduct = KeysOfUnion<typeof IndustrialProductionCapacity[IndustryType]["materiasPrimas"]>;
 type IndustrialProduct = KeysOfUnion<typeof IndustrialProductionCapacity[IndustryType]["productos"]>;
 
-export type Factory = {
+export type Factory = Readonly<{
   type: 'Factory';
   industryType: IndustryType,
   size: Size,
-}
+}>;
 
 export const CityPopulationDemand = {
   "Cereales": {
@@ -190,12 +190,18 @@ type ConsumerProduct = keyof typeof CityPopulationDemand;
 export function isConsumerProduct(good: Good): good is ConsumerProduct { return CityPopulationDemand[good as ConsumerProduct] !== undefined; }
 export function asConsumerProduct(good: Good): ConsumerProduct { return isConsumerProduct(good) ? good : throwWrongType(); }
 
-export type City = {
+export type City = Readonly<{
   type: 'City',
   name: string,
   population: number,
   factories: readonly [Factory | undefined, Factory | undefined, Factory | undefined],
-}
+}>;
+
+export type Warehouse = Readonly<{
+  type: 'Warehouse',
+  goods: Good[],
+  connected: (RuralBusiness | City)[],
+}>;
 
 export type Producer = RuralBusiness | Factory | City | { type?: undefined };
 export type Consumer = Factory | City | { type?: undefined };
