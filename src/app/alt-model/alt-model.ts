@@ -1,12 +1,12 @@
 type KeysOfUnion<T> = T extends unknown ? keyof T : never;
 
-const throwUndefined: () => never = () => { throw new Error('undefined'); }
-const throwWrongType: () => never = () => { throw new Error('wrong type'); }
+export const throwUndefined: () => never = () => { throw new Error('undefined'); }
+export const throwWrongType: () => never = () => { throw new Error('wrong type'); }
 
 export type Good = string;
 type Size = number;
 
-const RuralProductionCapacity = {
+export const RuralProductionCapacity = {
   "Madera": [3.2, 6.4, 12.8, undefined, undefined],
   "Ganado": [2.4, 4.8, 9.6, 16.8, undefined],
   "Cereales": [2.7, 5.5, 11.1, undefined, undefined],
@@ -23,8 +23,8 @@ const RuralProductionCapacity = {
 } as const;
 
 type RuralProduct = keyof typeof RuralProductionCapacity;
-function isRuralProduct(good: Good): good is RuralProduct { return RuralProductionCapacity[good as RuralProduct] !== undefined; }
-function asRuralProduct(good: Good): RuralProduct { return isRuralProduct(good) ? good : throwWrongType(); }
+export function isRuralProduct(good: Good): good is RuralProduct { return RuralProductionCapacity[good as RuralProduct] !== undefined; }
+export function asRuralProduct(good: Good): RuralProduct { return isRuralProduct(good) ? good : throwWrongType(); }
 
 export type RuralBusiness = {
   type: 'RuralBusiness',
@@ -33,7 +33,7 @@ export type RuralBusiness = {
   size: Size,
 }
 
-const IndustrialProductionCapacity = {
+export const IndustrialProductionCapacity = {
   "Industria cárnica": {
     "materiasPrimas": { "Ganado": [3.6, 7.2, 14.4, undefined, undefined] },
     "productos": { "Carne": [2.4, 4.8, 9.6, undefined, undefined] },
@@ -107,7 +107,7 @@ export type Factory = {
   size: Size,
 }
 
-const CityPopulationDemand = {
+export const CityPopulationDemand = {
   "Cereales": {
     "wagonsPerMillion": 17.17,
     "minCityPopulation": 0
@@ -187,8 +187,8 @@ const CityPopulationDemand = {
 } as const;
 
 type ConsumerProduct = keyof typeof CityPopulationDemand;
-function isConsumerProduct(good: Good): good is ConsumerProduct { return CityPopulationDemand[good as ConsumerProduct] !== undefined; }
-function asConsumerProduct(good: Good): ConsumerProduct { return isConsumerProduct(good) ? good : throwWrongType(); }
+export function isConsumerProduct(good: Good): good is ConsumerProduct { return CityPopulationDemand[good as ConsumerProduct] !== undefined; }
+export function asConsumerProduct(good: Good): ConsumerProduct { return isConsumerProduct(good) ? good : throwWrongType(); }
 
 export type City = {
   type: 'City',
@@ -218,26 +218,7 @@ export const weeklyProduction
     }
   }
 
-type Consumer = Factory | City | { type?: undefined };
-
-export const weeklyConsumption
-  : (consumer: Consumer, good: Good) => number
-  = (consumer, good) => {
-    switch (consumer.type) {
-      case 'Factory': {
-        const industry = IndustrialProductionCapacity[consumer.industryType];
-        const matriasPrimas = industry.materiasPrimas as Readonly<Record<Good, Readonly<(number | undefined)[]>>>;
-        const amounts = matriasPrimas[good];
-        return amounts ? amounts[consumer.size - 1] ?? throwUndefined() : 0;
-      }
-      case 'City': {
-        const demand = CityPopulationDemand[asConsumerProduct(good)] ?? throwUndefined();
-        const populationConsumption = demand.minCityPopulation <= consumer.population ? demand.wagonsPerMillion * consumer.population * 1e-6 : 0;
-        return populationConsumption + consumer.factories.reduce((total, factory) => { return total + (factory ? weeklyConsumption(factory, good) : 0) }, 0);
-      }
-      default: throw new Error(`not implemented: ${consumer.type}`);
-    }
-  }
+export type Consumer = Factory | City | { type?: undefined };
 
 /**
  * For the middle game, where stations and tracks already exist, and trains running from farm to city are destroyed after delivery.
