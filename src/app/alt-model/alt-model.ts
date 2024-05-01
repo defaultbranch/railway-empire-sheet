@@ -199,7 +199,7 @@ export type City = Readonly<{
 
 export type Warehouse = Readonly<{
   type: 'Warehouse',
-  goods: Good[],
+  weeklyVolume: { [good: Good]: number },
   connected: (RuralBusiness | City)[],
 }>;
 
