@@ -3,11 +3,27 @@
 _This is about the game [Railway Empire](https://de.wikipedia.org/wiki/Railway_Empire)._
 
 
-## Building
+## Building, Serving, etc.
 
 ```
 nx run railway-empire-sheet:test
 ```
+
+```
+nx serve railway-empire-sheet
+```
+
+
+## Balancing
+
+Producers and consumers have supply and demand, somethimes both.
+
+Lines transport specific quantities of specific goods between both.
+
+Farms and city populations have a fixed supply and demand.
+
+Factories and warehouses have a flexible supply and demand.
+
 
 
 

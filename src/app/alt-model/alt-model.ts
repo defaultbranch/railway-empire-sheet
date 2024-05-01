@@ -216,9 +216,9 @@ export type Consumer = Factory | City | { type?: undefined };
 export type OneShotLine = {
   type: 'OneShotLine',
   producer: Readonly<RuralBusiness>,
-  productionShare: number,
   consumer: Readonly<City>,
-  consumptionShare: number,
+  nominalProductionShare: number,  // commit to take that share of the producers supply, but not more
+  nominalConsumptionShare: number,  // commit to deliver that share of the consumers demand, but not more
   lastRun?: Date,
 }
 
@@ -230,11 +230,11 @@ export type OneShotLine = {
 export type CirculatingLine = {
   type: 'CirculatingLine',
   producer: Readonly<Producer>,
-  productionShare: number,
   consumer: Readonly<Consumer>,
-  consumptionShare: number,
-  cycleDays: number,
   trains: number,
+  meanCycleDays: number,
+  nominalProductionShare: number,  // commit to take that share of the producers supply, but not more
+  nominalConsumptionShare: number,  // commit to deliver that share of the consumers demand, but not more
 }
 
 export type Line = OneShotLine | CirculatingLine | { type?: undefined };
