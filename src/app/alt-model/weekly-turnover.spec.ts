@@ -33,15 +33,15 @@ describe('weeklyTurnOver', () => {
         it('with 0.5 consumption share for Cereales is near 1.0', () => expect(weeklyTurnOver({ ...line, nominalConsumptionShare: 0.5 } satisfies OneShotLine, "Cereales")).toBeCloseTo(1.0, 0.05));
       });
 
-      describe('of CirculatingLine', () => {
+      describe('of CirculatingLine for Cereales only', () => {
+
         const line: CirculatingLine = {
           type: 'CirculatingLine',
           producer,
-          nominalProductionShare: 1.0,
           consumer,
-          nominalConsumptionShare: 1.0,
           meanCycleDays: 0,
           trains: 0,
+          weeklyVolume: { "Cereales": 8.0 },
         }
 
 

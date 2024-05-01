@@ -233,8 +233,7 @@ export type CirculatingLine = {
   consumer: Readonly<Consumer>,
   trains: number,
   meanCycleDays: number,
-  nominalProductionShare: number,  // commit to take that share of the producers supply, but not more
-  nominalConsumptionShare: number,  // commit to deliver that share of the consumers demand, but not more
+  weeklyVolume: { [good: Good]: number },
 }
 
 export type Line = OneShotLine | CirculatingLine | { type?: undefined };
