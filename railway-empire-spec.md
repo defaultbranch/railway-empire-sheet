@@ -89,6 +89,82 @@ Passengers and mail pay by unit and distance, it seems.
 
 Money is made in the game when goods, passengers or mail are unloaded in a city.
 
+## Domain Model
+
+The state of a game must be discoverable: a game can start with an empty set of goods, rural
+business types and industry types, and the player adds new ones to these sets as they become
+relevant during play. The domain model is built up from a small number of entities, recorded
+here roughly in the order they need to exist.
+
+### Good
+
+A `Good` is the atomic building block of the domain model: just a name identifying a type of
+commodity (e.g. "Madera", "Ganado", "Carne").
+
+A good has no inherent structure or relations of its own — it is not fixed as a "raw material"
+or a "product". The same good can be the output of one rural business or industry and the
+input of another (e.g. "Madera" is harvested by a rural business, and also consumed as a raw
+material by a furniture industry). Which role a good plays is determined by the recipes of the
+rural business types and industry types that reference it, not by the good itself.
+
+Every other entity (rural business types, industry types, city demand curves, lines, ...)
+refers to goods by name. The set of goods is not fixed by the game engine; different scenarios
+start with different sets, and new goods can be discovered/added as the game progresses.
+
+### Rural Business Type
+
+A `Rural Business Type` is a template for a rural business, e.g. "Madera" (logging), "Ganado"
+(cattle ranch). It has a name, and a production table: the amount of a good produced per week,
+for each of the five business levels (level 1 to 5).
+
+A rural business type only produces, it does not consume any good. This is the simplest
+producer template in the domain model, depending only on `Good`.
+
+As with goods, the set of rural business types is not fixed; it can start empty and grow as new
+types are discovered/added during the game.
+
+### Industry Type
+
+An `Industry Type` is a template for an industry, e.g. "Industria cárnica" (meat industry),
+"Refinerías" (refineries). It has a name, and a recipe: one or two raw-material goods consumed
+per week, and one or two product goods produced per week, for each of the five industry levels
+(level 1 to 5).
+
+Unlike a rural business type, an industry type both consumes and produces goods. It depends
+only on `Good`, same as a rural business type.
+
+As with rural business types, the set of industry types is not fixed; it can start empty and
+grow as new types are discovered/added during the game.
+
+## View Concerns
+
+A view concern is a distinct piece of functionality the player needs, independent of how it
+ends up bundled into an actual screen. As the list of concerns evolves, concerns may overlap,
+so the final set of views may well be fewer than the set of concerns.
+
+### Manage Goods
+
+Show the set of known goods to the player. The player can add new goods, and remove existing
+ones.
+
+### Manage Rural Business Types
+
+Show the set of known rural business types to the player, as they are discovered during play.
+The player can add new types, and remove existing ones.
+
+The production table of a type is not fully known upfront either: businesses start at level 1,
+and only once a business reaches a higher level does the player get to see the coefficient for
+the corresponding entry in the production table.
+
+### Manage Industry Types
+
+Show the set of known industry types to the player, as they are discovered during play. The
+player can add new types, and remove existing ones.
+
+As with rural business types, the recipe of an industry type is not fully known upfront:
+industries start at level 1, and only once an industry reaches a higher level does the player
+get to see the coefficients for the corresponding entry in the raw-material and product tables.
+
 ## Next Steps
 
 Once this description is captured, the current implementation will be reviewed to derive and
