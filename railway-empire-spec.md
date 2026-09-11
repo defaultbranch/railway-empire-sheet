@@ -136,6 +136,21 @@ only on `Good`, same as a rural business type.
 As with rural business types, the set of industry types is not fixed; it can start empty and
 grow as new types are discovered/added during the game.
 
+### Demand
+
+A `Demand` describes the population's per-week appetite for a good: the good itself, a minimum
+city population below which the good is not demanded at all, and a demand rate (wagons per week
+per million citizens) applied once that threshold is met.
+
+A demand is a value object rather than an entity in its own right: it is fully characterized by
+its data, and it is really an attribute of a `Good` describing the good's role in city
+population consumption, keyed by the good's name rather than a separate identity.
+
+A good is associated with no demand, or exactly one demand.
+
+As with goods, rural business types and industry types, the set of demands is not fixed; it can
+start empty and grow as new goods enter demand during the game.
+
 ## View Concerns
 
 A view concern is a distinct piece of functionality the player needs, independent of how it
@@ -164,6 +179,12 @@ player can add new types, and remove existing ones.
 As with rural business types, the recipe of an industry type is not fully known upfront:
 industries start at level 1, and only once an industry reaches a higher level does the player
 get to see the coefficients for the corresponding entry in the raw-material and product tables.
+
+### Manage Demands
+
+Show the set of known demands to the player, similar to managing the set of goods. This concern
+is likely implemented in the same view as Manage Goods, but the final grouping of concerns into
+views is left open for now.
 
 ## Next Steps
 
