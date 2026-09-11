@@ -96,7 +96,7 @@ export const nextRun = (
 ) => createSelector(
   providerEffectiveRate(provider),
   (effectiveRate) => {
-    if (effectiveRate <= 0) return undefined;
+    if (!Number.isFinite(effectiveRate) || effectiveRate <= 0) return undefined;
     if (!provider.lastRun) return undefined;
     const nextRun = new Date(provider.lastRun);
     nextRun.setDate(nextRun.getDate() + 56 / effectiveRate);
