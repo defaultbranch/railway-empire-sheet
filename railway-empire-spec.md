@@ -151,6 +151,33 @@ A good is associated with no demand, or exactly one demand.
 As with goods, rural business types and industry types, the set of demands is not fixed; it can
 start empty and grow as new goods enter demand during the game.
 
+### Rural Business
+
+A `Rural Business` is a concrete, placed instance of a `Rural Business Type`, e.g. a specific
+logging camp or cattle ranch on the map. It has a name of its own — distinct from the name of
+its type, since the map can have several rural businesses of the same type — and a level (1 to
+5) determining how much it currently produces, per the production table of its type.
+
+A rural business can be owned by a player. This, together with its own name, is why it is an
+entity with identity of its own, rather than being reducible to just a `(type, level)` pair: two
+rural businesses of the same type and level remain distinct if they are owned by different
+players, or unowned.
+
+Depends on `Rural Business Type`.
+
+### Industry
+
+An `Industry` is a concrete, placed instance of an `Industry Type`. Unlike a rural business, an
+industry has no name of its own; it is simply "the meat industry" or "the refinery" at whatever
+place it occupies. It still has a level (1 to 5) determining how much it currently converts raw
+materials into products, per the recipe of its type.
+
+An industry can be owned by a player, independently of any other industry of the same type. This
+is why it is an entity rather than a value object, even though — lacking a name — it carries no
+data that a `(type, level)` pair would not already capture on its own.
+
+Depends on `Industry Type`.
+
 ## View Concerns
 
 A view concern is a distinct piece of functionality the player needs, independent of how it
@@ -170,6 +197,12 @@ The player can add new types, and remove existing ones.
 The production table of a type is not fully known upfront either: businesses start at level 1,
 and only once a business reaches a higher level does the player get to see the coefficient for
 the corresponding entry in the production table.
+
+### Manage Rural Businesses
+
+Show the set of known rural businesses to the player, as they are discovered during play. The
+player can add a new rural business, naming it and picking its type, and update its level as it
+grows.
 
 ### Manage Industry Types
 
