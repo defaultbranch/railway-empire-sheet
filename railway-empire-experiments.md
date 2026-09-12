@@ -172,4 +172,37 @@ First train loaded 5th time April 4th, completing 4th delivery.
 
 So this test covered 78 days for four rounds with three trains. The regular station dispatched 12 train loads or 96 wagon loads in that time.
 
+### With four Baldwin Ten-Wheeler
+
+Running four Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 5th, completing 1st delivery.
+First train loaded 3rd time February 24th, completing 2nd delivery.
+First train loaded 4th time March 16th, completing 3rd delivery.
+
+So this test covered 59 days for three rounds with four trains. The regular station dispatched 12 train loads or 96 wagon loads in that time.
+
+### With five Baldwin Ten-Wheeler
+
+Running five Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 5th, completing 1st delivery.
+First train loaded 3rd time February 24th, completing 2nd delivery.
+
+So this test covered 39 days for two rounds with five trains. The regular station dispatched 10 train loads or 80 wagon loads in that time.
+
+### With six Baldwin Ten-Wheeler
+
+Running six Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 6th, completing 1st delivery.
+First train loaded 3rd time February 27th, completing 2nd delivery.
+
+So this test covered 42 days for two rounds with six trains. The regular station dispatched 12 train loads or 96 wagon loads in that time.
+
+
+
 
