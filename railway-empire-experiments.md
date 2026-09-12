@@ -84,39 +84,6 @@ Source station is a small train station close to the cattle farm.
 
 Track distance is 41 miles. It's a double track, one track per direction. Track signals are placed at the game's default intervals, giving 3 segments plus the respective train station inlets.
 
-### With four Baldwin Ten-Wheeler
-
-Running four Baldwin Ten-Wheeler 4-6-0.
-
-First train started loading January 16th.
-First train loaded 2nd time February 9th, completing 1st delivery.
-First train loaded 3rd time March 6th, completing 2nd delivery.
-First train loaded 4th time March 30th, completing 3rd delivery.
-
-So this test covered 73 days for three rounds with four trains. The small station dispatched 12 train loads or 96 wagon loads in that time.
-
-### With three Baldwin Ten-Wheeler
-
-Running three Baldwin Ten-Wheeler 4-6-0.
-
-First train started loading January 16th.
-First train loaded 2nd time February 4th, completing 1st delivery.
-First train loaded 3rd time February 22nd, completing 2nd delivery.
-First train loaded 4th time March 13th, completing 3rd delivery.
-First train loaded 5th time April 1st, completing 4th delivery.
-
-So this test covered 75 days for four rounds with three trains. The small station dispatched 12 train loads or 96 wagon loads in that time.
-
-### With five Baldwin Ten-Wheeler
-
-Running five Baldwin Ten-Wheeler 4-6-0.
-
-First train started loading January 16th.
-First train loaded 2nd time February 15th, completing 1st delivery.
-First train loaded 3rd time March 18th, completing 2nd delivery.
-
-So this test covered 61 days for two rounds with five trains. The small station dispatched 10 train loads or 80 wagon loads in that time.
-
 ### With two Baldwin Ten-Wheeler
 
 Running two Baldwin Ten-Wheeler 4-6-0.
@@ -130,6 +97,39 @@ First train loaded 6th time April 19th, completing 5th delivery.
 
 So this test covered 93 days for five rounds with two trains. The small station dispatched 10 train loads or 80 wagon loads in that time.
 
+### With three Baldwin Ten-Wheeler
+
+Running three Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 4th, completing 1st delivery.
+First train loaded 3rd time February 22nd, completing 2nd delivery.
+First train loaded 4th time March 13th, completing 3rd delivery.
+First train loaded 5th time April 1st, completing 4th delivery.
+
+So this test covered 75 days for four rounds with three trains. The small station dispatched 12 train loads or 96 wagon loads in that time.
+
+### With four Baldwin Ten-Wheeler
+
+Running four Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 9th, completing 1st delivery.
+First train loaded 3rd time March 6th, completing 2nd delivery.
+First train loaded 4th time March 30th, completing 3rd delivery.
+
+So this test covered 73 days for three rounds with four trains. The small station dispatched 12 train loads or 96 wagon loads in that time.
+
+### With five Baldwin Ten-Wheeler
+
+Running five Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 15th, completing 1st delivery.
+First train loaded 3rd time March 18th, completing 2nd delivery.
+
+So this test covered 61 days for two rounds with five trains. The small station dispatched 10 train loads or 80 wagon loads in that time.
+
 ### Conclusion
 
 | Trains | Wagon loads/week |
@@ -140,4 +140,36 @@ So this test covered 93 days for five rounds with two trains. The small station 
 | 5 | 9.18 |
 
 For a rural business served by a small train station, loading only at that station, the station maxes out at about 9.2 wagon loads per week.
+
+## Source: Regular train station
+
+Source station is a regular train station close to the cattle farm, with signal controling.
+
+Track distance is 36 miles. It's a double track, one track per direction. Track signals are placed at the game's default intervals, giving 3 segments plus the respective train station inlets.
+
+### With two Baldwin Ten-Wheeler
+
+Running two Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 4th, completing 1st delivery.
+First train loaded 3rd time February 23rd, completing 2nd delivery.
+First train loaded 4th time March 15th, completing 3rd delivery.
+First train loaded 5th time April 3rd, completing 4th delivery.
+First train loaded 6th time April 22nd, completing 5th delivery.
+
+So this test covered 96 days for five rounds with two trains. The regular station dispatched 10 train loads or 80 wagon loads in that time.
+
+### With three Baldwin Ten-Wheeler
+
+Running three Baldwin Ten-Wheeler 4-6-0.
+
+First train started loading January 16th.
+First train loaded 2nd time February 5th, completing 1st delivery.
+First train loaded 3rd time February 25th, completing 2nd delivery.
+First train loaded 4th time March 15th, completing 3rd delivery.
+First train loaded 5th time April 4th, completing 4th delivery.
+
+So this test covered 78 days for four rounds with three trains. The regular station dispatched 12 train loads or 96 wagon loads in that time.
+
 
