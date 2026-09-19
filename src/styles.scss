@@ -48,3 +48,36 @@
 		margin-top: 1rem;
 	}
 }
+
+.rural-business-types-page {
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		th,
+		td {
+			padding: 0.25rem 0.5rem;
+			text-align: left;
+		}
+
+		input[type='number'] {
+			width: 4rem;
+		}
+	}
+
+	&__empty {
+		color: #888;
+		font-style: italic;
+	}
+
+	&__add {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	&__hint {
+		color: #888;
+		font-style: italic;
+	}
+}
