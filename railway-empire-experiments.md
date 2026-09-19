@@ -203,6 +203,33 @@ First train loaded 3rd time February 27th, completing 2nd delivery.
 
 So this test covered 42 days for two rounds with six trains. The regular station dispatched 12 train loads or 96 wagon loads in that time.
 
+### With seven Baldwin Ten-Wheeler
+
+Running seven Baldwin Ten-Wheeler 4-6-0, four to one warehouse and three to another.
+
+First train started loading January 16th.
+On March 27th, 160 wagon loads have been dispatched and the 161 started dispatching.
+
+So this test covered 70 days, with the regular station dispatching 160 wagon loads (20 train loads) in that time.
+
+### Preliminary conclusion
+
+| Trains | Wagon loads/week |
+| --- | --- |
+| 2 | 5.83 |
+| 3 | 8.62 |
+| 4 | 11.39 |
+| 5 | 14.36 |
+| 6 | 16.00 |
+| 7 | 16.00 |
+
+Six and seven trains land on exactly the same throughput, suggesting the regular station may be plateauing around 16 wagon loads per week. An eight-train run would help confirm whether this is a real ceiling.
+
+
+
+
+
+
 
 
 
