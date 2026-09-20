@@ -6,7 +6,11 @@ function emptyGameState(): GameState {
 
 function fakeGameState(): GameState {
   return {
-    goods: ['Grain', 'Wood', 'Coal', 'Livestock', 'Iron', 'Steel', 'Meat', 'Furniture'],
+    goods: [
+      'Grain', 'Corn', 'Wood', 'Coal', 'Cattle', 'Iron', 'Steel', 'Meat', 'Beer', 'Cotton',
+      'Cloth', 'Chemicals', 'Sugar', 'Milk', 'Vegetables', 'Fruit', 'Clothing', 'Furniture',
+      'Liquor', 'Dairy Products',
+    ],
     ruralBusinessTypes: [
       {
         name: 'Wheat Farm',
@@ -27,7 +31,7 @@ function fakeGameState(): GameState {
     industryTypes: [
       {
         name: 'Meat Packing Plant',
-        rawMaterials: [{ good: 'Livestock', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2 } }],
+        rawMaterials: [{ good: 'Cattle', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2 } }],
         products: [{ good: 'Meat', amountByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8 } }],
       },
       {
@@ -43,13 +47,41 @@ function fakeGameState(): GameState {
         rawMaterials: [{ good: 'Wood', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
         products: [{ good: 'Furniture', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
       },
+      {
+        name: 'Brewery',
+        // levels 2, 4, 5 not yet observed
+        rawMaterials: [{ good: 'Grain', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 3: 3.2 } }],
+        products: [{ good: 'Beer', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 3: 6.4 } }],
+      },
+      {
+        name: 'Weaving Factory',
+        rawMaterials: [{ good: 'Cotton', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+        products: [{ good: 'Cloth', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+      },
+      {
+        name: 'Chemical Factory',
+        rawMaterials: [{ good: 'Coal', amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } }],
+        products: [{ good: 'Chemicals', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+      },
     ],
     demands: [
-      { good: 'Grain', minPopulation: 0, wagonsPerMillion: 40 },
-      { good: 'Wood', minPopulation: 0, wagonsPerMillion: 25 },
-      { good: 'Coal', minPopulation: 500, wagonsPerMillion: 20 },
-      { good: 'Meat', minPopulation: 1000, wagonsPerMillion: 15 },
-      { good: 'Furniture', minPopulation: 3000, wagonsPerMillion: 8 },
+      // fitted from Gardiner (pop 91288) and Spokane (pop 12722) weekly consumption samples
+      { good: 'Grain', minPopulation: 0, wagonsPerMillion: 17.5 },
+      { good: 'Corn', minPopulation: 0, wagonsPerMillion: 17.5 },
+      { good: 'Wood', minPopulation: 0, wagonsPerMillion: 17.5 },
+      { good: 'Beer', minPopulation: 0, wagonsPerMillion: 17.5 },
+      { good: 'Meat', minPopulation: 0, wagonsPerMillion: 26 },
+      { good: 'Sugar', minPopulation: 30000, wagonsPerMillion: 10 },
+      { good: 'Cloth', minPopulation: 35000, wagonsPerMillion: 10 },
+      { good: 'Milk', minPopulation: 40000, wagonsPerMillion: 10 },
+      { good: 'Vegetables', minPopulation: 45000, wagonsPerMillion: 10 },
+      { good: 'Fruit', minPopulation: 50000, wagonsPerMillion: 10 },
+      { good: 'Clothing', minPopulation: 55000, wagonsPerMillion: 10 },
+      // thresholds below are extrapolated from the 30k/35k/.../55k progression, not directly observed
+      { good: 'Furniture', minPopulation: 60000, wagonsPerMillion: 10 },
+      { good: 'Liquor', minPopulation: 65000, wagonsPerMillion: 10 },
+      { good: 'Dairy Products', minPopulation: 70000, wagonsPerMillion: 10 },
+      // Coal, Cattle and Cotton show no population demand in the samples (industry-only, or threshold not yet reached)
     ],
   };
 }
