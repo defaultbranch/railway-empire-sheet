@@ -7,15 +7,20 @@ function emptyGameState(): GameState {
 function fakeGameState(): GameState {
   return {
     goods: [
-      'Grain', 'Corn', 'Wood', 'Coal', 'Cattle', 'Iron', 'Steel', 'Meat', 'Beer', 'Cotton',
-      'Cloth', 'Chemicals', 'Sugar', 'Milk', 'Vegetables', 'Fruit', 'Clothing', 'Furniture',
-      'Liquor', 'Dairy Products',
+      'Grain', 'Cattle', 'Corn', 'Wood', 'Meat', 'Beer', 'Cotton', 'Sugar', 'Cloth', 'Milk',
+      'Vegetables', 'Fruit', 'Clothing', 'Furniture', 'Liquor', 'Dairy Products', 'Coal', 'Iron',
+      'Steel', 'Cement', 'Chemicals', 'Tools', 'Canned Foods', 'Oil', 'Petroleum',
     ],
     ruralBusinessTypes: [
       {
         name: 'Wheat Farm',
         good: 'Grain',
-        productionByLevel: { ...emptyProductionByLevel(), 1: 10, 2: 18, 3: 26 },
+        productionByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8, 5: 24.0 },
+      },
+      {
+        name: 'Cattle Farm',
+        good: 'Cattle',
+        productionByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8, 5: 24.0 },
       },
       {
         name: 'Logging Camp',
