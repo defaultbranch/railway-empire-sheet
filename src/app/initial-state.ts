@@ -15,58 +15,61 @@ function fakeGameState(): GameState {
       {
         name: 'Wheat Farm',
         good: 'Grain',
+        // setup cost: 300k per 2.4 weekly production
         productionByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8, 5: 24.0 },
       },
       {
         name: 'Cattle Farm',
         good: 'Cattle',
+        // setup cost: 300k per 2.4 weekly production
         productionByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8, 5: 24.0 },
+      },
+      {
+        name: 'Corn Farm',
+        good: 'Corn',
+        // setup cost: 400k per 1.6 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4, 4: 11.1, 5: 16.0 },
       },
       {
         name: 'Logging Camp',
         good: 'Wood',
-        productionByLevel: { ...emptyProductionByLevel(), 1: 8, 2: 14 },
+        // setup cost: 100k per 3.2 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 3.2, 2: 6.4, 3: 12.8, 4:22.3, 5: 32.0 },
+      },
+      {
+        name: 'Cotton Farm',
+        good: 'Cotton',
+        // setup cost: 400k per 1.6 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4, 4: 11.1, 5: 16.0 },
+      },
+      {
+        name: 'Sugar Plant',
+        good: 'Sugar',
+        // setup cost: 400k per 1.2 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4, 3: 4.8, 4: 8.4, 5: 12.0 },
       },
       {
         name: 'Coal Mine',
         good: 'Coal',
-        productionByLevel: { ...emptyProductionByLevel(), 1: 6 },
+        // setup cost: 500k per 1.0 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.0, 2: 2.0, 3: 4.0, 4: 7.0, 5: 10.0 },
       },
     ],
     industryTypes: [
       {
-        name: 'Meat Packing Plant',
-        rawMaterials: [{ good: 'Cattle', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2 } }],
-        products: [{ good: 'Meat', amountByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8 } }],
-      },
-      {
-        name: 'Steel Mill',
-        rawMaterials: [
-          { good: 'Coal', amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } },
-          { good: 'Iron', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } },
-        ],
-        products: [{ good: 'Steel', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
-      },
-      {
-        name: 'Furniture Factory',
-        rawMaterials: [{ good: 'Wood', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
-        products: [{ good: 'Furniture', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+        name: 'Meat Industry',
+        rawMaterials: [{ good: 'Cattle', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2, 3: 14.4, 4: 25.2 } }],
+        products:     [{ good: 'Meat',   amountByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8 } }],
       },
       {
         name: 'Brewery',
-        // levels 2, 4, 5 not yet observed
-        rawMaterials: [{ good: 'Grain', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 3: 3.2 } }],
-        products: [{ good: 'Beer', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 3: 6.4 } }],
+        rawMaterials: [{ good: 'Grain', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6, 3: 3.2, 4:  5.5 } }],
+        products:     [{ good: 'Beer',  amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4, 4: 11.1 } }],
       },
       {
         name: 'Weaving Factory',
-        rawMaterials: [{ good: 'Cotton', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
-        products: [{ good: 'Cloth', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
-      },
-      {
-        name: 'Chemical Factory',
-        rawMaterials: [{ good: 'Coal', amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } }],
-        products: [{ good: 'Chemicals', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+        rawMaterials: [{ good: 'Cotton', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4 } }],
+        products:     [{ good: 'Cloth',  amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4 } }],
       },
     ],
     demands: [
