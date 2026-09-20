@@ -6,6 +6,7 @@ import { DemandsPage } from './demands-page';
 
 export type Page = {
   title: string;
+  slug: string;
   description: string;
   Component: ComponentType;
 };
@@ -13,6 +14,7 @@ export type Page = {
 export const pages: Page[] = [
   {
     title: 'Goods',
+    slug: 'goods',
     description:
       'Goods are the atomic building blocks of the game: named commodities with no fixed role as ' +
       'raw material or product. Register the goods you discover during play here; every other page ' +
@@ -21,6 +23,7 @@ export const pages: Page[] = [
   },
   {
     title: 'Rural Business Types',
+    slug: 'rural-business-types',
     description:
       'A rural business type is a template such as logging or cattle ranching: a name plus a ' +
       'production table of one good, per business level 1 to 5. The table is filled in gradually, ' +
@@ -29,6 +32,7 @@ export const pages: Page[] = [
   },
   {
     title: 'Industry Types',
+    slug: 'industry-types',
     description:
       'An industry type is a template such as a meat packing plant or steel mill: a name plus a ' +
       'recipe of one or two raw-material goods consumed and one or two product goods produced, per ' +
@@ -38,6 +42,7 @@ export const pages: Page[] = [
   },
   {
     title: 'Demands',
+    slug: 'demands',
     description:
       "A demand is a good's population appetite: a minimum city population below which the good " +
       'is not demanded at all, and a demand rate in wagons per week per million citizens applied ' +
@@ -46,4 +51,15 @@ export const pages: Page[] = [
     Component: DemandsPage,
   },
 ];
+
+// Path shape: /pages/<1-based index>-<slug>, e.g. /pages/1-goods
+export function pathForPageIndex(index: number): string {
+  return `/pages/${index + 1}-${pages[index].slug}`;
+}
+
+export function pageIndexForPath(pathname: string): number {
+  const match = /^\/pages\/(\d+)-/.exec(pathname);
+  const index = match ? Number(match[1]) - 1 : 0;
+  return index >= 0 && index < pages.length ? index : 0;
+}
 
