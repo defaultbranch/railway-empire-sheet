@@ -1,12 +1,12 @@
 import { emptyProductionByLevel, type GameState } from './game-state';
 
 function emptyGameState(): GameState {
-  return { goods: [], ruralBusinessTypes: [] };
+  return { goods: [], ruralBusinessTypes: [], industryTypes: [] };
 }
 
 function fakeGameState(): GameState {
   return {
-    goods: ['Grain', 'Wood', 'Coal', 'Livestock'],
+    goods: ['Grain', 'Wood', 'Coal', 'Livestock', 'Iron', 'Steel', 'Meat', 'Furniture'],
     ruralBusinessTypes: [
       {
         name: 'Wheat Farm',
@@ -24,8 +24,29 @@ function fakeGameState(): GameState {
         productionByLevel: { ...emptyProductionByLevel(), 1: 6 },
       },
     ],
+    industryTypes: [
+      {
+        name: 'Meat Packing Plant',
+        rawMaterials: [{ good: 'Livestock', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2 } }],
+        products: [{ good: 'Meat', amountByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8 } }],
+      },
+      {
+        name: 'Steel Mill',
+        rawMaterials: [
+          { good: 'Coal', amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } },
+          { good: 'Iron', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } },
+        ],
+        products: [{ good: 'Steel', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+      },
+      {
+        name: 'Furniture Factory',
+        rawMaterials: [{ good: 'Wood', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+        products: [{ good: 'Furniture', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+      },
+    ],
   };
 }
+
 
 // swap this to 'empty' or a future 'saved' source to change dev/startup behavior
 type InitialStateSource = 'empty' | 'fake';

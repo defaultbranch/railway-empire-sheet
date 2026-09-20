@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
+import { IndustryTypesPage } from './industry-types-page';
 
 export type Page = {
   title: string;
@@ -25,4 +26,14 @@ export const pages: Page[] = [
       'as businesses of this type are discovered growing to higher levels.',
     Component: RuralBusinessTypesPage,
   },
+  {
+    title: 'Industry Types',
+    description:
+      'An industry type is a template such as a meat packing plant or steel mill: a name plus a ' +
+      'recipe of one or two raw-material goods consumed and one or two product goods produced, per ' +
+      'industry level 1 to 5. As with rural business types, the recipe is filled in gradually, as ' +
+      'industries of this type are discovered growing to higher levels.',
+    Component: IndustryTypesPage,
+  },
 ];
+

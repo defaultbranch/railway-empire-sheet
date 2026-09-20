@@ -13,9 +13,25 @@ export type RuralBusinessType = {
   productionByLevel: Record<BusinessLevel, number | undefined>;
 };
 
+// one raw-material or product entry of an industry type's recipe
+export type GoodFlow = {
+  good: Good | undefined;
+  amountByLevel: Record<BusinessLevel, number | undefined>;
+};
+
+export type IndustryFlowField = 'rawMaterials' | 'products';
+
+export type IndustryType = {
+  name: string;
+  // one or two entries, per the game's recipes
+  rawMaterials: GoodFlow[];
+  products: GoodFlow[];
+};
+
 export type GameState = {
   goods: Good[];
   ruralBusinessTypes: RuralBusinessType[];
+  industryTypes: IndustryType[];
 };
 
 export type GameStateActions = {
@@ -24,6 +40,18 @@ export type GameStateActions = {
   addRuralBusinessType: (type: RuralBusinessType) => void;
   removeRuralBusinessType: (name: string) => void;
   setRuralBusinessProduction: (name: string, level: BusinessLevel, amount: number | undefined) => void;
+  addIndustryType: (name: string) => void;
+  removeIndustryType: (name: string) => void;
+  addIndustryFlow: (name: string, field: IndustryFlowField) => void;
+  removeIndustryFlow: (name: string, field: IndustryFlowField, index: number) => void;
+  setIndustryFlowGood: (name: string, field: IndustryFlowField, index: number, good: Good | undefined) => void;
+  setIndustryFlowAmount: (
+    name: string,
+    field: IndustryFlowField,
+    index: number,
+    level: BusinessLevel,
+    amount: number | undefined,
+  ) => void;
 };
 
 const GameStateContext = createContext<(GameState & GameStateActions) | undefined>(undefined);
@@ -32,12 +60,26 @@ function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {
   return { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined };
 }
 
+function emptyGoodFlow(): GoodFlow {
+  return { good: undefined, amountByLevel: emptyProductionByLevel() };
+}
+
+function updateIndustryFlows(
+  types: IndustryType[],
+  name: string,
+  field: IndustryFlowField,
+  updater: (flows: GoodFlow[]) => GoodFlow[],
+): IndustryType[] {
+  return types.map((type) => (type.name === name ? { ...type, [field]: updater(type[field]) } : type));
+}
+
 export function GameStateProvider({ children }: { children: ReactNode }) {
   const [initialState] = useState(getInitialGameState);
   const [goods, setGoods] = useState<Good[]>(initialState.goods);
   const [ruralBusinessTypes, setRuralBusinessTypes] = useState<RuralBusinessType[]>(
     initialState.ruralBusinessTypes,
   );
+  const [industryTypes, setIndustryTypes] = useState<IndustryType[]>(initialState.industryTypes);
 
   const addGood = (good: Good) => {
     setGoods((prev) => (prev.includes(good) ? prev : [...prev, good]));
@@ -67,16 +109,73 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const addIndustryType = (name: string) => {
+    setIndustryTypes((prev) =>
+      prev.some((existing) => existing.name === name)
+        ? prev
+        : [...prev, { name, rawMaterials: [emptyGoodFlow()], products: [emptyGoodFlow()] }],
+    );
+  };
+
+  const removeIndustryType = (name: string) => {
+    setIndustryTypes((prev) => prev.filter((existing) => existing.name !== name));
+  };
+
+  const addIndustryFlow = (name: string, field: IndustryFlowField) => {
+    setIndustryTypes((prev) =>
+      updateIndustryFlows(prev, name, field, (flows) => (flows.length >= 2 ? flows : [...flows, emptyGoodFlow()])),
+    );
+  };
+
+  const removeIndustryFlow = (name: string, field: IndustryFlowField, index: number) => {
+    setIndustryTypes((prev) =>
+      updateIndustryFlows(prev, name, field, (flows) =>
+        flows.length <= 1 ? flows : flows.filter((_, i) => i !== index),
+      ),
+    );
+  };
+
+  const setIndustryFlowGood = (name: string, field: IndustryFlowField, index: number, good: Good | undefined) => {
+    setIndustryTypes((prev) =>
+      updateIndustryFlows(prev, name, field, (flows) =>
+        flows.map((flow, i) => (i === index ? { ...flow, good } : flow)),
+      ),
+    );
+  };
+
+  const setIndustryFlowAmount = (
+    name: string,
+    field: IndustryFlowField,
+    index: number,
+    level: BusinessLevel,
+    amount: number | undefined,
+  ) => {
+    setIndustryTypes((prev) =>
+      updateIndustryFlows(prev, name, field, (flows) =>
+        flows.map((flow, i) =>
+          i === index ? { ...flow, amountByLevel: { ...flow.amountByLevel, [level]: amount } } : flow,
+        ),
+      ),
+    );
+  };
+
   return (
     <GameStateContext.Provider
       value={{
         goods,
         ruralBusinessTypes,
+        industryTypes,
         addGood,
         removeGood,
         addRuralBusinessType,
         removeRuralBusinessType,
         setRuralBusinessProduction,
+        addIndustryType,
+        removeIndustryType,
+        addIndustryFlow,
+        removeIndustryFlow,
+        setIndustryFlowGood,
+        setIndustryFlowAmount,
       }}
     >
       {children}
