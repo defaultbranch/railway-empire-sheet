@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useGameState } from '../game-state';
+import { useGoods } from '../game-state/goods-state';
 
 export function GoodsPage() {
-  const { goods, addGood, removeGood } = useGameState();
+  const { goods, addGood, removeGood } = useGoods();
   const [newGood, setNewGood] = useState('');
 
   const handleAdd = () => {

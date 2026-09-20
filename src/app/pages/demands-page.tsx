@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useGameState } from '../game-state';
+import { useGoods } from '../game-state/goods-state';
+import { useDemands } from '../game-state/demands-state';
 
 export function DemandsPage() {
-  const { goods, demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion } =
-    useGameState();
+  const { goods } = useGoods();
+  const { demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion } = useDemands();
   const [newGood, setNewGood] = useState('');
 
   const availableGoods = goods.filter((good) => !demands.some((demand) => demand.good === good));

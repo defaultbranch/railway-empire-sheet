@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { businessLevels, emptyProductionByLevel, useGameState } from '../game-state';
+import { businessLevels, emptyProductionByLevel } from '../game-state/types';
+import { useGoods } from '../game-state/goods-state';
+import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 
 export function RuralBusinessTypesPage() {
-  const { goods, ruralBusinessTypes, addRuralBusinessType, removeRuralBusinessType, setRuralBusinessProduction } =
-    useGameState();
+  const { goods } = useGoods();
+  const { ruralBusinessTypes, addRuralBusinessType, removeRuralBusinessType, setRuralBusinessProduction } =
+    useRuralBusinessTypes();
   const [newName, setNewName] = useState('');
   const [newGood, setNewGood] = useState('');
 

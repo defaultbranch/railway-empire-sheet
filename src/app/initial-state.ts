@@ -1,4 +1,4 @@
-import { emptyProductionByLevel, type GameState } from './game-state';
+import { emptyProductionByLevel, type GameState } from './game-state/types';
 
 function emptyGameState(): GameState {
   return { goods: [], ruralBusinessTypes: [], industryTypes: [], demands: [] };

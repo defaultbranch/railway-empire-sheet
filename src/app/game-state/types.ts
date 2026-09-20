@@ -1,0 +1,49 @@
+export type Good = string;
+
+export const businessLevels = [1, 2, 3, 4, 5] as const;
+export type BusinessLevel = (typeof businessLevels)[number];
+
+export type RuralBusinessType = {
+  name: string;
+  good: Good;
+  // per-level production is only known once a business of this type reaches that level
+  productionByLevel: Record<BusinessLevel, number | undefined>;
+};
+
+// one raw-material or product entry of an industry type's recipe
+export type GoodFlow = {
+  good: Good | undefined;
+  amountByLevel: Record<BusinessLevel, number | undefined>;
+};
+
+export type IndustryFlowField = 'rawMaterials' | 'products';
+
+export type IndustryType = {
+  name: string;
+  // one or two entries, per the game's recipes
+  rawMaterials: GoodFlow[];
+  products: GoodFlow[];
+};
+
+// population demand for a good: not demanded below minPopulation, then wagonsPerMillion per week per million citizens
+export type Demand = {
+  good: Good;
+  minPopulation: number;
+  wagonsPerMillion: number;
+};
+
+// combined shape used only by the initial-state loader; each dimension is otherwise stored independently
+export type GameState = {
+  goods: Good[];
+  ruralBusinessTypes: RuralBusinessType[];
+  industryTypes: IndustryType[];
+  demands: Demand[];
+};
+
+export function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {
+  return { 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined };
+}
+
+export function emptyGoodFlow(): GoodFlow {
+  return { good: undefined, amountByLevel: emptyProductionByLevel() };
+}

@@ -1,16 +1,11 @@
 import { useState } from 'react';
-import {
-  businessLevels,
-  useGameState,
-  type BusinessLevel,
-  type Good,
-  type GoodFlow,
-  type IndustryFlowField,
-} from '../game-state';
+import { businessLevels, type BusinessLevel, type Good, type GoodFlow, type IndustryFlowField } from '../game-state/types';
+import { useGoods } from '../game-state/goods-state';
+import { useIndustryTypes } from '../game-state/industry-state';
 
 export function IndustryTypesPage() {
+  const { goods } = useGoods();
   const {
-    goods,
     industryTypes,
     addIndustryType,
     removeIndustryType,
@@ -18,7 +13,7 @@ export function IndustryTypesPage() {
     removeIndustryFlow,
     setIndustryFlowGood,
     setIndustryFlowAmount,
-  } = useGameState();
+  } = useIndustryTypes();
   const [newName, setNewName] = useState('');
 
   const handleAdd = () => {
