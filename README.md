@@ -26,6 +26,8 @@ pnpm dev
 
 Rather than a top-level menu, the app presents a sequence of pages that the user navigates through in order. The earliest pages cover simple, independent data, while later pages depend on data established by the ones before them. The purpose of this ordering is to build the application logic from the ground up, focusing on one aspect at a time instead of designing the whole data model up front.
 
+The implemented pages, in order, are listed in [src/app/pages/pages.ts](./src/app/pages/pages.ts).
+
 ## Specification
 
 [railway-empire-spec.md](./railway-empire-spec.md) documents the game mechanics being modeled and the data model derived from them.
