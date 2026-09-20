@@ -23,6 +23,10 @@ pnpm dev
 - `pnpm build` type-checks and builds the app.
 - `pnpm preview` serves the production build locally.
 
+## Development Approach
+
+Rather than a top-level menu, the app presents a sequence of pages that the user navigates through in order. The earliest pages cover simple, independent data, while later pages depend on data established by the ones before them. The purpose of this ordering is to build the application logic from the ground up, focusing on one aspect at a time instead of designing the whole data model up front.
+
 ## Archived Prototype
 
 The `old/` folder contains a previous prototype implementation. It is kept for archival purposes and is not intended to serve as a template.
