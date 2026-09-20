@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
+import { getInitialGameState } from './initial-state';
 
 export type Good = string;
 
@@ -32,8 +33,11 @@ function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {
 }
 
 export function GameStateProvider({ children }: { children: ReactNode }) {
-  const [goods, setGoods] = useState<Good[]>([]);
-  const [ruralBusinessTypes, setRuralBusinessTypes] = useState<RuralBusinessType[]>([]);
+  const [initialState] = useState(getInitialGameState);
+  const [goods, setGoods] = useState<Good[]>(initialState.goods);
+  const [ruralBusinessTypes, setRuralBusinessTypes] = useState<RuralBusinessType[]>(
+    initialState.ruralBusinessTypes,
+  );
 
   const addGood = (good: Good) => {
     setGoods((prev) => (prev.includes(good) ? prev : [...prev, good]));
