@@ -22,3 +22,7 @@ pnpm dev
 - `pnpm dev` starts the local Vite dev server.
 - `pnpm build` type-checks and builds the app.
 - `pnpm preview` serves the production build locally.
+
+## Archived Prototype
+
+The `old/` folder contains a previous prototype implementation. It is kept for archival purposes and is not intended to serve as a template.
