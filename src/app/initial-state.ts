@@ -1,7 +1,7 @@
 import { emptyProductionByLevel, type GameState } from './game-state';
 
 function emptyGameState(): GameState {
-  return { goods: [], ruralBusinessTypes: [], industryTypes: [] };
+  return { goods: [], ruralBusinessTypes: [], industryTypes: [], demands: [] };
 }
 
 function fakeGameState(): GameState {
@@ -43,6 +43,13 @@ function fakeGameState(): GameState {
         rawMaterials: [{ good: 'Wood', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
         products: [{ good: 'Furniture', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
       },
+    ],
+    demands: [
+      { good: 'Grain', minPopulation: 0, wagonsPerMillion: 40 },
+      { good: 'Wood', minPopulation: 0, wagonsPerMillion: 25 },
+      { good: 'Coal', minPopulation: 500, wagonsPerMillion: 20 },
+      { good: 'Meat', minPopulation: 1000, wagonsPerMillion: 15 },
+      { good: 'Furniture', minPopulation: 3000, wagonsPerMillion: 8 },
     ],
   };
 }

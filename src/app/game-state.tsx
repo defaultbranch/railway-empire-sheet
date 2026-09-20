@@ -28,10 +28,18 @@ export type IndustryType = {
   products: GoodFlow[];
 };
 
+// population demand for a good: not demanded below minPopulation, then wagonsPerMillion per week per million citizens
+export type Demand = {
+  good: Good;
+  minPopulation: number;
+  wagonsPerMillion: number;
+};
+
 export type GameState = {
   goods: Good[];
   ruralBusinessTypes: RuralBusinessType[];
   industryTypes: IndustryType[];
+  demands: Demand[];
 };
 
 export type GameStateActions = {
@@ -52,7 +60,12 @@ export type GameStateActions = {
     level: BusinessLevel,
     amount: number | undefined,
   ) => void;
+  addDemand: (good: Good) => void;
+  removeDemand: (good: Good) => void;
+  setDemandMinPopulation: (good: Good, minPopulation: number) => void;
+  setDemandWagonsPerMillion: (good: Good, wagonsPerMillion: number) => void;
 };
+
 
 const GameStateContext = createContext<(GameState & GameStateActions) | undefined>(undefined);
 
@@ -80,6 +93,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
     initialState.ruralBusinessTypes,
   );
   const [industryTypes, setIndustryTypes] = useState<IndustryType[]>(initialState.industryTypes);
+  const [demands, setDemands] = useState<Demand[]>(initialState.demands);
 
   const addGood = (good: Good) => {
     setGoods((prev) => (prev.includes(good) ? prev : [...prev, good]));
@@ -159,12 +173,33 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const addDemand = (good: Good) => {
+    setDemands((prev) =>
+      prev.some((existing) => existing.good === good) ? prev : [...prev, { good, minPopulation: 0, wagonsPerMillion: 0 }],
+    );
+  };
+
+  const removeDemand = (good: Good) => {
+    setDemands((prev) => prev.filter((existing) => existing.good !== good));
+  };
+
+  const setDemandMinPopulation = (good: Good, minPopulation: number) => {
+    setDemands((prev) => prev.map((existing) => (existing.good === good ? { ...existing, minPopulation } : existing)));
+  };
+
+  const setDemandWagonsPerMillion = (good: Good, wagonsPerMillion: number) => {
+    setDemands((prev) =>
+      prev.map((existing) => (existing.good === good ? { ...existing, wagonsPerMillion } : existing)),
+    );
+  };
+
   return (
     <GameStateContext.Provider
       value={{
         goods,
         ruralBusinessTypes,
         industryTypes,
+        demands,
         addGood,
         removeGood,
         addRuralBusinessType,
@@ -176,6 +211,10 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
         removeIndustryFlow,
         setIndustryFlowGood,
         setIndustryFlowAmount,
+        addDemand,
+        removeDemand,
+        setDemandMinPopulation,
+        setDemandWagonsPerMillion,
       }}
     >
       {children}

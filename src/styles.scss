@@ -176,3 +176,37 @@ body {
 	}
 }
 
+.demands-page {
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		th,
+		td {
+			padding: 0.25rem 0.5rem;
+			text-align: left;
+		}
+
+		input[type='number'] {
+			width: 5rem;
+		}
+	}
+
+	&__empty {
+		color: var(--color-muted-light);
+		font-style: italic;
+	}
+
+	&__add {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	&__hint {
+		color: var(--color-muted-light);
+		font-style: italic;
+	}
+}
+
+

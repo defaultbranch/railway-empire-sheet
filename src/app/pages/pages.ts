@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
 import { IndustryTypesPage } from './industry-types-page';
+import { DemandsPage } from './demands-page';
 
 export type Page = {
   title: string;
@@ -34,6 +35,15 @@ export const pages: Page[] = [
       'industry level 1 to 5. As with rural business types, the recipe is filled in gradually, as ' +
       'industries of this type are discovered growing to higher levels.',
     Component: IndustryTypesPage,
+  },
+  {
+    title: 'Demands',
+    description:
+      "A demand is a good's population appetite: a minimum city population below which the good " +
+      'is not demanded at all, and a demand rate in wagons per week per million citizens applied ' +
+      'once that threshold is met. This covers population consumption only, not yet the additional ' +
+      'consumption of industries within cities.',
+    Component: DemandsPage,
   },
 ];
 
