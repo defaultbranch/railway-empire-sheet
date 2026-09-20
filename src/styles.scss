@@ -1,5 +1,40 @@
+:root {
+	color-scheme: light dark;
+
+	--color-bg: #ffffff;
+	--color-text: #1a1a1a;
+	--color-muted: #555;
+	--color-muted-light: #888;
+	--color-border: #ccc;
+}
+
+[data-theme='dark'] {
+	--color-bg: #181a1b;
+	--color-text: #e8e8e8;
+	--color-muted: #aaa;
+	--color-muted-light: #888;
+	--color-border: #444;
+}
+
+html,
+body {
+	background-color: var(--color-bg);
+	color: var(--color-text);
+}
+
 .app-shell {
 	min-height: 100vh;
+}
+
+.theme-toggle {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	background: none;
+	border: 1px solid var(--color-border);
+	border-radius: 0.5rem;
+	padding: 0.25rem 0.5rem;
+	cursor: pointer;
 }
 
 .page-frame {
@@ -20,7 +55,7 @@
 	}
 
 	&__description {
-		color: #555;
+		color: var(--color-muted);
 	}
 }
 
@@ -38,7 +73,7 @@
 	}
 
 	&__empty {
-		color: #888;
+		color: var(--color-muted-light);
 		font-style: italic;
 	}
 
@@ -66,7 +101,7 @@
 	}
 
 	&__empty {
-		color: #888;
+		color: var(--color-muted-light);
 		font-style: italic;
 	}
 
@@ -77,7 +112,8 @@
 	}
 
 	&__hint {
-		color: #888;
+		color: var(--color-muted-light);
 		font-style: italic;
 	}
 }
+
