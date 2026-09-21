@@ -49,10 +49,34 @@ function fakeGameState(): GameState {
         productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4, 3: 4.8, 4: 8.4, 5: 12.0 },
       },
       {
+        name: 'Vegetable Farm',
+        good: 'Vegetables',
+        // setup cost: 500k per 0.8 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 },
+      },
+      {
+        name: 'Fruit Orchard',
+        good: 'Fruits',
+        // setup cost: 400k per 1.2 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4 },
+      },
+      {
         name: 'Coal Mine',
         good: 'Coal',
         // setup cost: 500k per 1.0 weekly production
         productionByLevel: { ...emptyProductionByLevel(), 1: 1.0, 2: 2.0, 3: 4.0, 4: 7.0, 5: 10.0 },
+      },
+      {
+        name: 'Iron Mine',
+        good: 'Iron',
+        // setup cost: 500k per 1.2 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2:2.4 },
+      },
+      {
+        name: 'Drilling Rig',
+        good: 'Oil',
+        // setup cost: 500k per 0.8 weekly production
+        productionByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 },
       },
     ],
     industryTypes: [
