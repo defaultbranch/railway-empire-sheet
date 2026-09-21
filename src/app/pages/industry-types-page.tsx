@@ -13,6 +13,7 @@ export function IndustryTypesPage() {
     removeIndustryFlow,
     setIndustryFlowGood,
     setIndustryFlowAmount,
+    setIndustrySetupCostBasis,
   } = useIndustryTypes();
   const [newName, setNewName] = useState('');
 
@@ -98,6 +99,19 @@ export function IndustryTypesPage() {
         <div className="industry-types-page__card" key={type.name}>
           <div className="industry-types-page__card-header">
             <h3>{type.name}</h3>
+            <label className="industry-types-page__setup-cost">
+              Setup cost basis
+              <input
+                type="number"
+                min={0}
+                value={type.setupCostBasis ?? ''}
+                placeholder="?"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setIndustrySetupCostBasis(type.name, value === '' ? undefined : Number(value));
+                }}
+              />
+            </label>
             <button type="button" onClick={() => removeIndustryType(type.name)} aria-label={`Remove ${type.name}`}>
               ✕
             </button>

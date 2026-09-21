@@ -15,6 +15,7 @@ export type IndustryState = {
     level: BusinessLevel,
     amount: number | undefined,
   ) => void;
+  setIndustrySetupCostBasis: (name: string, setupCostBasis: number | undefined) => void;
 };
 
 const IndustryContext = createContext<IndustryState | undefined>(undefined);
@@ -87,6 +88,12 @@ export function IndustryProvider({
     );
   };
 
+  const setIndustrySetupCostBasis = (name: string, setupCostBasis: number | undefined) => {
+    setIndustryTypes((prev) =>
+      prev.map((existing) => (existing.name === name ? { ...existing, setupCostBasis } : existing)),
+    );
+  };
+
   return (
     <IndustryContext.Provider
       value={{
@@ -97,6 +104,7 @@ export function IndustryProvider({
         removeIndustryFlow,
         setIndustryFlowGood,
         setIndustryFlowAmount,
+        setIndustrySetupCostBasis,
       }}
     >
       {children}

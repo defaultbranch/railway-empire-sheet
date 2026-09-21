@@ -6,6 +6,7 @@ export type RuralBusinessState = {
   addRuralBusinessType: (type: RuralBusinessType) => void;
   removeRuralBusinessType: (name: string) => void;
   setRuralBusinessProduction: (name: string, level: BusinessLevel, amount: number | undefined) => void;
+  setRuralBusinessSetupCostBasis: (name: string, setupCostBasis: number | undefined) => void;
 };
 
 const RuralBusinessContext = createContext<RuralBusinessState | undefined>(undefined);
@@ -39,9 +40,21 @@ export function RuralBusinessProvider({
     );
   };
 
+  const setRuralBusinessSetupCostBasis = (name: string, setupCostBasis: number | undefined) => {
+    setRuralBusinessTypes((prev) =>
+      prev.map((existing) => (existing.name === name ? { ...existing, setupCostBasis } : existing)),
+    );
+  };
+
   return (
     <RuralBusinessContext.Provider
-      value={{ ruralBusinessTypes, addRuralBusinessType, removeRuralBusinessType, setRuralBusinessProduction }}
+      value={{
+        ruralBusinessTypes,
+        addRuralBusinessType,
+        removeRuralBusinessType,
+        setRuralBusinessProduction,
+        setRuralBusinessSetupCostBasis,
+      }}
     >
       {children}
     </RuralBusinessContext.Provider>

@@ -5,8 +5,13 @@ import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 
 export function RuralBusinessTypesPage() {
   const { goods } = useGoods();
-  const { ruralBusinessTypes, addRuralBusinessType, removeRuralBusinessType, setRuralBusinessProduction } =
-    useRuralBusinessTypes();
+  const {
+    ruralBusinessTypes,
+    addRuralBusinessType,
+    removeRuralBusinessType,
+    setRuralBusinessProduction,
+    setRuralBusinessSetupCostBasis,
+  } = useRuralBusinessTypes();
   const [newName, setNewName] = useState('');
   const [newGood, setNewGood] = useState('');
 
@@ -28,13 +33,14 @@ export function RuralBusinessTypesPage() {
             {businessLevels.map((level) => (
               <th key={level}>Level {level}</th>
             ))}
+            <th>Setup cost basis</th>
             <th />
           </tr>
         </thead>
         <tbody>
           {ruralBusinessTypes.length === 0 && (
             <tr>
-              <td colSpan={businessLevels.length + 3} className="rural-business-types-page__empty">
+              <td colSpan={businessLevels.length + 4} className="rural-business-types-page__empty">
                 No rural business types yet.
               </td>
             </tr>
@@ -57,6 +63,18 @@ export function RuralBusinessTypesPage() {
                   />
                 </td>
               ))}
+              <td>
+                <input
+                  type="number"
+                  min={0}
+                  value={type.setupCostBasis ?? ''}
+                  placeholder="?"
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setRuralBusinessSetupCostBasis(type.name, value === '' ? undefined : Number(value));
+                  }}
+                />
+              </td>
               <td>
                 <button type="button" onClick={() => removeRuralBusinessType(type.name)} aria-label={`Remove ${type.name}`}>
                   ✕

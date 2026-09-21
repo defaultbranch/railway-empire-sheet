@@ -8,6 +8,8 @@ export type RuralBusinessType = {
   good: Good;
   // per-level production is only known once a business of this type reaches that level
   productionByLevel: Record<BusinessLevel, number | undefined>;
+  // baseline acquisition/upgrade cost, calibrated against level-1 weekly production; unknown until surveyed
+  setupCostBasis?: number;
 };
 
 // one raw-material or product entry of an industry type's recipe
@@ -23,6 +25,8 @@ export type IndustryType = {
   // one or two entries, per the game's recipes
   rawMaterials: GoodFlow[];
   products: GoodFlow[];
+  // baseline acquisition/upgrade cost, calibrated against level-1 weekly production; unknown until surveyed
+  setupCostBasis?: number;
 };
 
 // population demand for a good: not demanded below minPopulation, then wagonsPerMillion per week per million citizens
