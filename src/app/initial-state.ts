@@ -58,18 +58,87 @@ function fakeGameState(): GameState {
     industryTypes: [
       {
         name: 'Meat Industry',
+        // setup cost: 300k per 2.4 weekly production
         rawMaterials: [{ good: 'Cattle', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2, 3: 14.4, 4: 25.2 } }],
         products:     [{ good: 'Meat',   amountByLevel: { ...emptyProductionByLevel(), 1: 2.4, 2: 4.8, 3: 9.6, 4: 16.8 } }],
       },
       {
         name: 'Brewery',
+        // setup cost: 400k per 1.6 weekly production
         rawMaterials: [{ good: 'Grain', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6, 3: 3.2, 4:  5.5 } }],
         products:     [{ good: 'Beer',  amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4, 4: 11.1 } }],
       },
       {
         name: 'Weaving Factory',
+        // setup cost: 400k per 1.6 weekly production
         rawMaterials: [{ good: 'Cotton', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4 } }],
         products:     [{ good: 'Cloth',  amountByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4 } }],
+      },
+      {
+        name: 'Taylor',
+        // setup cost: 500k per 0.8 weekly production
+        rawMaterials: [{ good: 'Cloth',     amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+        products:     [{ good: 'Clothing',  amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+      },
+      {
+        name: 'Distillery',
+        // setup cost: 500k per 0.8 weekly production
+        rawMaterials: [
+          { good: 'Fruits', amountByLevel: { ...emptyProductionByLevel(), 1: 0.4, 2: 0.8 } },
+          { good: 'Sugar',  amountByLevel: { ...emptyProductionByLevel(), 1: 0.4, 2: 0.8 } },
+        ],
+        products: [{ good: 'Liquor',  amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 } }],
+      },
+      {
+        name: 'Dairy Farm',
+        // setup cost: 500k per 1.6 weekly production
+        rawMaterials: [{ good: 'Milk',           amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 } }],
+        products:     [{ good: 'Dairy Products', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 } }],
+      },
+      {
+        name: 'Steel Industry',
+        // setup cost: 400k per 1.2 weekly production
+        rawMaterials: [
+          { good: 'Coal',     amountByLevel: { ...emptyProductionByLevel(), 1: 0.6, 2: 1.2, 3: 2.4, 4: 4.2 } },
+          { good: 'Iron',     amountByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4, 3: 4.8, 4: 8.4 } },
+        ],
+        products:     [{ good: 'Steel',  amountByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4, 3: 4.8, 4: 8.4 } }],
+      },
+      {
+        name: 'Furniture Industry',
+        // setup cost: 500k per 1.6 weekly production
+        rawMaterials: [{ good: 'Wood',      amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+        products:     [{ good: 'Furniture', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+      },
+      {
+        name: 'Chemical Factory',
+        // setup cost: 500k per 0.8 weekly production
+        rawMaterials: [{ good: 'Coal',      amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } }],
+        products:     [{ good: 'Chemicals', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+      },
+      {
+        name: 'Toolmaker',
+        // setup cost: 500k per 1.6 weekly production
+        rawMaterials: [
+          { good: 'Steel',     amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } },
+          { good: 'Wood',     amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } },
+        ],
+        products:     [{ good: 'Tools', amountByLevel: { ...emptyProductionByLevel(), 1: 1.6 } }],
+      },
+      {
+        name: 'Preserver',
+        // setup cost: 500k per 0.8 weekly production
+        rawMaterials: [
+          { good: 'Vegetables', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } },
+          { good: 'Steel',      amountByLevel: { ...emptyProductionByLevel(), 1: 0.4 } },
+        ],
+        products: [{ good: 'Canned Foods', amountByLevel: { ...emptyProductionByLevel(), 1: 0.8 } }],
+      },
+      {
+        name: 'Refinery',
+        // setup cost: unknown
+        rawMaterials: [{ good: 'Oil',       amountByLevel: { ...emptyProductionByLevel() } }],
+        products:     [{ good: 'Petroleum', amountByLevel: { ...emptyProductionByLevel() } }],
       },
     ],
     demands: [
