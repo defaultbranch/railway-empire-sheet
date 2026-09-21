@@ -8,7 +8,7 @@ function fakeGameState(): GameState {
   return {
     goods: [
       'Grain', 'Cattle', 'Corn', 'Wood', 'Meat', 'Beer', 'Cotton', 'Sugar', 'Cloth', 'Milk',
-      'Vegetables', 'Fruit', 'Clothing', 'Furniture', 'Liquor', 'Dairy Products', 'Coal', 'Iron',
+      'Vegetables', 'Fruits', 'Clothing', 'Furniture', 'Liquor', 'Dairy Products', 'Coal', 'Iron',
       'Steel', 'Cement', 'Chemicals', 'Tools', 'Canned Foods', 'Oil', 'Petroleum',
     ],
     ruralBusinessTypes: [
@@ -46,6 +46,12 @@ function fakeGameState(): GameState {
         name: 'Sugar Plant',
         good: 'Sugar',
         productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2: 2.4, 3: 4.8, 4: 8.4, 5: 12.0 },
+        setupCostBasis: 400_000,
+      },
+      {
+        name: 'Milk Farm',
+        good: 'Milk',
+        productionByLevel: { ...emptyProductionByLevel(), 1: 1.6, 2: 3.2, 3: 6.4 },
         setupCostBasis: 400_000,
       },
       {
@@ -177,7 +183,7 @@ function fakeGameState(): GameState {
       { good: 'Cloth', minPopulation: 35000, wagonsPerMillion: 10 },
       { good: 'Milk', minPopulation: 40000, wagonsPerMillion: 10 },
       { good: 'Vegetables', minPopulation: 45000, wagonsPerMillion: 10 },
-      { good: 'Fruit', minPopulation: 50000, wagonsPerMillion: 10 },
+      { good: 'Fruits', minPopulation: 50000, wagonsPerMillion: 10 },
       { good: 'Clothing', minPopulation: 55000, wagonsPerMillion: 10 },
       { good: 'Furniture', minPopulation: 60000, wagonsPerMillion: 10 },
       { good: 'Liquor', minPopulation: 65000, wagonsPerMillion: 10 },

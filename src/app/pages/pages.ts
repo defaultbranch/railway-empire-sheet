@@ -3,6 +3,7 @@ import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
 import { IndustryTypesPage } from './industry-types-page';
 import { DemandsPage } from './demands-page';
+import { ProductionPipelinesPage } from './production-pipelines-page';
 
 export type Page = {
   title: string;
@@ -49,6 +50,16 @@ export const pages: Page[] = [
       'once that threshold is met. This covers population consumption only, not yet the additional ' +
       'consumption of industries within cities.',
     Component: DemandsPage,
+  },
+  {
+    title: 'Production Pipelines',
+    slug: 'production-pipelines',
+    description:
+      'Production pipelines derive a relative setup cost for one unit per week of each demanded ' +
+      'good, by tracing its production chain back through industries to the rural businesses that ' +
+      'supply raw materials. Each row lists the good, its total relative cost, and the businesses ' +
+      'and industries involved with the fraction of their level-1 capacity required.',
+    Component: ProductionPipelinesPage,
   },
 ];
 

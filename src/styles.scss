@@ -209,4 +209,23 @@ body {
 	}
 }
 
+.production-pipelines-page {
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		th,
+		td {
+			padding: 0.25rem 0.5rem;
+			text-align: left;
+		}
+	}
+
+	&__empty {
+		color: var(--color-muted-light);
+		font-style: italic;
+	}
+}
+
+
 
