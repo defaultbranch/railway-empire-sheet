@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
+import { RuralBusinessesPage } from './rural-businesses-page';
 import { IndustryTypesPage } from './industry-types-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
@@ -53,14 +54,6 @@ export const pages: Page[] = [
     Component: DemandsPage,
   },
   {
-    title: 'Cities',
-    slug: 'cities',
-    description:
-      'A city is a named place with a population. Population drives both the demand for goods and how ' +
-      'many industries the city can host. Register cities you discover here as you play.',
-    Component: CitiesPage,
-  },
-  {
     title: 'Production Pipelines',
     slug: 'production-pipelines',
     description:
@@ -69,6 +62,23 @@ export const pages: Page[] = [
       'supply raw materials. Each row lists the good, its total relative cost, and the businesses ' +
       'and industries involved with the fraction of their level-1 capacity required.',
     Component: ProductionPipelinesPage,
+  },
+  {
+    title: 'Cities',
+    slug: 'cities',
+    description:
+      'A city is a named place with a population. Population drives both the demand for goods and how ' +
+      'many industries the city can host. Register cities you discover here as you play.',
+    Component: CitiesPage,
+  },
+  {
+    title: 'Rural Businesses',
+    slug: 'rural-businesses',
+    description:
+      'A rural business is a concrete, placed instance of a rural business type: its own name, the type ' +
+      'it belongs to, and its current level (1 to 5). Register the rural businesses you discover during ' +
+      'play here, and update their level as they grow.',
+    Component: RuralBusinessesPage,
   },
 ];
 

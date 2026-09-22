@@ -3,7 +3,7 @@ import type { DefaultGood } from './default-goods';
 
 type DefaultRuralBusinessType = Omit<RuralBusinessType, 'good'> & { good: DefaultGood };
 
-export const defaultRuralBusinessTypes: readonly DefaultRuralBusinessType[] = [
+export const defaultRuralBusinessTypes = [
   {
     name: 'Wheat Farm',
     good: 'Grain',
@@ -76,5 +76,7 @@ export const defaultRuralBusinessTypes: readonly DefaultRuralBusinessType[] = [
     productionByLevel: { ...emptyProductionByLevel(), 1: 0.8, 2: 1.6 },
     setupCostBasis: 500_000,
   },
-] as const;
+] as const satisfies readonly DefaultRuralBusinessType[];
+
+export type DefaultRuralBusinessTypeName = (typeof defaultRuralBusinessTypes)[number]['name'];
 

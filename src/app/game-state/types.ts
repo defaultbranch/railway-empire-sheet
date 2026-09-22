@@ -12,6 +12,13 @@ export type RuralBusinessType = {
   setupCostBasis?: number;
 };
 
+// a concrete, placed instance of a RuralBusinessType: has its own name (distinct from its type's name)
+export type RuralBusiness = {
+  name: string;
+  typeName: string;
+  level: BusinessLevel;
+};
+
 // one raw-material or product entry of an industry type's recipe
 export type GoodFlow = {
   good: Good | undefined;
@@ -49,6 +56,7 @@ export type GameState = {
   industryTypes: IndustryType[];
   demands: Demand[];
   cities: City[];
+  ruralBusinesses: RuralBusiness[];
 };
 
 export function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {

@@ -1,6 +1,7 @@
 import type { GameState } from './game-state/types';
 import { defaultGoods } from './default-goods';
 import { defaultRuralBusinessTypes } from './default-rural-business-types';
+import { defaultRuralBusinesses } from './default-rural-businesses';
 import { defaultIndustryTypes } from './default-industry-types';
 import { defaultDemands } from './default-demands';
 import { defaultCities } from './default-cities';
@@ -12,6 +13,7 @@ function emptyGameState(): GameState {
     industryTypes: [],
     demands: [],
     cities: [],
+    ruralBusinesses: [],
   };
 }
 
@@ -22,6 +24,7 @@ function fakeGameState(): GameState {
     industryTypes: [...defaultIndustryTypes],
     demands: [...defaultDemands],
     cities: [...defaultCities],
+    ruralBusinesses: [...defaultRuralBusinesses],
   };
 }
 
