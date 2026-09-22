@@ -1,6 +1,6 @@
 import type { City } from './game-state/types';
 
-export const defaultCities: readonly City[] = [
+export const defaultCities = [
   { name: 'Baker City', population: 52_837 },
   { name: 'Billings', population: 105_588 },
   { name: 'Casper', population: 66_709 },
@@ -12,4 +12,6 @@ export const defaultCities: readonly City[] = [
   { name: 'Nampa', population: 74_311 },
   { name: 'Rock Springs', population: 76_169 },
   { name: 'Spokane', population: 12_722 },
-] as const;
+] as const satisfies readonly City[];
+
+export type DefaultCityName = (typeof defaultCities)[number]['name'];
