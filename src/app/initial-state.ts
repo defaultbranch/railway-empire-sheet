@@ -1,4 +1,5 @@
 import { emptyProductionByLevel, type GameState } from './game-state/types';
+import { defaultGoods } from './default-goods';
 
 function emptyGameState(): GameState {
   return { goods: [], ruralBusinessTypes: [], industryTypes: [], demands: [] };
@@ -6,11 +7,7 @@ function emptyGameState(): GameState {
 
 function fakeGameState(): GameState {
   return {
-    goods: [
-      'Grain', 'Cattle', 'Corn', 'Wood', 'Meat', 'Beer', 'Cotton', 'Sugar', 'Cloth', 'Milk',
-      'Vegetables', 'Fruits', 'Clothing', 'Furniture', 'Liquor', 'Dairy Products', 'Coal', 'Iron',
-      'Steel', 'Cement', 'Chemicals', 'Tools', 'Canned Foods', 'Oil', 'Petroleum',
-    ],
+    goods: [...defaultGoods],
     ruralBusinessTypes: [
       {
         name: 'Wheat Farm',
