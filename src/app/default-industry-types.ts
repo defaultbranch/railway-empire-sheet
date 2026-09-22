@@ -7,7 +7,7 @@ type DefaultIndustryType = Omit<IndustryType, 'rawMaterials' | 'products'> & {
   products: DefaultGoodFlow[];
 };
 
-export const defaultIndustryTypes: readonly DefaultIndustryType[] = [
+export const defaultIndustryTypes = [
   {
     name: 'Meat Industry',
     rawMaterials: [{ good: 'Cattle', amountByLevel: { ...emptyProductionByLevel(), 1: 3.6, 2: 7.2, 3: 14.4, 4: 25.2 } }],
@@ -92,4 +92,6 @@ export const defaultIndustryTypes: readonly DefaultIndustryType[] = [
     rawMaterials: [{ good: 'Oil',       amountByLevel: { ...emptyProductionByLevel() } }],
     products:     [{ good: 'Petroleum', amountByLevel: { ...emptyProductionByLevel() } }],
   },
-] as const;
+] as const satisfies readonly DefaultIndustryType[];
+
+export type DefaultIndustryTypeName = (typeof defaultIndustryTypes)[number]['name'];
