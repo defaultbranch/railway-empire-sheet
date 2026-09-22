@@ -36,12 +36,19 @@ export type Demand = {
   wagonsPerMillion: number;
 };
 
+// a discovered city: population drives both its demands (via Demand) and how many industries it can host
+export type City = {
+  name: string;
+  population: number;
+};
+
 // combined shape used only by the initial-state loader; each dimension is otherwise stored independently
 export type GameState = {
   goods: Good[];
   ruralBusinessTypes: RuralBusinessType[];
   industryTypes: IndustryType[];
   demands: Demand[];
+  cities: City[];
 };
 
 export function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {

@@ -3,6 +3,7 @@ import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
 import { IndustryTypesPage } from './industry-types-page';
 import { DemandsPage } from './demands-page';
+import { CitiesPage } from './cities-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 
 export type Page = {
@@ -50,6 +51,14 @@ export const pages: Page[] = [
       'once that threshold is met. This covers population consumption only, not yet the additional ' +
       'consumption of industries within cities.',
     Component: DemandsPage,
+  },
+  {
+    title: 'Cities',
+    slug: 'cities',
+    description:
+      'A city is a named place with a population. Population drives both the demand for goods and how ' +
+      'many industries the city can host. Register cities you discover here as you play.',
+    Component: CitiesPage,
   },
   {
     title: 'Production Pipelines',
