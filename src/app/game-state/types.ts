@@ -36,6 +36,18 @@ export type IndustryType = {
   setupCostBasis?: number;
 };
 
+export const industrySlots = [0, 1, 2] as const;
+export type IndustrySlot = (typeof industrySlots)[number];
+
+// a concrete, placed instance of an IndustryType, hosted at one of a city's industry slots
+export type Industry = {
+  name: string;
+  typeName: string;
+  city: string;
+  citySlot: IndustrySlot;
+  level: BusinessLevel;
+};
+
 // population demand for a good: not demanded below minPopulation, then wagonsPerMillion per week per million citizens
 export type Demand = {
   good: Good;
@@ -57,6 +69,7 @@ export type GameState = {
   demands: Demand[];
   cities: City[];
   ruralBusinesses: RuralBusiness[];
+  industries: Industry[];
 };
 
 export function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {
