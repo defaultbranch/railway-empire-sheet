@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { BusinessLevel, Industry } from './types';
+import type { BusinessLevel, Industry, IndustrySlot } from './types';
 
 export type IndustriesState = {
   industries: Industry[];
   addIndustry: (industry: Industry) => void;
-  removeIndustry: (name: string) => void;
-  setIndustryLevel: (name: string, level: BusinessLevel) => void;
+  removeIndustry: (city: string, citySlot: IndustrySlot) => void;
+  setIndustryLevel: (city: string, citySlot: IndustrySlot, level: BusinessLevel) => void;
 };
 
 const IndustriesContext = createContext<IndustriesState | undefined>(undefined);
@@ -21,16 +21,22 @@ export function IndustriesProvider({
 
   const addIndustry = (industry: Industry) => {
     setIndustries((prev) =>
-      prev.some((existing) => existing.name === industry.name) ? prev : [...prev, industry],
+      prev.some((existing) => existing.city === industry.city && existing.citySlot === industry.citySlot)
+        ? prev
+        : [...prev, industry],
     );
   };
 
-  const removeIndustry = (name: string) => {
-    setIndustries((prev) => prev.filter((existing) => existing.name !== name));
+  const removeIndustry = (city: string, citySlot: IndustrySlot) => {
+    setIndustries((prev) => prev.filter((existing) => !(existing.city === city && existing.citySlot === citySlot)));
   };
 
-  const setIndustryLevel = (name: string, level: BusinessLevel) => {
-    setIndustries((prev) => prev.map((existing) => (existing.name === name ? { ...existing, level } : existing)));
+  const setIndustryLevel = (city: string, citySlot: IndustrySlot, level: BusinessLevel) => {
+    setIndustries((prev) =>
+      prev.map((existing) =>
+        existing.city === city && existing.citySlot === citySlot ? { ...existing, level } : existing,
+      ),
+    );
   };
 
   return (

@@ -8,7 +8,6 @@ export function IndustriesPage() {
   const { industryTypes } = useIndustryTypes();
   const { cities } = useCities();
   const { industries, addIndustry, removeIndustry, setIndustryLevel } = useIndustries();
-  const [newName, setNewName] = useState('');
   const [newTypeName, setNewTypeName] = useState('');
   const [newCity, setNewCity] = useState('');
   const [newCitySlot, setNewCitySlot] = useState<IndustrySlot>(0);
@@ -16,10 +15,8 @@ export function IndustriesPage() {
   const canAdd = industryTypes.length > 0 && cities.length > 0;
 
   const handleAdd = () => {
-    const name = newName.trim();
-    if (name === '' || newTypeName === '' || newCity === '') return;
-    addIndustry({ name, typeName: newTypeName, city: newCity, citySlot: newCitySlot, level: 1 });
-    setNewName('');
+    if (newTypeName === '' || newCity === '') return;
+    addIndustry({ typeName: newTypeName, city: newCity, citySlot: newCitySlot, level: 1 });
     setNewTypeName('');
     setNewCity('');
     setNewCitySlot(0);
@@ -30,7 +27,6 @@ export function IndustriesPage() {
       <table className="industries-page__table">
         <thead>
           <tr>
-            <th>Name</th>
             <th>Type</th>
             <th>City</th>
             <th>Slot</th>
@@ -41,21 +37,22 @@ export function IndustriesPage() {
         <tbody>
           {industries.length === 0 && (
             <tr>
-              <td colSpan={6} className="industries-page__empty">
+              <td colSpan={5} className="industries-page__empty">
                 No industries yet.
               </td>
             </tr>
           )}
           {industries.map((industry) => (
-            <tr key={industry.name}>
-              <td>{industry.name}</td>
+            <tr key={`${industry.city}-${industry.citySlot}`}>
               <td>{industry.typeName}</td>
               <td>{industry.city}</td>
               <td>{industry.citySlot}</td>
               <td>
                 <select
                   value={industry.level}
-                  onChange={(event) => setIndustryLevel(industry.name, Number(event.target.value) as BusinessLevel)}
+                  onChange={(event) =>
+                    setIndustryLevel(industry.city, industry.citySlot, Number(event.target.value) as BusinessLevel)
+                  }
                 >
                   {businessLevels.map((level) => (
                     <option key={level} value={level}>
@@ -67,8 +64,8 @@ export function IndustriesPage() {
               <td>
                 <button
                   type="button"
-                  onClick={() => removeIndustry(industry.name)}
-                  aria-label={`Remove ${industry.name}`}
+                  onClick={() => removeIndustry(industry.city, industry.citySlot)}
+                  aria-label={`Remove ${industry.typeName} at ${industry.city} slot ${industry.citySlot}`}
                 >
                   ✕
                 </button>
@@ -84,12 +81,6 @@ export function IndustriesPage() {
           handleAdd();
         }}
       >
-        <input
-          type="text"
-          value={newName}
-          onChange={(event) => setNewName(event.target.value)}
-          placeholder="New industry name"
-        />
         <select value={newTypeName} onChange={(event) => setNewTypeName(event.target.value)}>
           <option value="">Select type…</option>
           {industryTypes.map((type) => (
