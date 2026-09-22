@@ -41,10 +41,9 @@ export type IndustrySlot = (typeof industrySlots)[number];
 
 // a concrete, placed instance of an IndustryType, hosted at one of a city's industry slots
 export type Industry = {
-  name: string;
-  typeName: string;
   city: string;
   citySlot: IndustrySlot;
+  typeName: string;
   level: BusinessLevel;
 };
 
