@@ -7,6 +7,7 @@ import { IndustriesPage } from './industries-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
 import { PopulationDemandPage } from './population-demand-page';
+import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 
 export type Page = {
@@ -81,6 +82,16 @@ export const pages: Page[] = [
       "This table lists, per good, the demand of a single selected city and the sum of that demand " +
       'across all registered cities; industry consumption within cities is not considered.',
     Component: PopulationDemandPage,
+  },
+  {
+    title: 'Total Demand',
+    slug: 'total-demand',
+    description:
+      'Total demand extends population demand up each production pipeline: a manufactured good ' +
+      "needed by the population induces demand for its industry's raw materials, in proportion to " +
+      "the industry's level-1 recipe. This table lists, per good, the resulting demand of a single " +
+      'selected city and the sum of that demand across all registered cities.',
+    Component: TotalDemandPage,
   },
   {
     title: 'Rural Businesses',

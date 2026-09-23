@@ -257,5 +257,35 @@ body {
 	}
 }
 
+.total-demand-page {
+	&__city-select {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: normal;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+
+		th,
+		td {
+			padding: 0.25rem 0.5rem;
+			text-align: left;
+		}
+	}
+
+	&__empty {
+		color: var(--color-muted-light);
+		font-style: italic;
+	}
+
+	&__hint {
+		color: var(--color-muted-light);
+		font-style: italic;
+	}
+}
+
 
 
