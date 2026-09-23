@@ -69,3 +69,20 @@ export function totalSupply(
 
   return supply;
 }
+
+export type Producer = { kind: 'rural business'; name: string } | { kind: 'industry'; name: string };
+
+// the rural business type or industry type whose product is `good`, if any is registered
+export function producerFor(
+  good: Good,
+  ruralBusinessTypes: RuralBusinessType[],
+  industryTypes: IndustryType[],
+): Producer | undefined {
+  const ruralBusinessType = ruralBusinessTypes.find((type) => type.good === good);
+  if (ruralBusinessType !== undefined) return { kind: 'rural business', name: ruralBusinessType.name };
+
+  const industryType = industryTypes.find((type) => type.products.some((flow) => flow.good === good));
+  if (industryType !== undefined) return { kind: 'industry', name: industryType.name };
+
+  return undefined;
+}
