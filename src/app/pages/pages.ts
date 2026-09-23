@@ -9,6 +9,7 @@ import { CitiesPage } from './cities-page';
 import { PopulationDemandPage } from './population-demand-page';
 import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
+import { SupplyDemandPage } from './supply-demand-page';
 
 export type Page = {
   title: string;
@@ -111,6 +112,17 @@ export const pages: Page[] = [
       'level (1 to 5). Register the industries you discover during play here, and update their level as ' +
       'they grow.',
     Component: IndustriesPage,
+  },
+  {
+    title: 'Supply vs Demand',
+    slug: 'supply-demand',
+    description:
+      'Supply vs demand opposes total demand against an idealized world supply: raw production from ' +
+      "registered rural businesses, plus whatever registered industries can manufacture from what's " +
+      "left of their raw materials once each good's own population demand is met, settling goods in " +
+      'the order listed on the Goods page. This does not model the game\'s actual logistics or ' +
+      'distribution, only a rough ceiling on how much of each good could be available.',
+    Component: SupplyDemandPage,
   },
 ];
 
