@@ -60,6 +60,45 @@ export type City = {
   population: number;
 };
 
+// exclusive: a stop is hosted by either a single city, or by 1-2 rural businesses
+export type StopHost =
+  | { kind: 'city'; city: string }
+  | { kind: 'ruralBusinesses'; ruralBusinesses: [string] | [string, string] };
+
+export const stationTrackCounts = [1, 2, 4] as const;
+export type StationTrackCount = (typeof stationTrackCounts)[number];
+
+export type TrainStation = {
+  name: string; // defaults to the connected city/business name, but freely editable
+  tracks: StationTrackCount;
+  host: StopHost;
+};
+
+export const warehouseTrackCounts = [2, 4] as const;
+export type WarehouseTrackCount = (typeof warehouseTrackCounts)[number];
+
+// max distinct goods a warehouse can stock, keyed by track count
+export const warehouseGoodSlotsByTracks: Record<WarehouseTrackCount, number> = {
+  2: 3,
+  4: 6,
+};
+
+export type Warehouse = {
+  name: string;
+  tracks: WarehouseTrackCount;
+  host: StopHost;
+  goods: Good[]; // length should not exceed warehouseGoodSlotsByTracks[tracks]
+};
+
+export type StopRef = { kind: 'station'; name: string } | { kind: 'warehouse'; name: string };
+
+// an ordered, looping route: after the last stop, the train returns to the first
+// preliminary: stop-to-stop connections/capacity are not modeled yet, this may be refined later
+export type TrainLine = {
+  name: string;
+  stops: StopRef[];
+};
+
 // combined shape used only by the initial-state loader; each dimension is otherwise stored independently
 export type GameState = {
   goods: Good[];
@@ -69,6 +108,9 @@ export type GameState = {
   cities: City[];
   ruralBusinesses: RuralBusiness[];
   industries: Industry[];
+  trainStations: TrainStation[];
+  warehouses: Warehouse[];
+  trainLines: TrainLine[];
 };
 
 export function emptyProductionByLevel(): Record<BusinessLevel, number | undefined> {

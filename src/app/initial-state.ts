@@ -16,6 +16,9 @@ function emptyGameState(): GameState {
     cities: [],
     ruralBusinesses: [],
     industries: [],
+    trainStations: [],
+    warehouses: [],
+    trainLines: [],
   };
 }
 
@@ -28,6 +31,9 @@ function fakeGameState(): GameState {
     cities: [...defaultCities],
     ruralBusinesses: [...defaultRuralBusinesses],
     industries: [...defaultIndustries],
+    trainStations: [],
+    warehouses: [],
+    trainLines: [],
   };
 }
 
