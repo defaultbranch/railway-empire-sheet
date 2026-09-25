@@ -65,6 +65,12 @@ export const defaultRuralBusinessTypes = [
     setupCostBasis: 500_000,
   },
   {
+    name: 'Cement Works',
+    good: 'Cement',
+    productionByLevel: { ...emptyProductionByLevel(), 1: 0.8 },
+    setupCostBasis: 500_000,
+  },
+  {
     name: 'Iron Mine',
     good: 'Iron',
     productionByLevel: { ...emptyProductionByLevel(), 1: 1.2, 2:2.4 },

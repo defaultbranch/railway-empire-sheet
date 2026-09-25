@@ -3,11 +3,11 @@ import type { Good, IndustryType, RuralBusinessType } from '../game-state/types'
 export type PipelineStep = {
   name: string;
   multiplier: number;
-  cost: number;
+  cost: number | undefined;
 };
 
 export type Pipeline = {
-  totalCost: number;
+  totalCost: number | undefined;
   steps: PipelineStep[];
 };
 
@@ -27,9 +27,9 @@ export function computePipeline(
   const ruralBusiness = ruralBusinessTypes.find((type) => type.good === good);
   if (ruralBusiness !== undefined) {
     const level1Production = ruralBusiness.productionByLevel[1];
-    if (level1Production === undefined || ruralBusiness.setupCostBasis === undefined) return undefined;
+    if (level1Production === undefined) return undefined;
     const multiplier = requiredRate / level1Production;
-    const cost = multiplier * ruralBusiness.setupCostBasis;
+    const cost = ruralBusiness.setupCostBasis === undefined ? undefined : multiplier * ruralBusiness.setupCostBasis;
     return { totalCost: cost, steps: [{ name: ruralBusiness.name, multiplier, cost }] };
   }
 
@@ -41,7 +41,7 @@ export function computePipeline(
     const multiplier = requiredRate / level1Output;
     const cost = multiplier * industry.setupCostBasis;
     const steps: PipelineStep[] = [{ name: industry.name, multiplier, cost }];
-    let totalCost = cost;
+    let totalCost: number | undefined = cost;
 
     for (const rawMaterial of industry.rawMaterials) {
       const rawLevel1 = rawMaterial.amountByLevel[1];
@@ -55,7 +55,11 @@ export function computePipeline(
         nextVisited,
       );
       if (rawPipeline === undefined) return undefined;
-      totalCost += rawPipeline.totalCost;
+      if (totalCost !== undefined && rawPipeline.totalCost !== undefined) {
+        totalCost += rawPipeline.totalCost;
+      } else {
+        totalCost = undefined;
+      }
       steps.push(...rawPipeline.steps);
     }
 

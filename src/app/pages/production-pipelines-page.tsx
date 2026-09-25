@@ -36,7 +36,9 @@ export function ProductionPipelinesPage() {
           {rows.map(({ good, pipeline }) => (
             <tr key={good}>
               <td>{good}</td>
-              <td>{pipeline === undefined ? '—' : Math.round(pipeline.totalCost).toLocaleString()}</td>
+              <td>
+                {pipeline?.totalCost === undefined ? '—' : Math.round(pipeline.totalCost).toLocaleString()}
+              </td>
               <td>
                 {pipeline === undefined
                   ? '—'

@@ -5,6 +5,7 @@ type DefaultRuralBusiness = Omit<RuralBusiness, 'typeName'> & { typeName: Defaul
 
 export const defaultRuralBusinesses: readonly DefaultRuralBusiness[] = [
   { name: 'Allen Preserve', typeName: 'Sugar Plant', level: 1 },
+  { name: 'Bishop Well', typeName: 'Cement Works', level: 1 },
   { name: 'Clark Preserve', typeName: 'Vegetable Farm', level: 3 },
   { name: 'Collins Farm', typeName: 'Wheat Farm', level: 2 },
   { name: 'Davis Quarry', typeName: 'Iron Mine', level: 1 },
