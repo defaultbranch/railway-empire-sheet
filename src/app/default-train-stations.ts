@@ -26,5 +26,15 @@ export const defaultTrainStations: readonly DefaultTrainStation[] = [
   { name: 'Spokane', tracks: 2, host: { kind: 'city', city: 'Spokane' } },
 
   // Rural business stops
+  { name: 'Green Forest', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Green Forest aisles'] } },
+  { name: 'Harris Breeding', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Harris Breeding'] } },
   { name: 'Lee Cattle', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Lee Cattle'] } },
+  { name: 'Martin Farm', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Martin Farm'] } },
+  { name: 'Moore Ranch', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Moore Ranch'] } },
+  { name: 'Roberts Manor', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Roberts Manor'] } },
+  { name: 'Robinson Manor', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Robinson Manor'] } },
+  { name: 'Stevens Estate', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Stevens Estate'] } },
+  { name: 'Steward Preserve', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Steward Preserve'] } },
+  { name: 'Walker Fattening', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Walker Fattening'] } },
+  { name: 'Young Logging', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Young Logging'] } },
 ] as const;
