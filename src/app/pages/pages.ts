@@ -7,6 +7,7 @@ import { IndustriesPage } from './industries-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
 import { PopulationDemandPage } from './population-demand-page';
+import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
 import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
@@ -134,6 +135,14 @@ export const pages: Page[] = [
       'stations; 2 or 4 for warehouses) that roughly determines its weekly capacity. Register the ' +
       'stations and warehouses you build here; train lines connecting them come next.',
     Component: StationsWarehousesPage,
+  },
+  {
+    title: 'Population Demand in Reach',
+    slug: 'population-demand-in-reach',
+    description:
+      'Population demand in reach compares each good\'s demand across all cities with demand across ' +
+      'cities hosted by player-owned stations or warehouses, alongside demand for a selected city.',
+    Component: PopulationDemandInReachPage,
   },
 ];
 
