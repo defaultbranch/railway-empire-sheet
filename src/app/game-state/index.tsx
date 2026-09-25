@@ -7,6 +7,8 @@ import { IndustryProvider } from './industry-state';
 import { IndustriesProvider } from './industries-state';
 import { DemandsProvider } from './demands-state';
 import { CityProvider } from './city-state';
+import { TrainStationsProvider } from './train-stations-state';
+import { WarehousesProvider } from './warehouses-state';
 
 export * from './types';
 export { GoodsProvider, useGoods } from './goods-state';
@@ -16,6 +18,8 @@ export { IndustryProvider, useIndustryTypes } from './industry-state';
 export { IndustriesProvider, useIndustries } from './industries-state';
 export { DemandsProvider, useDemands } from './demands-state';
 export { CityProvider, useCities } from './city-state';
+export { TrainStationsProvider, useTrainStations } from './train-stations-state';
+export { WarehousesProvider, useWarehouses } from './warehouses-state';
 
 // composes the independent dimensions, each keeping its own state, wired to a single initial load
 export function GameStateProvider({ children }: { children: ReactNode }) {
@@ -28,7 +32,11 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
           <IndustryProvider initialTypes={initialState.industryTypes}>
             <IndustriesProvider initialIndustries={initialState.industries}>
               <DemandsProvider initialDemands={initialState.demands}>
-                <CityProvider initialCities={initialState.cities}>{children}</CityProvider>
+                <CityProvider initialCities={initialState.cities}>
+                  <TrainStationsProvider initialTrainStations={initialState.trainStations}>
+                    <WarehousesProvider initialWarehouses={initialState.warehouses}>{children}</WarehousesProvider>
+                  </TrainStationsProvider>
+                </CityProvider>
               </DemandsProvider>
             </IndustriesProvider>
           </IndustryProvider>

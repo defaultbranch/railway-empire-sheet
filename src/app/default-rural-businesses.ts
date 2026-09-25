@@ -26,3 +26,5 @@ export const defaultRuralBusinesses: readonly DefaultRuralBusiness[] = [
   { name: 'Wright Farm', typeName: 'Cotton Farm', level: 3 },
   { name: 'Young Logging', typeName: 'Logging Camp', level: 2 },
 ] as const;
+
+export type DefaultRuralBusinessName = (typeof defaultRuralBusinesses)[number]['name'];

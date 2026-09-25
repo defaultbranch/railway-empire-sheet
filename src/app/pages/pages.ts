@@ -10,6 +10,7 @@ import { PopulationDemandPage } from './population-demand-page';
 import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
+import { StationsWarehousesPage } from './stations-warehouses-page';
 
 export type Page = {
   title: string;
@@ -123,6 +124,16 @@ export const pages: Page[] = [
       'the order listed on the Goods page. This does not model the game\'s actual logistics or ' +
       'distribution, only a rough ceiling on how much of each good could be available.',
     Component: SupplyDemandPage,
+  },
+  {
+    title: 'Stations & Warehouses',
+    slug: 'stations-warehouses',
+    description:
+      'Train stations and warehouses are the stops a train route runs through. Each is hosted by ' +
+      'either a single city or up to two rural businesses, and has a track count (1, 2 or 4 for ' +
+      'stations; 2 or 4 for warehouses) that roughly determines its weekly capacity. Register the ' +
+      'stations and warehouses you build here; train lines connecting them come next.',
+    Component: StationsWarehousesPage,
   },
 ];
 

@@ -6,6 +6,8 @@ import { defaultIndustryTypes } from './default-industry-types';
 import { defaultIndustries } from './default-industries';
 import { defaultDemands } from './default-demands';
 import { defaultCities } from './default-cities';
+import { defaultTrainStations } from './default-train-stations';
+import { defaultWarehouses } from './default-warehouses';
 
 function emptyGameState(): GameState {
   return {
@@ -31,8 +33,8 @@ function fakeGameState(): GameState {
     cities: [...defaultCities],
     ruralBusinesses: [...defaultRuralBusinesses],
     industries: [...defaultIndustries],
-    trainStations: [],
-    warehouses: [],
+    trainStations: [...defaultTrainStations],
+    warehouses: [...defaultWarehouses],
     trainLines: [],
   };
 }
