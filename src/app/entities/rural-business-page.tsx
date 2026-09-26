@@ -1,48 +1,42 @@
-import { useCities } from '../game-state/city-state';
+import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useNavigation } from '../navigation';
-import { citySlug } from './city-routes';
+import { ruralBusinessSlug } from './rural-business-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import type { StopHost } from '../game-state/types';
 
-const hostsCity = (host: StopHost, cityName: string): boolean => host.kind === 'city' && host.city === cityName;
+const hostsBusiness = (host: StopHost, businessName: string): boolean =>
+  host.kind === 'ruralBusinesses' && host.ruralBusinesses.includes(businessName);
 
-export function CityPage({ slug }: { slug: string }) {
-  const { cities, setCityPopulation } = useCities();
+export function RuralBusinessPage({ slug }: { slug: string }) {
+  const { ruralBusinesses } = useRuralBusinesses();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { navigate } = useNavigation();
-  const city = cities.find((existing) => citySlug(existing) === slug);
+  const business = ruralBusinesses.find((existing) => ruralBusinessSlug(existing) === slug);
 
-  if (city === undefined) {
+  if (business === undefined) {
     return (
-      <section className="city-page">
-        <p className="city-page__empty">No city found for "{slug}".</p>
+      <section className="rural-business-page">
+        <p className="rural-business-page__empty">No rural business found for "{slug}".</p>
       </section>
     );
   }
 
-  const connectedStations = trainStations.filter((station) => hostsCity(station.host, city.name));
-  const connectedWarehouses = warehouses.filter((warehouse) => hostsCity(warehouse.host, city.name));
+  const connectedStations = trainStations.filter((station) => hostsBusiness(station.host, business.name));
+  const connectedWarehouses = warehouses.filter((warehouse) => hostsBusiness(warehouse.host, business.name));
 
   return (
-    <section className="city-page">
-      <h1>{city.name}</h1>
-      <label className="city-page__population">
-        Population
-        <input
-          type="number"
-          min={0}
-          value={city.population}
-          onChange={(event) => setCityPopulation(city.name, Number(event.target.value))}
-        />
-      </label>
-      <section className="city-page__connections">
+    <section className="rural-business-page">
+      <h1>{business.name}</h1>
+      <p className="rural-business-page__type">Type: {business.typeName}</p>
+      <p className="rural-business-page__level">Level: {business.level}</p>
+      <section className="rural-business-page__connections">
         <h2>Stations</h2>
         {connectedStations.length === 0 ? (
-          <p className="city-page__empty">No connected stations.</p>
+          <p className="rural-business-page__empty">No connected stations.</p>
         ) : (
           <ul>
             {connectedStations.map((station) => (
@@ -62,7 +56,7 @@ export function CityPage({ slug }: { slug: string }) {
         )}
         <h2>Warehouses</h2>
         {connectedWarehouses.length === 0 ? (
-          <p className="city-page__empty">No connected warehouses.</p>
+          <p className="rural-business-page__empty">No connected warehouses.</p>
         ) : (
           <ul>
             {connectedWarehouses.map((warehouse) => (

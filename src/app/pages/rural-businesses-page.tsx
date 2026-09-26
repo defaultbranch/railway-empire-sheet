@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { businessLevels, type BusinessLevel } from '../game-state/types';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
+import { useNavigation } from '../navigation';
+import { pathForRuralBusiness } from '../entities/rural-business-routes';
 
 export function RuralBusinessesPage() {
   const { ruralBusinessTypes } = useRuralBusinessTypes();
   const { ruralBusinesses, addRuralBusiness, removeRuralBusiness, setRuralBusinessLevel } = useRuralBusinesses();
+  const { navigate } = useNavigation();
   const [newName, setNewName] = useState('');
   const [newTypeName, setNewTypeName] = useState('');
 
@@ -38,7 +41,17 @@ export function RuralBusinessesPage() {
           )}
           {ruralBusinesses.map((business) => (
             <tr key={business.name}>
-              <td>{business.name}</td>
+              <td>
+                <a
+                  href={pathForRuralBusiness(business)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForRuralBusiness(business));
+                  }}
+                >
+                  {business.name}
+                </a>
+              </td>
               <td>{business.typeName}</td>
               <td>
                 <select

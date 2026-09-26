@@ -6,6 +6,8 @@ import { PageFrame } from './pages/page-frame';
 import { pages, pathForPageIndex } from './pages/pages';
 import { CityPage } from './entities/city-page';
 import { StationPage } from './entities/station-page';
+import { WarehousePage } from './entities/warehouse-page';
+import { RuralBusinessPage } from './entities/rural-business-page';
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -61,6 +63,14 @@ function AppRoutes() {
 
   if (route.kind === 'station') {
     return <StationPage slug={route.slug} />;
+  }
+
+  if (route.kind === 'warehouse') {
+    return <WarehousePage slug={route.slug} />;
+  }
+
+  if (route.kind === 'ruralBusiness') {
+    return <RuralBusinessPage slug={route.slug} />;
   }
 
   return <PagesRoute pageIndex={route.index} />;

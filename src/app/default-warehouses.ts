@@ -28,6 +28,12 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     goods: ['Cattle']
   },
   {
+    name: 'Gardiner WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Gardiner' },
+    goods: ['Grain', 'Beer', 'Meat', 'Corn', 'Sugar', 'Wood'],
+  },
+  {
     name: 'Great Falls WH',
     tracks: 4,
     host: { kind: 'city', city: 'Great Falls' },

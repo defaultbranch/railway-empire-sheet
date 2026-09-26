@@ -13,6 +13,7 @@ import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useNavigation } from '../navigation';
 import { pathForStation } from '../entities/station-routes';
+import { pathForWarehouse } from '../entities/warehouse-routes';
 
 type StopKind = 'station' | 'warehouse';
 type HostKind = StopHost['kind'];
@@ -122,7 +123,15 @@ export function StationsWarehousesPage() {
                     {row.name}
                   </a>
                 ) : (
-                  row.name
+                  <a
+                    href={pathForWarehouse(row)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(pathForWarehouse(row));
+                    }}
+                  >
+                    {row.name}
+                  </a>
                 )}{' '}
                 ({hostLabel(row.host)})
               </td>
