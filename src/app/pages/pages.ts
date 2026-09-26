@@ -13,6 +13,7 @@ import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
 import { TotalDemandInReachPage } from './total-demand-in-reach-page';
+import { TrainLinesPage } from './train-lines-page';
 
 export type Page = {
   title: string;
@@ -154,6 +155,16 @@ export const pages: Page[] = [
       'cities with total demand across cities hosted by player-owned stations or warehouses, alongside ' +
       'total demand for a selected city.',
     Component: TotalDemandInReachPage,
+  },
+  {
+    title: 'Train Lines',
+    slug: 'train-lines',
+    description:
+      'A train line connects two stops — stations or warehouses — with one or more identical trains, ' +
+      'each hauling up to eight wagons of goods, passengers or mail. Register the lines you run here, ' +
+      'with how many trains work each one; this is the first step toward weighing line capacity ' +
+      'against demand.',
+    Component: TrainLinesPage,
   },
 ];
 

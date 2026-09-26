@@ -16,10 +16,28 @@ type DefaultWarehouse = Omit<Warehouse, 'host' | 'goods'> & {
 export const defaultWarehouses: readonly DefaultWarehouse[] = [
   // City warehouses (alphabetical)
   {
+    name: 'Baker City WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Baker City' },
+    goods: ['Grain', 'Wood', 'Corn', 'Meat', 'Beer'],
+  },
+  {
     name: 'Billings WH B',
     tracks: 4,
     host: { kind: 'city', city: 'Billings' },
     goods: ['Cattle']
+  },
+  {
+    name: 'Missoula WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Missoula' },
+    goods: ['Grain', 'Corn', 'Wood', 'Meat', 'Beer', 'Sugar'],
+  },
+  {
+    name: 'Spokane WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Spokane' },
+    goods: ['Grain', 'Beer', 'Meat', 'Corn', 'Wood'],
   },
 
   // Rural business warehouses (alphabetical)
@@ -48,3 +66,5 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     goods: ['Cattle'],
   },
 ] as const;
+
+export type DefaultWarehouseName = (typeof defaultWarehouses)[number]['name'];

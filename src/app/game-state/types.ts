@@ -93,10 +93,13 @@ export type Warehouse = {
 export type StopRef = { kind: 'station'; name: string } | { kind: 'warehouse'; name: string };
 
 // an ordered, looping route: after the last stop, the train returns to the first
-// preliminary: stop-to-stop connections/capacity are not modeled yet, this may be refined later
+// trains: how many identical trains (each up to 8 wagons) run this route concurrently
+// tourDays: how many days a train takes to complete the full loop, once known
 export type TrainLine = {
   name: string;
   stops: StopRef[];
+  trains: number;
+  tourDays?: number;
 };
 
 // combined shape used only by the initial-state loader; each dimension is otherwise stored independently

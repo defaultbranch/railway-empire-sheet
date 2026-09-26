@@ -8,6 +8,7 @@ import { defaultDemands } from './default-demands';
 import { defaultCities } from './default-cities';
 import { defaultTrainStations } from './default-train-stations';
 import { defaultWarehouses } from './default-warehouses';
+import { defaultTrainLines } from './default-train-lines';
 
 function emptyGameState(): GameState {
   return {
@@ -35,7 +36,7 @@ function fakeGameState(): GameState {
     industries: [...defaultIndustries],
     trainStations: [...defaultTrainStations],
     warehouses: [...defaultWarehouses],
-    trainLines: [],
+    trainLines: [...defaultTrainLines],
   };
 }
 

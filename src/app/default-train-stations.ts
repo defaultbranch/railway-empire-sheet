@@ -39,3 +39,5 @@ export const defaultTrainStations: readonly DefaultTrainStation[] = [
   { name: 'Walker Fattening', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Walker Fattening'] } },
   { name: 'Young Logging', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Young Logging'] } },
 ] as const;
+
+export type DefaultTrainStationName = (typeof defaultTrainStations)[number]['name'];
