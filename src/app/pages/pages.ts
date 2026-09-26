@@ -12,6 +12,7 @@ import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
+import { TotalDemandInReachPage } from './total-demand-in-reach-page';
 
 export type Page = {
   title: string;
@@ -143,6 +144,16 @@ export const pages: Page[] = [
       'Population demand in reach compares each good\'s demand across all cities with demand across ' +
       'cities hosted by player-owned stations or warehouses, alongside demand for a selected city.',
     Component: PopulationDemandInReachPage,
+  },
+  {
+    title: 'Total Demand in Reach',
+    slug: 'total-demand-in-reach',
+    description:
+      'Total demand in reach extends population demand in reach up each production pipeline, the same ' +
+      'way total demand extends population demand: comparing each good\'s total demand across all ' +
+      'cities with total demand across cities hosted by player-owned stations or warehouses, alongside ' +
+      'total demand for a selected city.',
+    Component: TotalDemandInReachPage,
   },
 ];
 
