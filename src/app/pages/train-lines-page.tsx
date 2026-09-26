@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { StopRef } from '../game-state/types';
+import type { StopRef, TrainCargo } from '../game-state/types';
+import { trainCargoTypes } from '../game-state/types';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
@@ -18,6 +19,7 @@ export function TrainLinesPage() {
   const [toName, setToName] = useState('');
   const [trains, setTrains] = useState(1);
   const [tourDays, setTourDays] = useState('');
+  const [cargo, setCargo] = useState<TrainCargo>('anything');
 
   const optionsFor = (kind: StopKind) => (kind === 'station' ? trainStations : warehouses);
 
@@ -36,12 +38,14 @@ export function TrainLinesPage() {
       ],
       trains,
       tourDays: parsedTourDays,
+      cargo,
     });
     setNewName('');
     setFromName('');
     setToName('');
     setTrains(1);
     setTourDays('');
+    setCargo('anything');
   };
 
   return (
@@ -53,13 +57,14 @@ export function TrainLinesPage() {
             <th>Stops</th>
             <th>Trains</th>
             <th>Tour days</th>
+            <th>Cargo</th>
             <th />
           </tr>
         </thead>
         <tbody>
           {trainLines.length === 0 && (
             <tr>
-              <td colSpan={5} className="train-lines-page__empty">
+              <td colSpan={6} className="train-lines-page__empty">
                 No train lines yet.
               </td>
             </tr>
@@ -74,6 +79,7 @@ export function TrainLinesPage() {
               </td>
               <td>{line.trains}</td>
               <td>{line.tourDays ?? '—'}</td>
+              <td>{line.cargo}</td>
               <td>
                 <button type="button" onClick={() => removeTrainLine(line.name)} aria-label={`Remove ${line.name}`}>
                   ✕
@@ -142,6 +148,13 @@ export function TrainLinesPage() {
           placeholder="Tour days"
           aria-label="Tour days"
         />
+        <select value={cargo} onChange={(event) => setCargo(event.target.value as TrainCargo)} aria-label="Cargo">
+          {trainCargoTypes.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
         <button type="submit" disabled={!canAdd}>
           Add
         </button>

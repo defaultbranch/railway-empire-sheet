@@ -37,6 +37,7 @@ export const defaultTrainStations: readonly DefaultTrainStation[] = [
   { name: 'Stevens Estate', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Stevens Estate'] } },
   { name: 'Steward Preserve', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Steward Preserve'] } },
   { name: 'Walker Fattening', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Walker Fattening'] } },
+  { name: 'Wright Farm', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Wright Farm'] } },
   { name: 'Young Logging', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Young Logging'] } },
 ] as const;
 

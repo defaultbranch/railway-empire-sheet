@@ -28,10 +28,22 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     goods: ['Cattle']
   },
   {
+    name: 'Great Falls WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Great Falls' },
+    goods: ['Corn', 'Sugar', 'Grain', 'Beer', 'Meat'],
+  },
+  {
     name: 'Missoula WH',
     tracks: 4,
     host: { kind: 'city', city: 'Missoula' },
     goods: ['Grain', 'Corn', 'Wood', 'Meat', 'Beer', 'Sugar'],
+  },
+  {
+    name: 'Nampa WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Nampa' },
+    goods: ['Cattle', 'Meat', 'Beer', 'Corn', 'Sugar', 'Wood'],
   },
   {
     name: 'Spokane WH',
@@ -64,6 +76,12 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     tracks: 2,
     host: { kind: 'ruralBusinesses', ruralBusinesses: ['Reed Breading'] },
     goods: ['Cattle'],
+  },
+  {
+    name: 'Walker WH',
+    tracks: 4,
+    host: { kind: 'ruralBusinesses', ruralBusinesses: ['Walker Fattening'] },
+    goods: ['Cattle', 'Corn', 'Sugar', 'Beer', 'Cloth'],
   },
 ] as const;
 
