@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useCities } from '../game-state/city-state';
+import { useNavigation } from '../navigation';
+import { pathForCity } from '../entities/city-routes';
 
 export function CitiesPage() {
   const { cities, addCity, removeCity, setCityPopulation } = useCities();
+  const { navigate } = useNavigation();
   const [newCity, setNewCity] = useState('');
 
   const handleAdd = () => {
@@ -32,7 +35,17 @@ export function CitiesPage() {
           )}
           {cities.map((city) => (
             <tr key={city.name}>
-              <td>{city.name}</td>
+              <td>
+                <a
+                  href={pathForCity(city)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForCity(city));
+                  }}
+                >
+                  {city.name}
+                </a>
+              </td>
               <td>
                 <input
                   type="number"

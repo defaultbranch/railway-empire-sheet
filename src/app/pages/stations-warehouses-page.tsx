@@ -11,6 +11,8 @@ import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
+import { useNavigation } from '../navigation';
+import { pathForStation } from '../entities/station-routes';
 
 type StopKind = 'station' | 'warehouse';
 type HostKind = StopHost['kind'];
@@ -23,6 +25,7 @@ type StopRow = {
 };
 
 export function StationsWarehousesPage() {
+  const { navigate } = useNavigation();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
   const { ruralBusinessTypes } = useRuralBusinessTypes();
@@ -108,7 +111,20 @@ export function StationsWarehousesPage() {
           {rows.map((row) => (
             <tr key={`${row.kind}-${row.name}`}>
               <td>
-                {row.name} ({hostLabel(row.host)})
+                {row.kind === 'station' ? (
+                  <a
+                    href={pathForStation(row)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(pathForStation(row));
+                    }}
+                  >
+                    {row.name}
+                  </a>
+                ) : (
+                  row.name
+                )}{' '}
+                ({hostLabel(row.host)})
               </td>
               <td>
                 {row.kind === 'station' ? 'Station' : 'Warehouse'} ({row.tracks} tracks)
