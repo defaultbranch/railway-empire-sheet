@@ -39,18 +39,19 @@ needs:
 
 - **Warehouse `host` does feed the balance, but only for goods in its stocking list.** A
   warehouse can load a train from two sources: its own internal stock, and the stock of whatever
-  it hosts (connected rural businesses, or a city's industries) — but only for goods that are in
-  that warehouse's configured turn-over set (the `goods` field, capped at 3 or 6 slots by track
-  count). E.g. a 2-track warehouse configured for Wheat/Corn/Coal, connected to both a logging
-  camp and a wheat farm, exposes the wheat farm's production (even with an empty internal wheat
-  stock) but completely ignores the logging camp's wood, since wood isn't in its goods list. So
+  it hosts (connected rural businesses, or a city's population and industries) — but only for
+  goods that are in that warehouse's configured turn-over set (the `goods` field, capped at 3 or 6
+  slots by track count). The gating applies uniformly to anything passing through the warehouse:
+  if a good isn't in its `goods` list, it doesn't affect the balance at all, whether the good would
+  otherwise be a business's production, an industry's input/output, or a city's population demand.
+  E.g. a 2-track warehouse configured for Wheat/Corn/Coal, connected to both a logging camp and a
+  wheat farm, exposes the wheat farm's production (even with an empty internal wheat stock) but
+  completely ignores the logging camp's wood, since wood isn't in its goods list; likewise a
+  hosted city's demand for Beer is invisible to that warehouse if Beer isn't in the list. So
   `Warehouse.host` is a real source/sink like a station's, just pre-filtered by `Warehouse.goods`
-  before anything else reaches the network. Still open: the spec's "pure transshipment, zero
-  balance" phrasing and this per-good gating need to be reconciled precisely — likely "zero
-  balance" refers only to the warehouse's own internal stock net over time, not to whether it can
-  access a hosted producer/consumer. Also unclear: whether a hosted city's *population* demand
-  (as opposed to its industries) is gated by the same goods list, or routes through unrestricted
-  like at a station — the described rule so far only covers businesses and industries.
+  before anything else reaches the network. Still open: reconciling this with the spec's "pure
+  transshipment, zero balance" phrasing — likely "zero balance" refers only to the warehouse's own
+  internal stock net over time, not to whether it can access a hosted producer/consumer.
 - **A city or rural business can be hosted by more than one station.** Nothing in the types or
   state providers (`train-stations-state.tsx`, `warehouses-state.tsx`) stops two different
   `TrainStation`s from listing the same city, or the same rural business, as `host`. The solver's
@@ -76,8 +77,9 @@ needs:
 - [x] Confirm whether warehouse `host` contributes to source/sink balance: yes, gated by the
       warehouse's `goods` list — a hosted business/industry's good is only reachable through the
       warehouse if it's in that list, regardless of the warehouse's own internal stock level.
-- [ ] Decide whether a hosted city's population demand is gated by the warehouse's `goods` list
-      the same way as its industries, or is unrestricted like at a station.
+- [x] Confirm whether a hosted city's population demand is gated the same way: yes — the `goods`
+      list gates anything passing through the warehouse uniformly (production, industry
+      input/output, and population demand alike), with no special case for population.
 - [ ] Decide how to handle a city or rural business hosted by more than one station: forbid it
       (validation), or define an explicit aggregation/split rule.
 - [ ] Decide the solver's result shape for sub-node attribution (tagged per-consumer/per-producer
