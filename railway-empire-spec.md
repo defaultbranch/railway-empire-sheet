@@ -210,11 +210,41 @@ dropped from the network entirely.
 The solve is an iterative proportional allocation to a fixed point, not a globally optimal
 flow: trains are greedy and grab what they can, so they do not arrange themselves into an
 optimum. Two passes alternate. Demand pressure propagates backwards from the sinks through
-arcs and warehouses; supply is then pushed forwards, splitting each source across its outgoing
-legs in proportion to their weekly capacity, so that a line with a high weekly transport volume
-takes a bigger share than a line with a low one, and rationing each leg's shared capacity
-across goods in proportion to the pressure they carry. Damped iteration until the flows
-converge handles warehouse-to-warehouse chains and cycles without special-casing them.
+arcs and warehouses, rationing each leg's shared capacity across goods in proportion to the
+pressure they carry; supply is then pushed forwards, splitting each source across its outgoing
+legs in proportion to the capacity each has left for that good, so that a line with a high
+weekly transport volume takes a bigger share than a line with a low one. Damped iteration
+until the flows converge handles warehouse-to-warehouse chains and cycles without
+special-casing them.
+
+The weight in that forward split is always capacity, never the flow the solve itself produces,
+because the solve has to obey *line-splitting invariance*: one line of five trains, and two
+parallel lines of one and four trains over the same stops with the same tour duration and cargo
+setting, must predict exactly the same flows. They are the same rolling stock over the same
+rails, booked differently, and bookkeeping must not move goods. Capacity is additive in trains,
+so the two bookings carry the same total, and a proportional allocation by an additive weight
+is invariant under splitting and merging parallel legs — the pair behaves precisely as the
+single line of five would. Invariance holds when legs saturate, too, since parallel legs over
+the same route fill up together and in proportion.
+
+Weighting by the realized flow of a good instead would break this. Such a weight is
+self-referential — a leg carries much because it is weighted highly, and is weighted highly
+because it carries much — which leaves several fixed points for one and the same network. A leg
+sitting at zero is one of them: it earns no weight, so it receives nothing, so it stays at zero.
+The one-to-four ratio would then not be determined by the network at all, but by where the
+iteration happened to start.
+
+The objection that motivates a flow-based weight is still a real one: a leg carrying six goods
+must not pull at full capacity for each of them separately. It is answered without giving up
+invariance, by weighting with the capacity the backward pass has rationed to that good — full
+leg capacity times that good's share of the pressure on the leg — rather than the raw capacity.
+That share is equal for parallel legs over the same route, so rationed capacities still add up
+across a split, and the axiom survives.
+
+The axiom binds the whole solve, not just the forward split: the backward pressure pass has to
+aggregate parallel legs additively as well. It applies only to parallel splits, though. Cutting
+a three-stop loop into two two-stop lines is a genuinely different network, and the flows may
+legitimately change.
 
 Flows are rates, not counts, so the results need not be integral: per-leg and per-good loads,
 per-line and per-warehouse turn-over per good, and the fraction of each sink's demand actually

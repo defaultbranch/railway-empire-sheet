@@ -59,13 +59,13 @@ needs:
   as `host`, and that's intentional: the same "greedy train" proportional split the spec already
   uses to divide a source across one node's outgoing legs generalizes to dividing a
   producer's/consumer's total across *every* connecting station/warehouse and line able to carry
-  that specific good, in proportion to each connection's weekly transport volume for that good.
-  There's no separate aggregation formula needed — a producer/consumer hosted at several stops is
-  just a source/sink reachable via more legs. One nuance this surfaces: a train's weekly volume of
-  a *specific* good is itself part of the solver's solution, not `trains × 8` — a leg's capacity
-  (`trains × 8 × 7 / tourDays`) is shared across all goods it carries, so how much of it goes to
-  any one good depends on the same proportional allocation, and needs to be retained per (leg,
-  good) in the result, not just as a per-leg total.
+  that specific good, in proportion to each connection's weekly capacity rationed to that good
+  (see the split-weight decision below). There's no separate aggregation formula needed — a
+  producer/consumer hosted at several stops is just a source/sink reachable via more legs. One
+  nuance this surfaces: a train's realized weekly volume of a *specific* good is part of the
+  solver's solution, not `trains × 8` — a leg's capacity (`trains × 8 × 7 / tourDays`) is shared
+  across all goods it carries, so it has to be retained per (leg, good) in the result, not just as
+  a per-leg total. That realized volume is an output, though, not the weight the split uses.
 - **Sub-node attribution: producers and consumers are greedy too, same as trains.** When several
   producers (e.g. two rural businesses) or consumers (e.g. population and an industry's
   raw-material need) share a node's pooled supply/demand for a good, the node's actual
@@ -97,17 +97,15 @@ needs:
 
 The decisions recorded above conflict with the spec, or with themselves, in four places.
 
-- [x] **Warehouse balance contradicts the spec outright.** Settled in favour of the section above:
-      a warehouse has no demand or supply of *its own* — its internal stock nets to zero over time
-      — but it exposes its host's demand and supply just as a station does, minus whatever its
-      `goods` list gates out. The spec's "Goods Flow Solver" section has been amended to say this,
-      so the phrase "pure transshipment node" no longer appears there.
-- [ ] **Split weight: leg capacity or realized per-good volume?** The spec splits a source across
-      outgoing legs "in proportion to their weekly capacity" — a constant known before solving. The
-      section above instead splits in proportion to each connection's weekly transport volume *for
-      that good*, then notes that this volume is itself part of the solution. That is circular, and
-      only resolvable by feeding the previous iteration's volumes back in, which is a different and
-      less obviously convergent algorithm. Pick one weight and state it.
+- [x] **Warehouse balance contradicts the spec outright.** Settled in favour of the section above,
+      and the spec's "Goods Flow Solver" section amended to match: a warehouse has no demand or
+      supply of *its own*, but exposes its host's just as a station does, minus what `goods` gates
+      out.
+- [x] **Split weight: leg capacity or realized per-good volume?** Capacity, rationed to the good
+      by the backward pressure pass. Settled by demanding *line-splitting invariance* — booking
+      the same trains as one line or as two parallel ones must not change any flow — which
+      capacity satisfies by being additive and realized flow does not; see the spec for the
+      argument. Worth a test case, and note the axiom also binds the backward pass.
 - [ ] **The constant-ratio argument does not carry its weight.** Conversion is justified above by
       the raw-material-to-product ratio being constant across levels, but the formula given uses
       `requiredAtLevel` and `capacityAtLevel` and is monotone per level whether or not that holds.
