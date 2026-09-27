@@ -178,6 +178,42 @@ data that a `(type, level)` pair would not already capture on its own.
 
 Depends on `Industry Type`.
 
+## Goods Flow Solver
+
+Sources and sinks never connect directly: rural businesses and city industries produce, city
+industries and city populations consume, and everything in between is carried by train lines
+running between stations and warehouses. The solver predicts the resulting flow of goods, in
+units per week. Only the transport of goods is modelled; passengers and mail are a separate
+concern.
+
+The network is a capacitated multi-commodity transshipment graph. Nodes are the stops. A
+station hosting a city contributes sinks — population demand plus the raw-material consumption
+of that city's industries — and sources, being those industries' output. A station hosting
+rural businesses contributes their level-based production as sources. Warehouses are pure
+transshipment nodes: they have no demand or supply of their own, so their balance per good is
+zero, they are restricted to the goods they can stock (three for two tracks, six for four
+tracks), and what characterizes them is instead a weekly turn-over volume per good.
+
+Arcs are the directed legs of each line's loop: stops `[A, B, C]` yield `A→B`, `B→C` and
+`C→A`, and a two-stop line yields both directions. A train returns to the first stop after the
+last, so the legs of one line carry different loads. Each leg has a weekly capacity of
+`trains × 8 × 7 / tourDays` units, shared across all goods, since a train carries up to eight
+units per run regardless of what it carries. Lines whose tour duration is not yet known are
+dropped from the network entirely.
+
+The solve is an iterative proportional allocation to a fixed point, not a globally optimal
+flow: trains are greedy and grab what they can, so they do not arrange themselves into an
+optimum. Two passes alternate. Demand pressure propagates backwards from the sinks through
+arcs and warehouses; supply is then pushed forwards, splitting each source across its outgoing
+legs in proportion to their weekly capacity, so that a line with a high weekly transport volume
+takes a bigger share than a line with a low one, and rationing each leg's shared capacity
+across goods in proportion to the pressure they carry. Damped iteration until the flows
+converge handles warehouse-to-warehouse chains and cycles without special-casing them.
+
+Flows are rates, not counts, so the results need not be integral: per-leg and per-good loads,
+per-line and per-warehouse turn-over per good, and the fraction of each sink's demand actually
+met. None of these are part of the domain model; they are derived output of the solver.
+
 ## View Concerns
 
 A view concern is a distinct piece of functionality the player needs, independent of how it
