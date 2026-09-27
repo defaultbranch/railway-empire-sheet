@@ -1,9 +1,9 @@
 # Goods Flow Solver — Notes
 
 This folder is meant to hold a generic goods flow solver, implementing the "Goods Flow Solver"
-section of [railway-empire-spec.md](../../../railway-empire-spec.md). Nothing is implemented yet;
-this document captures the design intent and the open gaps to resolve before (and while) building
-it.
+section of [railway-empire-spec.md](../../../railway-empire-spec.md). Design work is largely
+settled below; [solver-types.ts](solver-types.ts) has the types, and the solving logic itself is
+still to be written.
 
 ## Goal
 
@@ -146,14 +146,17 @@ The decisions recorded above conflict with the spec, or with themselves, in five
       the full `trains × 8 × 7 / tourDays` capacity and mail/passengers only take what's left over.
       Crediting the whole figure to goods matches that in-game priority; no split or discount
       needed.
-- [ ] **Station and warehouse size constrains nothing.** Track-based capacity is listed above as
-      something the domain model provides, but no node throughput limit appears anywhere in the
-      algorithm — even though the spec names congestion as the very reason warehouses exist. Decide
-      whether to model a per-node weekly turn-over cap from track count, or to drop the claim.
-- [ ] **Convergence is unspecified.** Fix the damping factor, the tolerance defining convergence,
-      the iteration cap, and what the solver returns when it hits that cap without converging;
-      `SolveOptions` in [solver-types.ts](solver-types.ts) currently assumes all four.
-- [ ] **Out-of-scope mechanics are silently dropped.** The spec's special buildings acting as
-      infinite sinks, and the per-city storage limit, are modelled nowhere. Decide whether they stay
-      out of scope, and say so explicitly. Related: the opening sentence above still claims nothing
-      is implemented, which `solver-types.ts` has since made untrue.
+- [x] **Station and warehouse size constrains nothing.** Out of scope, not a gap: station/warehouse
+      size doesn't need its own throughput cap because its effect is already folded into
+      `tourDays` — a smaller node makes trains wait longer, which lengthens the trip, and the
+      solver takes `tourDays` as a given constant rather than deriving it from node size. Congestion
+      is real in the game, but it's priced in upstream of this solver, not a term this solver is
+      missing.
+- [x] **Convergence is unspecified.** Deliberately deferred, not a design gap: the damping factor,
+      tolerance, iteration cap and no-convergence return value are implementation details to pick
+      when the iteration is first written and tuned against real data, not decisions worth locking
+      in on paper first. `SolveOptions` in [solver-types.ts](solver-types.ts) can keep sensible
+      defaults until then.
+- [x] **Out-of-scope mechanics are silently dropped.** Confirmed out of scope: the spec's special
+      buildings acting as infinite sinks, and the per-city storage limit, are intentionally not
+      modelled by this solver.
