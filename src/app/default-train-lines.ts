@@ -242,4 +242,52 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     tourDays: 38,
     cargo: 'anything',
   },
+  {
+    name: 'Harris Breeding - Casper WH',
+    stops: [
+      { kind: 'station', name: 'Harris Breeding' },
+      { kind: 'warehouse', name: 'Casper WH' },
+    ],
+    trains: 4,
+    tourDays: Math.round((42 + 41 + 41 + 36) / 4),
+    cargo: 'goods',
+  },
+  {
+    name: 'Casper - Billings',
+    stops: [
+      { kind: 'station', name: 'Casper' },
+      { kind: 'station', name: 'Billings' },
+    ],
+    trains: 1,
+    tourDays: 92,
+    cargo: 'anything',
+  },
+  {
+    name: 'Casper - Miles City',
+    stops: [
+      { kind: 'station', name: 'Casper' },
+      { kind: 'station', name: 'Miles City' },
+    ],
+    trains: 1,
+    tourDays: 61,
+    cargo: 'anything',
+  },
+  {
+    name: 'Casper - Gardiner',
+    stops: [
+      { kind: 'station', name: 'Casper' },
+      { kind: 'station', name: 'Gardiner' },
+    ],
+    trains: 1,
+    cargo: 'mail and passengers',
+  },
+  {
+    name: 'Casper - Rock Springs',
+    stops: [
+      { kind: 'station', name: 'Casper' },
+      { kind: 'station', name: 'Rock Springs' },
+    ],
+    trains: 1,
+    cargo: 'mail and passengers',
+  },
 ] as const;

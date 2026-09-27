@@ -15,7 +15,7 @@ export const defaultTrainStations: readonly DefaultTrainStation[] = [
   // City stations (alphabetical)
   { name: 'Baker City', tracks: 2, host: { kind: 'city', city: 'Baker City' } },
   { name: 'Billings', tracks: 4, host: { kind: 'city', city: 'Billings' } },
-  { name: 'Casper', tracks: 2, host: { kind: 'city', city: 'Casper' } },
+  { name: 'Casper', tracks: 4, host: { kind: 'city', city: 'Casper' } },
   { name: 'Gardiner', tracks: 4, host: { kind: 'city', city: 'Gardiner' } },
   { name: 'Great Falls', tracks: 2, host: { kind: 'city', city: 'Great Falls' } },
   { name: 'Idaho Falls', tracks: 4, host: { kind: 'city', city: 'Idaho Falls' } },
