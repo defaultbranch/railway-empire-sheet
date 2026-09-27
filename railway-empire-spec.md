@@ -186,13 +186,19 @@ running between stations and warehouses. The solver predicts the resulting flow 
 units per week. Only the transport of goods is modelled; passengers and mail are a separate
 concern.
 
-The network is a capacitated multi-commodity transshipment graph. Nodes are the stops. A
-station hosting a city contributes sinks — population demand plus the raw-material consumption
-of that city's industries — and sources, being those industries' output. A station hosting
-rural businesses contributes their level-based production as sources. Warehouses are pure
-transshipment nodes: they have no demand or supply of their own, so their balance per good is
-zero, they are restricted to the goods they can stock (three for two tracks, six for four
-tracks), and what characterizes them is instead a weekly turn-over volume per good.
+The network is a capacitated multi-commodity transshipment graph. Nodes are the stops. A stop
+hosting a city contributes sinks — population demand plus the raw-material consumption of that
+city's industries — and sources, being those industries' output. A stop hosting rural
+businesses contributes their level-based production as sources. This holds for stations and
+warehouses alike: neither has demand or supply of its own, and a warehouse's own stock nets to
+zero over time, but both expose whatever their host produces and consumes to the network.
+
+What sets a warehouse apart is that it is restricted to the goods it can stock (three for two
+tracks, six for four tracks), and that this restriction gates everything passing through it,
+transshipment and hosted sources and sinks alike: a good outside the list does not reach the
+network through that warehouse at all. So a warehouse configured for Wheat, Corn and Coal, and
+connected to both a wheat farm and a logging camp, exposes the farm's wheat but not the camp's
+wood. What characterizes a warehouse is then its weekly turn-over volume per good.
 
 Arcs are the directed legs of each line's loop: stops `[A, B, C]` yield `A→B`, `B→C` and
 `C→A`, and a two-stop line yields both directions. A train returns to the first stop after the

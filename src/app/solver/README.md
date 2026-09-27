@@ -49,9 +49,10 @@ needs:
   completely ignores the logging camp's wood, since wood isn't in its goods list; likewise a
   hosted city's demand for Beer is invisible to that warehouse if Beer isn't in the list. So
   `Warehouse.host` is a real source/sink like a station's, just pre-filtered by `Warehouse.goods`
-  before anything else reaches the network. Still open: reconciling this with the spec's "pure
-  transshipment, zero balance" phrasing — likely "zero balance" refers only to the warehouse's own
-  internal stock net over time, not to whether it can access a hosted producer/consumer.
+  before anything else reaches the network. Settled: "no demand or supply of their own" is about
+  the warehouse itself — its internal stock nets to zero over time — and says nothing about its
+  host, which it exposes exactly as a station does, minus the gated goods. The spec's "Goods Flow
+  Solver" section has been amended accordingly.
 - **A city or rural business can be hosted by more than one station or warehouse — this is
   allowed, not a conflict.** Nothing in the types or state providers (`train-stations-state.tsx`,
   `warehouses-state.tsx`) stops two different stops from listing the same city or rural business
@@ -92,33 +93,55 @@ needs:
   the problem (treated as absent, not as a known zero), and the solver `console.warn`s that a
   coefficient is missing so it's noticeable, without building dedicated "unknown" UI state.
 
+## Contradictions to settle
+
+The decisions recorded above conflict with the spec, or with themselves, in four places.
+
+- [x] **Warehouse balance contradicts the spec outright.** Settled in favour of the section above:
+      a warehouse has no demand or supply of *its own* — its internal stock nets to zero over time
+      — but it exposes its host's demand and supply just as a station does, minus whatever its
+      `goods` list gates out. The spec's "Goods Flow Solver" section has been amended to say this,
+      so the phrase "pure transshipment node" no longer appears there.
+- [ ] **Split weight: leg capacity or realized per-good volume?** The spec splits a source across
+      outgoing legs "in proportion to their weekly capacity" — a constant known before solving. The
+      section above instead splits in proportion to each connection's weekly transport volume *for
+      that good*, then notes that this volume is itself part of the solution. That is circular, and
+      only resolvable by feeding the previous iteration's volumes back in, which is a different and
+      less obviously convergent algorithm. Pick one weight and state it.
+- [ ] **The constant-ratio argument does not carry its weight.** Conversion is justified above by
+      the raw-material-to-product ratio being constant across levels, but the formula given uses
+      `requiredAtLevel` and `capacityAtLevel` and is monotone per level whether or not that holds.
+      Either identify what the constant ratio is actually needed for — e.g. deriving an undiscovered
+      level's coefficients from level 1, which would contradict the "ignore unknowns" rule — or drop
+      it from the reasoning.
+- [ ] **"Ignore unknown coefficients" biases in two opposite directions.** Dropping an unknown raw
+      material removes a term from the `min(...)`, leaving the industry *less* constrained and
+      overstating its output; dropping an unknown product capacity yields zero output instead.
+      Decide per position (raw material vs. product) what dropping means, so one rule does not
+      silently inflate and deflate the same industry.
+
 ## Gaps to resolve, step by step
 
-- [x] Confirm whether warehouse `host` contributes to source/sink balance: yes, gated by the
-      warehouse's `goods` list — a hosted business/industry's good is only reachable through the
-      warehouse if it's in that list, regardless of the warehouse's own internal stock level.
-- [x] Confirm whether a hosted city's population demand is gated the same way: yes — the `goods`
-      list gates anything passing through the warehouse uniformly (production, industry
-      input/output, and population demand alike), with no special case for population.
-- [x] Decide how to handle a city or rural business hosted by more than one station: allowed, no
-      validation needed — the existing greedy-train proportional split (by weekly transport volume
-      per connecting train, for that specific good) generalizes across every connecting stop, the
-      same way it already splits a source across one node's several outgoing legs. Per (leg, good)
-      volume — not just per-leg total — must be retained in the solver's result.
-- [x] Decide the solver's result shape for sub-node attribution and the fairness rule used to
-      split a node's fulfillment fraction across co-located producers/consumers: same greedy
-      principle as everywhere else — split proportional to each contributor's own weekly
-      production/consumption volume, no priority order. Result must retain tagged
-      per-producer/per-consumer contributions, not just a per-node/per-good scalar.
-- [x] Design how industry conversion (input-dependent output) fits into the damped iteration loop:
-      the input:output ratio is constant across levels, so conversion is just
-      `multiplier = clamp01(min over raw materials of delivered/requiredAtLevel)` recomputed each
-      round from that round's delivered-raw-material estimate, same shape as the existing
-      `produce()` helper but per node per iteration instead of a global pool.
-- [x] Decide how to surface "unknown" (undiscovered) production/recipe coefficients versus known
-      zero: ignore them (drop that contribution from the problem being solved) and
-      `console.warn` that a coefficient is missing, rather than modelling "unknown" as a distinct
-      value throughout the solver/UI.
-
-All gaps found so far are resolved. The solver can be implemented against the design captured
-above.
+- [ ] **Cities gate unloading, much like warehouses.** The spec notes that goods a city does not
+      demand "cannot be unloaded" there, so a station hosting a city is good-gated too, not just a
+      warehouse. Decide the exact gate (population demand only, or also its industries' raw
+      materials) and how it reaches `handledGoods` in [solver-types.ts](solver-types.ts).
+- [ ] **Local netting at a node is undefined.** When one node hosts both a producer and a consumer
+      of the same good — a city industry's output feeding that city's population, or a rural
+      business feeding a co-hosted industry — decide whether the match is satisfied locally with no
+      leg involved, or whether everything has to ride a train. This changes every `served` figure
+      and the fulfilment fractions read back per entity.
+- [ ] **`cargo: 'anything'` lines overstate goods capacity.** Such lines also carry passengers and
+      mail, yet the full `trains × 8 × 7 / tourDays` is currently credited to goods. Decide whether
+      to model a split, apply a flat discount, or knowingly accept the overestimate.
+- [ ] **Station and warehouse size constrains nothing.** Track-based capacity is listed above as
+      something the domain model provides, but no node throughput limit appears anywhere in the
+      algorithm — even though the spec names congestion as the very reason warehouses exist. Decide
+      whether to model a per-node weekly turn-over cap from track count, or to drop the claim.
+- [ ] **Convergence is unspecified.** Fix the damping factor, the tolerance defining convergence,
+      the iteration cap, and what the solver returns when it hits that cap without converging;
+      `SolveOptions` in [solver-types.ts](solver-types.ts) currently assumes all four.
+- [ ] **Out-of-scope mechanics are silently dropped.** The spec's special buildings acting as
+      infinite sinks, and the per-city storage limit, are modelled nowhere. Decide whether they stay
+      out of scope, and say so explicitly. Related: the opening sentence above still claims nothing
+      is implemented, which `solver-types.ts` has since made untrue.
