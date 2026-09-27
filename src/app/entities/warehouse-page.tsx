@@ -24,11 +24,11 @@ export function WarehousePage({ slug }: { slug: string }) {
     );
   }
 
-  const hostCity =
-    warehouse.host.kind === 'city' ? cities.find((city) => city.name === warehouse.host.city) : undefined;
+  const host = warehouse.host;
+  const hostCity = host.kind === 'city' ? cities.find((city) => city.name === host.city) : undefined;
   const hostBusinesses =
-    warehouse.host.kind === 'ruralBusinesses'
-      ? warehouse.host.ruralBusinesses
+    host.kind === 'ruralBusinesses'
+      ? host.ruralBusinesses
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];

@@ -24,10 +24,11 @@ export function StationPage({ slug }: { slug: string }) {
     );
   }
 
-  const hostCity = station.host.kind === 'city' ? cities.find((city) => city.name === station.host.city) : undefined;
+  const host = station.host;
+  const hostCity = host.kind === 'city' ? cities.find((city) => city.name === host.city) : undefined;
   const hostBusinesses =
-    station.host.kind === 'ruralBusinesses'
-      ? station.host.ruralBusinesses
+    host.kind === 'ruralBusinesses'
+      ? host.ruralBusinesses
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
