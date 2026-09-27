@@ -18,7 +18,7 @@ export const defaultRuralBusinesses: readonly DefaultRuralBusiness[] = [
   { name: 'Moore Ranch', typeName: 'Milk Farm', level: 3 },
   { name: 'Reed Breading', typeName: 'Cattle Farm', level: 2 },
   { name: 'Roberts Manor', typeName: 'Corn Farm', level: 4 },
-  { name: 'Robinson Manor', typeName: 'Sugar Plant', level: 3 },
+  { name: 'Robinson Manor', typeName: 'Sugar Plant', level: 4 },
   { name: 'Stark Farm', typeName: 'Fruit Orchard', level: 3 },
   { name: 'Stevens Estate', typeName: 'Wheat Farm', level: 4 },
   { name: 'Steward Preserve', typeName: 'Wheat Farm', level: 4 },

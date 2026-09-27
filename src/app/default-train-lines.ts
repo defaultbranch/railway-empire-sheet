@@ -202,4 +202,44 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     tourDays: Math.round((21 + 22 + 24) / 3),
     cargo: 'anything',
   },
+  {
+    name: 'Lee Cattle - Billings WH B',
+    stops: [
+      { kind: 'station', name: 'Lee Cattle' },
+      { kind: 'warehouse', name: 'Billings WH B' },
+    ],
+    trains: 6,
+    tourDays: Math.round((34 + 31 + 40 + 31 + 41 + 41) / 6),
+    cargo: 'anything',
+  },
+  {
+    name: 'Robinson Manor - Billings WH A',
+    stops: [
+      { kind: 'station', name: 'Robinson Manor' },
+      { kind: 'warehouse', name: 'Billings WH A' },
+    ],
+    trains: 1,
+    tourDays: 55,
+    cargo: 'anything',
+  },
+  {
+    name: 'Robinson Manor - Gardiner WH',
+    stops: [
+      { kind: 'station', name: 'Robinson Manor' },
+      { kind: 'warehouse', name: 'Gardiner WH' },
+    ],
+    trains: 1,
+    tourDays: 70,
+    cargo: 'anything',
+  },
+  {
+    name: 'Robinson Manor - Casper WH',
+    stops: [
+      { kind: 'station', name: 'Robinson Manor' },
+      { kind: 'warehouse', name: 'Casper WH' },
+    ],
+    trains: 1,
+    tourDays: 38,
+    cargo: 'anything',
+  },
 ] as const;

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
@@ -47,6 +48,17 @@ export function WarehousePage({ slug }: { slug: string }) {
   const { navigate } = useNavigation();
   const { network, solution, droppedLines } = useGoodsFlow();
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
+
+  useEffect(() => {
+    if (warehouse === undefined) {
+      return;
+    }
+    const previousTitle = document.title;
+    document.title = `WH: ${warehouse.name}`;
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [warehouse]);
 
   if (warehouse === undefined) {
     return (
