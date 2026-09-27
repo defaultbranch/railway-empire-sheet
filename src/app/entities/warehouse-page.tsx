@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useCities } from '../game-state/city-state';
+import { useGoods } from '../game-state/goods-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
@@ -13,36 +14,31 @@ import type { LegFlow } from '../solver';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
-function GoodsTable({ flows }: { flows: LegFlow[] }) {
-  const sorted = [...flows].sort((a, b) => b.units - a.units);
-
-  if (sorted.length === 0) {
-    return <p className="warehouse-page__empty">None.</p>;
+function amountsByGood(flows: LegFlow[]): Map<string, number> {
+  const amounts = new Map<string, number>();
+  for (const flow of flows) {
+    amounts.set(flow.good, (amounts.get(flow.good) ?? 0) + flow.units);
   }
+  return amounts;
+}
 
+function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: number }) {
+  if (inAmount === undefined && outAmount === undefined) {
+    return <td className="warehouse-page__cell--empty">–</td>;
+  }
   return (
-    <table className="warehouse-page__table">
-      <thead>
-        <tr>
-          <th>Good</th>
-          <th>Units per week</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sorted.map((flow) => (
-          <tr key={flow.good}>
-            <td>{flow.good}</td>
-            <td>{perWeek(flow.units)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <td>
+      {inAmount !== undefined && <span className="warehouse-page__cell-in">+{perWeek(inAmount)}</span>}
+      {inAmount !== undefined && outAmount !== undefined && ' / '}
+      {outAmount !== undefined && <span className="warehouse-page__cell-out">-{perWeek(outAmount)}</span>}
+    </td>
   );
 }
 
 export function WarehousePage({ slug }: { slug: string }) {
   const { warehouses } = useWarehouses();
   const { cities } = useCities();
+  const { goods } = useGoods();
   const { ruralBusinesses } = useRuralBusinesses();
   const { trainLines } = useTrainLines();
   const { navigate } = useNavigation();
@@ -80,6 +76,27 @@ export function WarehousePage({ slug }: { slug: string }) {
     line.stops.some((stop) => stop.kind === 'warehouse' && stop.name === warehouse.name),
   );
   const nodeId = stopNodeId({ kind: 'warehouse', name: warehouse.name });
+
+  const trainLineRows = connectingLines.map((line) => {
+    const dropped = droppedLines.find((entry) => entry.line === line.name);
+    const legs = network.legs.filter((leg) => leg.line === line.name);
+    const arriving = legs.find((leg) => leg.to === nodeId);
+    const departing = legs.find((leg) => leg.from === nodeId);
+    const broughtIn = amountsByGood(arriving ? solution.legFlows.filter((flow) => flow.leg === arriving.id) : []);
+    const takenAway = amountsByGood(departing ? solution.legFlows.filter((flow) => flow.leg === departing.id) : []);
+    return { line, dropped, broughtIn, takenAway };
+  });
+  const trainLineGoodsSet = new Set(trainLineRows.flatMap((row) => [...row.broughtIn.keys(), ...row.takenAway.keys()]));
+  const trainLineGoods = goods.filter((good) => trainLineGoodsSet.has(good));
+  const totalBroughtIn = new Map<string, number>();
+  const totalTakenAway = new Map<string, number>();
+  for (const row of trainLineRows) {
+    if (row.dropped !== undefined) continue;
+    for (const [good, units] of row.broughtIn) totalBroughtIn.set(good, (totalBroughtIn.get(good) ?? 0) + units);
+    for (const [good, units] of row.takenAway) totalTakenAway.set(good, (totalTakenAway.get(good) ?? 0) + units);
+  }
+  const totalUnloaded = [...totalBroughtIn.values()].reduce((sum, units) => sum + units, 0);
+  const totalLoaded = [...totalTakenAway.values()].reduce((sum, units) => sum + units, 0);
 
   return (
     <section className="warehouse-page">
@@ -121,48 +138,55 @@ export function WarehousePage({ slug }: { slug: string }) {
         {connectingLines.length === 0 ? (
           <p className="warehouse-page__train-lines-empty">No train lines connect here.</p>
         ) : (
-          connectingLines.map((line) => {
-            const dropped = droppedLines.find((entry) => entry.line === line.name);
-            const legs = network.legs.filter((leg) => leg.line === line.name);
-            const arriving = legs.find((leg) => leg.to === nodeId);
-            const departing = legs.find((leg) => leg.from === nodeId);
-            const broughtIn = arriving
-              ? solution.legFlows.filter((flow) => flow.leg === arriving.id)
-              : [];
-            const takenAway = departing
-              ? solution.legFlows.filter((flow) => flow.leg === departing.id)
-              : [];
-
-            return (
-              <section className="warehouse-page__train-line" key={line.name}>
-                <h3>
-                  <a
-                    href={pathForTrainLine(line)}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      navigate(pathForTrainLine(line));
-                    }}
-                  >
-                    {line.name}
-                  </a>
-                </h3>
-                {dropped !== undefined ? (
-                  <p className="warehouse-page__empty">Not modelled: {dropped.reason}.</p>
-                ) : (
-                  <>
-                    <div className="warehouse-page__train-line-flow">
-                      <h4>Brings in</h4>
-                      <GoodsTable flows={broughtIn} />
-                    </div>
-                    <div className="warehouse-page__train-line-flow">
-                      <h4>Takes away</h4>
-                      <GoodsTable flows={takenAway} />
-                    </div>
-                  </>
-                )}
-              </section>
-            );
-          })
+          <table className="warehouse-page__table warehouse-page__train-lines-table">
+            <thead>
+              <tr>
+                <th>Train line</th>
+                {trainLineGoods.map((good) => (
+                  <th key={good}>{good}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {trainLineRows.map(({ line, dropped, broughtIn, takenAway }) => (
+                <tr key={line.name}>
+                  <td>
+                    <a
+                      href={pathForTrainLine(line)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigate(pathForTrainLine(line));
+                      }}
+                    >
+                      {line.name}
+                    </a>
+                  </td>
+                  {dropped !== undefined ? (
+                    <td colSpan={trainLineGoods.length} className="warehouse-page__cell--dropped">
+                      Not modelled: {dropped.reason}.
+                    </td>
+                  ) : (
+                    trainLineGoods.map((good) => (
+                      <BalanceCell key={good} in={broughtIn.get(good)} out={takenAway.get(good)} />
+                    ))
+                  )}
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total balance</th>
+                {trainLineGoods.map((good) => (
+                  <BalanceCell key={good} in={totalBroughtIn.get(good)} out={totalTakenAway.get(good)} />
+                ))}
+              </tr>
+            </tfoot>
+          </table>
+        )}
+        {connectingLines.length > 0 && (
+          <p className="warehouse-page__totals">
+            Total weekly units unloaded: {perWeek(totalUnloaded)} · loaded: {perWeek(totalLoaded)}
+          </p>
         )}
         {connectingLines.some((line) => droppedLines.find((entry) => entry.line === line.name) === undefined) &&
           !solution.converged && (

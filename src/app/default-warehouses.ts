@@ -40,6 +40,12 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     goods: ['Cattle', 'Meat', 'Beer', 'Wood', 'Sugar', 'Grain'],
   },
   {
+    name: 'Cheyenne WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Cheyenne' },
+    goods: ['Grain', 'Wood', 'Beer'],
+  },
+  {
     name: 'Gardiner WH',
     tracks: 4,
     host: { kind: 'city', city: 'Gardiner' },
@@ -68,6 +74,12 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     tracks: 4,
     host: { kind: 'city', city: 'Nampa' },
     goods: ['Cattle', 'Meat', 'Beer', 'Corn', 'Sugar', 'Wood'],
+  },
+  {
+    name: 'Rock Springs WH',
+    tracks: 4,
+    host: { kind: 'city', city: 'Rock Springs' },
+    goods: ['Wood', 'Meat', 'Beer', 'Corn', 'Milk'],
   },
   {
     name: 'Spokane WH',
@@ -100,6 +112,12 @@ export const defaultWarehouses: readonly DefaultWarehouse[] = [
     tracks: 2,
     host: { kind: 'ruralBusinesses', ruralBusinesses: ['Reed Breading'] },
     goods: ['Cattle'],
+  },
+  {
+    name: 'Thompson Fattening',
+    tracks: 2,
+    host: { kind: 'ruralBusinesses', ruralBusinesses: ['Thompson Fattening'] },
+    goods: ['Milk', 'Corn'],
   },
   {
     name: 'Walker WH',

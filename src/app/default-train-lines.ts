@@ -253,6 +253,26 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     cargo: 'goods',
   },
   {
+    name: 'Cook Chopping - Casper WH',
+    stops: [
+      { kind: 'station', name: 'Cook Chopping' },
+      { kind: 'warehouse', name: 'Casper WH' },
+    ],
+    trains: 2,
+    tourDays: 23,
+    cargo: 'anything',
+  },
+  {
+    name: 'Casper WH - Rock Springs WH',
+    stops: [
+      { kind: 'warehouse', name: 'Casper WH' },
+      { kind: 'warehouse', name: 'Rock Springs WH' },
+    ],
+    trains: 3,
+    tourDays: Math.round((37 + 38 + 37) / 3),
+    cargo: 'anything',
+  },
+  {
     name: 'Casper - Billings',
     stops: [
       { kind: 'station', name: 'Casper' },
@@ -289,5 +309,25 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     ],
     trains: 1,
     cargo: 'mail and passengers',
+  },
+  {
+    name: 'Campbell Estate - Thompson Fattening',
+    stops: [
+      { kind: 'station', name: 'Campbell Estate' },
+      { kind: 'warehouse', name: 'Thompson Fattening' },
+    ],
+    trains: 2,
+    tourDays: 18,
+    cargo: 'anything',
+  },
+  {
+    name: 'Thompson Fattening - Rock Springs WH',
+    stops: [
+      { kind: 'warehouse', name: 'Thompson Fattening' },
+      { kind: 'warehouse', name: 'Rock Springs WH' },
+    ],
+    trains: 1,
+    tourDays: 39,
+    cargo: 'anything',
   },
 ] as const;

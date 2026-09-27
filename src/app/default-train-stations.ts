@@ -26,6 +26,8 @@ export const defaultTrainStations: readonly DefaultTrainStation[] = [
   { name: 'Spokane', tracks: 2, host: { kind: 'city', city: 'Spokane' } },
 
   // Rural business stops (alphabetical)
+  { name: 'Campbell Estate', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Campbell Estate'] } },
+  { name: 'Cook Chopping', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Cook Chopping'] } },
   { name: 'Green Forest', tracks: 2, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Green Forest aisles'] } },
   { name: 'Harris Breeding', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Harris Breeding'] } },
   { name: 'Hill Farm', tracks: 1, host: { kind: 'ruralBusinesses', ruralBusinesses: ['Hill Farm'] } },

@@ -6,8 +6,10 @@ type DefaultRuralBusiness = Omit<RuralBusiness, 'typeName'> & { typeName: Defaul
 export const defaultRuralBusinesses: readonly DefaultRuralBusiness[] = [
   { name: 'Allen Preserve', typeName: 'Sugar Plant', level: 1 },
   { name: 'Bishop Well', typeName: 'Cement Works', level: 1 },
+  { name: 'Campbell Estate', typeName: 'Corn Farm', level: 2 },
   { name: 'Clark Preserve', typeName: 'Vegetable Farm', level: 3 },
   { name: 'Collins Farm', typeName: 'Wheat Farm', level: 2 },
+  { name: 'Cook Chopping', typeName: 'Logging Camp', level: 3 },
   { name: 'Davis Quarry', typeName: 'Iron Mine', level: 1 },
   { name: 'Green Forest aisles', typeName: 'Logging Camp', level: 3 },
   { name: 'Harris Breeding', typeName: 'Cattle Farm', level: 4 },
@@ -22,6 +24,7 @@ export const defaultRuralBusinesses: readonly DefaultRuralBusiness[] = [
   { name: 'Stark Farm', typeName: 'Fruit Orchard', level: 3 },
   { name: 'Stevens Estate', typeName: 'Wheat Farm', level: 4 },
   { name: 'Steward Preserve', typeName: 'Wheat Farm', level: 4 },
+  { name: 'Thompson Fattening', typeName: 'Milk Farm', level: 1 },
   { name: 'Walker Fattening', typeName: 'Cattle Farm', level: 5 },
   { name: 'Wilson Farm', typeName: 'Vegetable Farm', level: 2 },
   { name: 'Wright Farm', typeName: 'Cotton Farm', level: 3 },
