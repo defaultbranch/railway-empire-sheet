@@ -1,15 +1,18 @@
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
+import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
 import { stationSlug } from './station-routes';
 import { pathForCity } from './city-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
+import { pathForTrainLine } from './train-line-routes';
 
 export function StationPage({ slug }: { slug: string }) {
   const { trainStations } = useTrainStations();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
+  const { trainLines } = useTrainLines();
   const { navigate } = useNavigation();
   const station = trainStations.find((existing) => stationSlug(existing) === slug);
 
@@ -28,6 +31,9 @@ export function StationPage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
+  const connectingLines = trainLines.filter((line) =>
+    line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name),
+  );
 
   return (
     <section className="station-page">
@@ -58,6 +64,28 @@ export function StationPage({ slug }: { slug: string }) {
                   }}
                 >
                   {business.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section className="station-page__train-lines">
+        <h2>Train lines</h2>
+        {connectingLines.length === 0 ? (
+          <p className="station-page__train-lines-empty">No train lines connect here.</p>
+        ) : (
+          <ul>
+            {connectingLines.map((line) => (
+              <li key={line.name}>
+                <a
+                  href={pathForTrainLine(line)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForTrainLine(line));
+                  }}
+                >
+                  {line.name}
                 </a>
               </li>
             ))}

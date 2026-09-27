@@ -1,15 +1,18 @@
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
+import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
 import { warehouseSlug } from './warehouse-routes';
 import { pathForCity } from './city-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
+import { pathForTrainLine } from './train-line-routes';
 
 export function WarehousePage({ slug }: { slug: string }) {
   const { warehouses } = useWarehouses();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
+  const { trainLines } = useTrainLines();
   const { navigate } = useNavigation();
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
 
@@ -29,6 +32,9 @@ export function WarehousePage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
+  const connectingLines = trainLines.filter((line) =>
+    line.stops.some((stop) => stop.kind === 'warehouse' && stop.name === warehouse.name),
+  );
 
   return (
     <section className="warehouse-page">
@@ -59,6 +65,28 @@ export function WarehousePage({ slug }: { slug: string }) {
                   }}
                 >
                   {business.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section className="warehouse-page__train-lines">
+        <h2>Train lines</h2>
+        {connectingLines.length === 0 ? (
+          <p className="warehouse-page__train-lines-empty">No train lines connect here.</p>
+        ) : (
+          <ul>
+            {connectingLines.map((line) => (
+              <li key={line.name}>
+                <a
+                  href={pathForTrainLine(line)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForTrainLine(line));
+                  }}
+                >
+                  {line.name}
                 </a>
               </li>
             ))}

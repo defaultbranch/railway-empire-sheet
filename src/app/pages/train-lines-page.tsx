@@ -4,10 +4,15 @@ import { trainCargoTypes } from '../game-state/types';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
+import { useNavigation } from '../navigation';
+import { pathForStation } from '../entities/station-routes';
+import { pathForWarehouse } from '../entities/warehouse-routes';
+import { pathForTrainLine } from '../entities/train-line-routes';
 
 type StopKind = StopRef['kind'];
 
 export function TrainLinesPage() {
+  const { navigate } = useNavigation();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { trainLines, addTrainLine, removeTrainLine } = useTrainLines();
@@ -24,6 +29,8 @@ export function TrainLinesPage() {
   const optionsFor = (kind: StopKind) => (kind === 'station' ? trainStations : warehouses);
 
   const stopLabel = (stop: StopRef) => `${stop.name} (${stop.kind === 'station' ? 'Station' : 'Warehouse'})`;
+
+  const stopPath = (stop: StopRef) => (stop.kind === 'station' ? pathForStation(stop) : pathForWarehouse(stop));
 
   const canAdd = newName.trim() !== '' && fromName !== '' && toName !== '' && trains > 0;
 
@@ -71,10 +78,30 @@ export function TrainLinesPage() {
           )}
           {trainLines.map((line) => (
             <tr key={line.name}>
-              <td>{line.name}</td>
+              <td>
+                <a
+                  href={pathForTrainLine(line)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForTrainLine(line));
+                  }}
+                >
+                  {line.name}
+                </a>
+              </td>
               <td>
                 {line.stops.map((stop, index) => (
-                  <div key={`${stop.kind}-${stop.name}-${index}`}>{stopLabel(stop)}</div>
+                  <div key={`${stop.kind}-${stop.name}-${index}`}>
+                    <a
+                      href={stopPath(stop)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigate(stopPath(stop));
+                      }}
+                    >
+                      {stopLabel(stop)}
+                    </a>
+                  </div>
                 ))}
               </td>
               <td>{line.trains}</td>

@@ -8,6 +8,7 @@ import { CityPage } from './entities/city-page';
 import { StationPage } from './entities/station-page';
 import { WarehousePage } from './entities/warehouse-page';
 import { RuralBusinessPage } from './entities/rural-business-page';
+import { TrainLinePage } from './entities/train-line-page';
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -71,6 +72,10 @@ function AppRoutes() {
 
   if (route.kind === 'ruralBusiness') {
     return <RuralBusinessPage slug={route.slug} />;
+  }
+
+  if (route.kind === 'trainLine') {
+    return <TrainLinePage slug={route.slug} />;
   }
 
   return <PagesRoute pageIndex={route.index} />;
