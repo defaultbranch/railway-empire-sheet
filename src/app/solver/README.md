@@ -76,22 +76,27 @@ needs:
   contributors that make up a node's pooled total. So the solver needs to retain tagged
   per-producer/per-consumer contributions (not just a per-node/per-good scalar) so this split can
   be computed and read back out per rural business/industry/city later.
-- **Industry conversion is a nested fixed point, but a well-behaved one thanks to a constant
-  ratio.** An industry's output depends on how much raw material the network actually delivers,
-  which itself depends on the flow being solved — but the raw-material-to-product ratio is
-  constant across levels (the level-1 ratio holds throughout), so conversion at a node is a simple,
-  monotonic function of delivered input, safe to recompute every round of the damped iteration:
+- **Industry conversion is a nested fixed point, but a well-behaved one.** An industry's output
+  depends on how much raw material the network actually delivers, which itself depends on the flow
+  being solved. It is still a simple, monotonic function of delivered input, safe to recompute
+  every round of the damped iteration:
   `multiplier = clamp01(min over raw materials of delivered[good] / requiredAtLevel[good])`, then
   `output[product] = capacityAtLevel[product] × multiplier`, consuming `requiredAtLevel[good] ×
-  multiplier` of each raw material. This is the same shape as the existing global `produce()`
-  pooling logic in [../pages/supply-demand.ts](../pages/supply-demand.ts), just re-run per node per
-  iteration against that iteration's delivered-raw-material estimate instead of an unconstrained
-  global pool.
-- **Unknown production/recipe coefficients are ignored, with a console warning.** Levels not yet
+  multiplier` of each raw material. Ratio and cap both hold at once, and both come from the
+  current level's own pair of numbers: the ratio is `capacityAtLevel / requiredAtLevel`, and the
+  `clamp01` is the cap, so surplus raw material is neither converted nor pulled in the first
+  place. This is the same shape as the existing global `produce()` pooling logic in
+  [../pages/supply-demand.ts](../pages/supply-demand.ts), just re-run per node per iteration
+  against that iteration's delivered-raw-material estimate instead of an unconstrained global
+  pool.
+- **An unknown coefficient makes its entity inert, with a console warning.** Levels not yet
   discovered (`productionByLevel`/`amountByLevel` entries left `undefined`) are the user's own gap
-  in the data, not the solver's problem to solve around: that contribution is simply dropped from
-  the problem (treated as absent, not as a known zero), and the solver `console.warn`s that a
-  coefficient is missing so it's noticeable, without building dedicated "unknown" UI state.
+  in the data, not the solver's problem to solve around. Leaving one undefined is a user error, so
+  the solver owes it no accuracy — only convergence and a *localized* error. So: if any coefficient
+  the entity's current level needs is missing, that entity contributes nothing at all. An industry
+  with an unknown raw-material need or product capacity neither produces nor pulls raw material; a
+  rural business with an unknown production figure produces nothing. The solver `console.warn`s the
+  missing coefficient so it's noticeable, without building dedicated "unknown" UI state.
 
 ## Contradictions to settle
 
@@ -106,17 +111,20 @@ The decisions recorded above conflict with the spec, or with themselves, in four
       the same trains as one line or as two parallel ones must not change any flow — which
       capacity satisfies by being additive and realized flow does not; see the spec for the
       argument. Worth a test case, and note the axiom also binds the backward pass.
-- [ ] **The constant-ratio argument does not carry its weight.** Conversion is justified above by
-      the raw-material-to-product ratio being constant across levels, but the formula given uses
-      `requiredAtLevel` and `capacityAtLevel` and is monotone per level whether or not that holds.
-      Either identify what the constant ratio is actually needed for — e.g. deriving an undiscovered
-      level's coefficients from level 1, which would contradict the "ignore unknowns" rule — or drop
-      it from the reasoning.
-- [ ] **"Ignore unknown coefficients" biases in two opposite directions.** Dropping an unknown raw
-      material removes a term from the `min(...)`, leaving the industry *less* constrained and
-      overstating its output; dropping an unknown product capacity yields zero output instead.
-      Decide per position (raw material vs. product) what dropping means, so one rule does not
-      silently inflate and deflate the same industry.
+- [x] **The constant-ratio argument does not carry its weight.** Dropped from the reasoning, and
+      the rule restated in the spec as ratio *and* cap, both taken from the current level's own
+      pair of numbers. That the ratio also holds across levels is true but unused here; its one
+      possible use — deriving a coefficient the player has not entered from level 1 — belongs to
+      the unknown-coefficient point below, and would only be approximate anyway, the stored tables
+      being rounded (Brewery level 4 is 5.5 → 11.1, not 5.6 → 11.2).
+- [x] **"Ignore unknown coefficients" biases in two opposite directions.** Settled by dropping the
+      *entity*, not the term: an unknown coefficient anywhere in the current level's row makes the
+      industry or rural business inert, so both positions deflate and neither inflates. A missing
+      raw-material need never leaves an industry less constrained, because it no longer produces at
+      all. Convergence is untouched — an inert node is a constant zero, one fewer term in the fixed
+      point, and no undefined value ever enters the iteration — and the error stays where the
+      missing data is: that node reads zero output and zero fulfilment, and consumers of its product
+      read as under-served rather than being handed goods that would never arrive.
 
 ## Gaps to resolve, step by step
 

@@ -200,6 +200,23 @@ network through that warehouse at all. So a warehouse configured for Wheat, Corn
 connected to both a wheat farm and a logging camp, exposes the farm's wheat but not the camp's
 wood. What characterizes a warehouse is then its weekly turn-over volume per good.
 
+An industry is not a fixed source the way a rural business is: what it puts out depends on what
+the network brings in. Its level states two weekly figures, a raw-material need and a product
+capacity, and both govern the conversion at once. The ratio between them is what converts — an
+industry receiving half of what it asks for makes half of what it could — and the capacity is
+what caps the result. Surplus raw material beyond the level's need is therefore neither
+converted nor consumed, and an industry never exerts demand pressure for more than that need.
+Where a recipe names several raw materials, the scarcest of them sets the fraction, and the
+others are consumed in that same fraction rather than in full. Both figures are read from the
+industry's current level; the conversion does not depend on how the levels relate to one
+another.
+
+Coefficients the player has not yet discovered leave the entity out of the network, the way an
+unknown tour duration drops a line: an industry whose current level lacks a raw-material need or
+a product capacity neither produces nor consumes, and a rural business whose current level has no
+production figure produces nothing. Guessing in either direction would spread one missing number
+across the network; dropping keeps the gap visible where it belongs.
+
 Arcs are the directed legs of each line's loop: stops `[A, B, C]` yield `A→B`, `B→C` and
 `C→A`, and a two-stop line yields both directions. A train returns to the first stop after the
 last, so the legs of one line carry different loads. Each leg has a weekly capacity of
