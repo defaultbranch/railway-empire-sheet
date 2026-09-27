@@ -52,16 +52,29 @@ needs:
   before anything else reaches the network. Still open: reconciling this with the spec's "pure
   transshipment, zero balance" phrasing — likely "zero balance" refers only to the warehouse's own
   internal stock net over time, not to whether it can access a hosted producer/consumer.
-- **A city or rural business can be hosted by more than one station.** Nothing in the types or
-  state providers (`train-stations-state.tsx`, `warehouses-state.tsx`) stops two different
-  `TrainStation`s from listing the same city, or the same rural business, as `host`. The solver's
-  per-node model implicitly assumes a city's/business's whole demand or production lives at
-  exactly one node.
-- **Sub-node attribution is needed for the later inflow/outflow views.** To show "how much of this
-  station's demand for a good is population vs. this specific industry", or "business A vs.
-  business B" when two businesses share a stop, the solver needs to keep tagged per-consumer /
-  per-producer contributions, not just a per-node/per-good scalar, plus an explicit (currently
-  unspecified) fairness rule for splitting a shared fulfillment fraction across them.
+- **A city or rural business can be hosted by more than one station or warehouse — this is
+  allowed, not a conflict.** Nothing in the types or state providers (`train-stations-state.tsx`,
+  `warehouses-state.tsx`) stops two different stops from listing the same city or rural business
+  as `host`, and that's intentional: the same "greedy train" proportional split the spec already
+  uses to divide a source across one node's outgoing legs generalizes to dividing a
+  producer's/consumer's total across *every* connecting station/warehouse and line able to carry
+  that specific good, in proportion to each connection's weekly transport volume for that good.
+  There's no separate aggregation formula needed — a producer/consumer hosted at several stops is
+  just a source/sink reachable via more legs. One nuance this surfaces: a train's weekly volume of
+  a *specific* good is itself part of the solver's solution, not `trains × 8` — a leg's capacity
+  (`trains × 8 × 7 / tourDays`) is shared across all goods it carries, so how much of it goes to
+  any one good depends on the same proportional allocation, and needs to be retained per (leg,
+  good) in the result, not just as a per-leg total.
+- **Sub-node attribution: producers and consumers are greedy too, same as trains.** When several
+  producers (e.g. two rural businesses) or consumers (e.g. population and an industry's
+  raw-material need) share a node's pooled supply/demand for a good, the node's actual
+  shipped-out or fulfilled amount for that good is split back to each contributor in proportion to
+  its own weekly production/consumption volume — no priority order (e.g. population before
+  industry). This is the same proportional-by-own-volume rule used for splitting a source across
+  legs and across multiple hosting stops, just applied one level down, to the individual
+  contributors that make up a node's pooled total. So the solver needs to retain tagged
+  per-producer/per-consumer contributions (not just a per-node/per-good scalar) so this split can
+  be computed and read back out per rural business/industry/city later.
 - **Industry conversion is a nested fixed point.** An industry's output depends on how much raw
   material the network actually delivers, which itself depends on the flow being solved. The
   existing global `produce()` pooling logic in
@@ -80,10 +93,16 @@ needs:
 - [x] Confirm whether a hosted city's population demand is gated the same way: yes — the `goods`
       list gates anything passing through the warehouse uniformly (production, industry
       input/output, and population demand alike), with no special case for population.
-- [ ] Decide how to handle a city or rural business hosted by more than one station: forbid it
-      (validation), or define an explicit aggregation/split rule.
-- [ ] Decide the solver's result shape for sub-node attribution (tagged per-consumer/per-producer
-      contributions) and the fairness rule used to split a node's fulfillment fraction across them.
+- [x] Decide how to handle a city or rural business hosted by more than one station: allowed, no
+      validation needed — the existing greedy-train proportional split (by weekly transport volume
+      per connecting train, for that specific good) generalizes across every connecting stop, the
+      same way it already splits a source across one node's several outgoing legs. Per (leg, good)
+      volume — not just per-leg total — must be retained in the solver's result.
+- [x] Decide the solver's result shape for sub-node attribution and the fairness rule used to
+      split a node's fulfillment fraction across co-located producers/consumers: same greedy
+      principle as everywhere else — split proportional to each contributor's own weekly
+      production/consumption volume, no priority order. Result must retain tagged
+      per-producer/per-consumer contributions, not just a per-node/per-good scalar.
 - [ ] Design how industry conversion (input-dependent output) fits into the damped iteration loop.
 - [ ] Decide how to surface "unknown" (undiscovered) production/recipe coefficients versus known
       zero in solver output and UI.
