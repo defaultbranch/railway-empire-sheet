@@ -200,6 +200,14 @@ network through that warehouse at all. So a warehouse configured for Wheat, Corn
 connected to both a wheat farm and a logging camp, exposes the farm's wheat but not the camp's
 wood. What characterizes a warehouse is then its weekly turn-over volume per good.
 
+A stop hosting a city gates goods as well, but in one direction only and without any volume
+limit: a train may unload there only what the city takes, namely the population demands active at
+its current size plus the raw materials its industries consume, and carries anything else onwards.
+What the city produces can always be loaded, and so can what was unloaded there, which is how a
+city station serves as a transshipment point. A stop hosting rural businesses takes nothing at
+all, rural businesses being pure producers, and is therefore a source only. Unlike a warehouse, a
+city has no turn-over capacity in the model: its gate says which goods, never how many.
+
 An industry is not a fixed source the way a rural business is: what it puts out depends on what
 the network brings in. Its level states two weekly figures, a raw-material need and a product
 capacity, and both govern the conversion at once. The ratio between them is what converts — an
@@ -214,15 +222,22 @@ another.
 Coefficients the player has not yet discovered leave the entity out of the network, the way an
 unknown tour duration drops a line: an industry whose current level lacks a raw-material need or
 a product capacity neither produces nor consumes, and a rural business whose current level has no
-production figure produces nothing. Guessing in either direction would spread one missing number
-across the network; dropping keeps the gap visible where it belongs.
+production figure produces nothing. Dropping the whole entity, rather than the one missing term,
+is what keeps the error one-directional and local — output is understated, never invented, and
+only that entity and the consumers it fails to supply are affected. Dropping just the term would
+cut a raw material out of the scarcest-of-them minimum instead, leaving the industry less
+constrained than it is and inflating every flow downstream of it. Extrapolating the figure from
+another level is no better: the tables are rounded, a Brewery at level 4 turning 5.5 into 11.1
+rather than 5.6 into 11.2. The entity being a constant zero also keeps the solve convergent, one
+fewer term in the fixed point and no undefined value entering the iteration.
 
-Arcs are the directed legs of each line's loop: stops `[A, B, C]` yield `A→B`, `B→C` and
-`C→A`, and a two-stop line yields both directions. A train returns to the first stop after the
-last, so the legs of one line carry different loads. Each leg has a weekly capacity of
+Arcs are the directed legs of a line. Only two-stop lines are modelled: such a line yields both
+directions, `A→B` and `B→A`, and the two legs carry different loads. Longer routes are left out
+by deliberate simplification — a loop over three or more stops is the one case where a line's legs
+differ per stop pair — so lines with more than two stops are dropped from the network, as are
+lines whose tour duration is not yet known. Each leg has a weekly capacity of
 `trains × 8 × 7 / tourDays` units, shared across all goods, since a train carries up to eight
-units per run regardless of what it carries. Lines whose tour duration is not yet known are
-dropped from the network entirely.
+units per run regardless of what it carries.
 
 The solve is an iterative proportional allocation to a fixed point, not a globally optimal
 flow: trains are greedy and grab what they can, so they do not arrange themselves into an
@@ -259,9 +274,9 @@ That share is equal for parallel legs over the same route, so rationed capacitie
 across a split, and the axiom survives.
 
 The axiom binds the whole solve, not just the forward split: the backward pressure pass has to
-aggregate parallel legs additively as well. It applies only to parallel splits, though. Cutting
-a three-stop loop into two two-stop lines is a genuinely different network, and the flows may
-legitimately change.
+aggregate parallel legs additively as well. It applies only to parallel splits, though — lines
+over the very same pair of stops. Lines that merely share one stop form a genuinely different
+network, and the flows may legitimately change.
 
 Flows are rates, not counts, so the results need not be integral: per-leg and per-good loads,
 per-line and per-warehouse turn-over per good, and the fraction of each sink's demand actually

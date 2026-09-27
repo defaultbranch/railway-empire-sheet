@@ -7,8 +7,9 @@ import type { Good, IndustrySlot } from '../game-state/types';
 // a stop in the graph; string-keyable so flows can live in plain maps
 export type NodeId = `station:${string}` | `warehouse:${string}`;
 
-// one directed leg of a line's loop, identified by the line name and the leg's index in that loop
-export type LegId = `${string}@${number}`;
+// one directed leg of a line, identified by the line name and the leg's direction (0: first stop
+// to second, 1: back); only two-stop lines are modelled
+export type LegId = `${string}@${0 | 1}`;
 
 // the game-state entity a source or sink amount belongs to, so results can be read back per entity
 export type Contributor =
@@ -33,9 +34,13 @@ export type Conversion = {
 
 export type FlowNode = {
   id: NodeId;
-  // everything passing through the node is gated by this set, transshipment and hosted sources,
-  // sinks and conversions alike; a warehouse's stocking list, all network goods for a station
-  handledGoods: Set<Good>;
+  // what a train may drop off here: a warehouse's stocking list, or, for a station hosting a city,
+  // that city's active population demands plus its industries' raw materials; empty for a station
+  // hosting rural businesses. Gates hosted sinks and transshipment alike, by good, never by volume
+  unloadableGoods: Set<Good>;
+  // what a train may pick up here: a warehouse's stocking list, or, for a station, whatever its
+  // host produces on top of the unloadable goods
+  loadableGoods: Set<Good>;
   // rural business production hosted here
   sources: Contribution[];
   // population demand hosted here
@@ -53,7 +58,8 @@ export type Leg = {
   capacity: number;
 };
 
-// the compiled problem; lines with unknown tourDays or carrying only mail and passengers are absent
+// the compiled problem; lines are absent, and warned about, when they have more than two stops, an
+// unknown tourDays, or carry only mail and passengers
 export type FlowNetwork = {
   goods: Good[];
   nodes: FlowNode[];

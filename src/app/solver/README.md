@@ -67,15 +67,17 @@ needs:
   across all goods it carries, so it has to be retained per (leg, good) in the result, not just as
   a per-leg total. That realized volume is an output, though, not the weight the split uses.
 - **Sub-node attribution: producers and consumers are greedy too, same as trains.** When several
-  producers (e.g. two rural businesses) or consumers (e.g. population and an industry's
-  raw-material need) share a node's pooled supply/demand for a good, the node's actual
-  shipped-out or fulfilled amount for that good is split back to each contributor in proportion to
-  its own weekly production/consumption volume — no priority order (e.g. population before
-  industry). This is the same proportional-by-own-volume rule used for splitting a source across
-  legs and across multiple hosting stops, just applied one level down, to the individual
-  contributors that make up a node's pooled total. So the solver needs to retain tagged
-  per-producer/per-consumer contributions (not just a per-node/per-good scalar) so this split can
-  be computed and read back out per rural business/industry/city later.
+  same-type contributors — e.g. two rural businesses producing the same good, or two industries at
+  one city competing for the same raw material — share a node's pooled supply/demand for a good,
+  the node's actual shipped-out or fulfilled amount for that good is split back to each contributor
+  in proportion to its own weekly production/consumption volume, no priority order. This is the
+  same proportional-by-own-volume rule used for splitting a source across legs and across multiple
+  hosting stops, just applied one level down, to the individual contributors that make up a node's
+  pooled total. So the solver needs to retain tagged per-producer/per-consumer contributions (not
+  just a per-node/per-good scalar) so this split can be computed and read back out per rural
+  business/industry/city later. Population vs. an industry's raw-material need is not a same-type
+  pairing, so it's excluded from this rule; see local netting below for how that pairing is
+  resolved instead.
 - **Industry conversion is a nested fixed point, but a well-behaved one.** An industry's output
   depends on how much raw material the network actually delivers, which itself depends on the flow
   being solved. It is still a simple, monotonic function of delivered input, safe to recompute
@@ -100,43 +102,45 @@ needs:
 
 ## Contradictions to settle
 
-The decisions recorded above conflict with the spec, or with themselves, in four places.
+The decisions recorded above conflict with the spec, or with themselves, in five places.
 
-- [x] **Warehouse balance contradicts the spec outright.** Settled in favour of the section above,
-      and the spec's "Goods Flow Solver" section amended to match: a warehouse has no demand or
-      supply of *its own*, but exposes its host's just as a station does, minus what `goods` gates
-      out.
-- [x] **Split weight: leg capacity or realized per-good volume?** Capacity, rationed to the good
-      by the backward pressure pass. Settled by demanding *line-splitting invariance* — booking
-      the same trains as one line or as two parallel ones must not change any flow — which
-      capacity satisfies by being additive and realized flow does not; see the spec for the
-      argument. Worth a test case, and note the axiom also binds the backward pass.
-- [x] **The constant-ratio argument does not carry its weight.** Dropped from the reasoning, and
-      the rule restated in the spec as ratio *and* cap, both taken from the current level's own
-      pair of numbers. That the ratio also holds across levels is true but unused here; its one
-      possible use — deriving a coefficient the player has not entered from level 1 — belongs to
-      the unknown-coefficient point below, and would only be approximate anyway, the stored tables
-      being rounded (Brewery level 4 is 5.5 → 11.1, not 5.6 → 11.2).
-- [x] **"Ignore unknown coefficients" biases in two opposite directions.** Settled by dropping the
-      *entity*, not the term: an unknown coefficient anywhere in the current level's row makes the
-      industry or rural business inert, so both positions deflate and neither inflates. A missing
-      raw-material need never leaves an industry less constrained, because it no longer produces at
-      all. Convergence is untouched — an inert node is a constant zero, one fewer term in the fixed
-      point, and no undefined value ever enters the iteration — and the error stays where the
-      missing data is: that node reads zero output and zero fulfilment, and consumers of its product
-      read as under-served rather than being handed goods that would never arrive.
+- [x] **Warehouse balance contradicts the spec outright.** Settled in favour of the section above;
+      spec amended.
+- [x] **Split weight: leg capacity or realized per-good volume?** Capacity, rationed to the good by
+      the backward pressure pass, as demanded by *line-splitting invariance*; see the spec. Worth a
+      test case, and note the axiom also binds the backward pass.
+- [x] **The constant-ratio argument does not carry its weight.** Dropped from the reasoning; the
+      rule is restated in the spec as ratio *and* cap, both from the current level.
+- [x] **"Ignore unknown coefficients" biases in two opposite directions.** Settled in the spec by
+      dropping the *entity*, not the term, so both positions deflate and neither inflates.
+- [x] **Sub-node attribution's "no priority order" example named population vs. industry, which
+      local netting now resolves by strict priority instead.** Settled by narrowing sub-node
+      attribution to same-type contributors only (producer-vs-producer, consumer-vs-consumer); the
+      population-vs-industry pairing is carved out and governed by local netting's priority rule,
+      not by proportional splitting.
 
 ## Gaps to resolve, step by step
 
-- [ ] **Cities gate unloading, much like warehouses.** The spec notes that goods a city does not
-      demand "cannot be unloaded" there, so a station hosting a city is good-gated too, not just a
-      warehouse. Decide the exact gate (population demand only, or also its industries' raw
-      materials) and how it reaches `handledGoods` in [solver-types.ts](solver-types.ts).
-- [ ] **Local netting at a node is undefined.** When one node hosts both a producer and a consumer
-      of the same good — a city industry's output feeding that city's population, or a rural
-      business feeding a co-hosted industry — decide whether the match is satisfied locally with no
-      leg involved, or whether everything has to ride a train. This changes every `served` figure
-      and the fulfilment fractions read back per entity.
+- [x] **Cities gate unloading, much like warehouses.** Settled in the spec: by good only, never by
+      volume, and one-directional. `handledGoods` in [solver-types.ts](solver-types.ts) is now the
+      pair `unloadableGoods` / `loadableGoods`.
+- [x] **Only two-stop lines are modelled.** Longer lines are dropped with a warning, alongside
+      those with unknown `tourDays` or `cargo` set to `'mail and passengers'`; spec amended.
+- [x] **Local netting at a node is undefined.** Settled in favour of local netting: a node's local
+      production and consumption of the same good net out on the spot, no leg or train involved,
+      before anything is available to ship — this is why a `served` figure and a fulfilment
+      fraction can be less than 100% even for a good the node never has to send anywhere. This only
+      raises a priority question at cities, since only cities host population; a rural business
+      feeding a co-hosted industry nets out the same way but there's no second consumer to
+      prioritize against. At a city, population holds strict priority over that city's own
+      industries: population's demand for a good is satisfied first out of local production, and
+      only what's left over — if anything — goes to the city's industries as raw material or is
+      available for the node to ship out. This is a deliberate exception to the proportional,
+      no-priority rule in *Sub-node attribution* above, which now only governs same-type
+      contributors; population vs. industry nets by strict priority instead. One consequence: an
+      industry too small relative to its city's population can end up starved of its own city's
+      production, or unable to ever export a good that population also consumes, even while the
+      city's total production of that good is nonzero.
 - [ ] **`cargo: 'anything'` lines overstate goods capacity.** Such lines also carry passengers and
       mail, yet the full `trains × 8 × 7 / tourDays` is currently credited to goods. Decide whether
       to model a split, apply a flat discount, or knowingly accept the overestimate.
