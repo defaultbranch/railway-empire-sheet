@@ -141,9 +141,11 @@ The decisions recorded above conflict with the spec, or with themselves, in five
       industry too small relative to its city's population can end up starved of its own city's
       production, or unable to ever export a good that population also consumes, even while the
       city's total production of that good is nonzero.
-- [ ] **`cargo: 'anything'` lines overstate goods capacity.** Such lines also carry passengers and
-      mail, yet the full `trains × 8 × 7 / tourDays` is currently credited to goods. Decide whether
-      to model a split, apply a flat discount, or knowingly accept the overestimate.
+- [x] **`cargo: 'anything'` lines overstate goods capacity.** Not actually an overestimate: the
+      game loads goods onto a mixed line before mail and passengers, so goods get first claim on
+      the full `trains × 8 × 7 / tourDays` capacity and mail/passengers only take what's left over.
+      Crediting the whole figure to goods matches that in-game priority; no split or discount
+      needed.
 - [ ] **Station and warehouse size constrains nothing.** Track-based capacity is listed above as
       something the domain model provides, but no node throughput limit appears anywhere in the
       algorithm — even though the spec names congestion as the very reason warehouses exist. Decide
