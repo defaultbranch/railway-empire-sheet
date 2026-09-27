@@ -162,4 +162,44 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     trains: 1,
     cargo: 'anything',
   },
+  {
+    name: 'Miles City WH - Billings',
+    stops: [
+      { kind: 'warehouse', name: 'Miles City WH' },
+      { kind: 'station', name: 'Billings' },
+    ],
+    trains: 1,
+    tourDays: 40,
+    cargo: 'anything',
+  },
+  {
+    name: 'Miles City WH - Billings WH A',
+    stops: [
+      { kind: 'warehouse', name: 'Miles City WH' },
+      { kind: 'warehouse', name: 'Billings WH A' },
+    ],
+    trains: 2,
+    tourDays: 42,
+    cargo: 'anything',
+  },
+  {
+    name: 'Miles City WH - Casper WH',
+    stops: [
+      { kind: 'warehouse', name: 'Miles City WH' },
+      { kind: 'warehouse', name: 'Casper WH' },
+    ],
+    trains: 3,
+    tourDays: Math.round((65 + 41 + 35) / 3),
+    cargo: 'anything',
+  },
+  {
+    name: 'Miles City WH - Steward Preserve',
+    stops: [
+      { kind: 'warehouse', name: 'Miles City WH' },
+      { kind: 'station', name: 'Steward Preserve' },
+    ],
+    trains: 3,
+    tourDays: Math.round((21 + 22 + 24) / 3),
+    cargo: 'anything',
+  },
 ] as const;
