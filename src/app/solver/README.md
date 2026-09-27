@@ -75,15 +75,22 @@ needs:
   contributors that make up a node's pooled total. So the solver needs to retain tagged
   per-producer/per-consumer contributions (not just a per-node/per-good scalar) so this split can
   be computed and read back out per rural business/industry/city later.
-- **Industry conversion is a nested fixed point.** An industry's output depends on how much raw
-  material the network actually delivers, which itself depends on the flow being solved. The
-  existing global `produce()` pooling logic in
-  [../pages/supply-demand.ts](../pages/supply-demand.ts) assumes an unconstrained global pool and
-  can't be reused as-is; it needs to be recomputed per node inside the damped iteration instead.
-- **Unknown production/recipe coefficients read as zero.** Levels not yet discovered
-  (`productionByLevel`/`amountByLevel` entries left `undefined`) will contribute 0 supply/demand,
-  which is a reasonable lower bound but should eventually be distinguished from "known zero" in
-  the UI.
+- **Industry conversion is a nested fixed point, but a well-behaved one thanks to a constant
+  ratio.** An industry's output depends on how much raw material the network actually delivers,
+  which itself depends on the flow being solved — but the raw-material-to-product ratio is
+  constant across levels (the level-1 ratio holds throughout), so conversion at a node is a simple,
+  monotonic function of delivered input, safe to recompute every round of the damped iteration:
+  `multiplier = clamp01(min over raw materials of delivered[good] / requiredAtLevel[good])`, then
+  `output[product] = capacityAtLevel[product] × multiplier`, consuming `requiredAtLevel[good] ×
+  multiplier` of each raw material. This is the same shape as the existing global `produce()`
+  pooling logic in [../pages/supply-demand.ts](../pages/supply-demand.ts), just re-run per node per
+  iteration against that iteration's delivered-raw-material estimate instead of an unconstrained
+  global pool.
+- **Unknown production/recipe coefficients are ignored, with a console warning.** Levels not yet
+  discovered (`productionByLevel`/`amountByLevel` entries left `undefined`) are the user's own gap
+  in the data, not the solver's problem to solve around: that contribution is simply dropped from
+  the problem (treated as absent, not as a known zero), and the solver `console.warn`s that a
+  coefficient is missing so it's noticeable, without building dedicated "unknown" UI state.
 
 ## Gaps to resolve, step by step
 
@@ -103,6 +110,15 @@ needs:
       principle as everywhere else — split proportional to each contributor's own weekly
       production/consumption volume, no priority order. Result must retain tagged
       per-producer/per-consumer contributions, not just a per-node/per-good scalar.
-- [ ] Design how industry conversion (input-dependent output) fits into the damped iteration loop.
-- [ ] Decide how to surface "unknown" (undiscovered) production/recipe coefficients versus known
-      zero in solver output and UI.
+- [x] Design how industry conversion (input-dependent output) fits into the damped iteration loop:
+      the input:output ratio is constant across levels, so conversion is just
+      `multiplier = clamp01(min over raw materials of delivered/requiredAtLevel)` recomputed each
+      round from that round's delivered-raw-material estimate, same shape as the existing
+      `produce()` helper but per node per iteration instead of a global pool.
+- [x] Decide how to surface "unknown" (undiscovered) production/recipe coefficients versus known
+      zero: ignore them (drop that contribution from the problem being solved) and
+      `console.warn` that a coefficient is missing, rather than modelling "unknown" as a distinct
+      value throughout the solver/UI.
+
+All gaps found so far are resolved. The solver can be implemented against the design captured
+above.
