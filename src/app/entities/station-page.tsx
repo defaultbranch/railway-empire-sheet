@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
@@ -7,6 +8,37 @@ import { stationSlug } from './station-routes';
 import { pathForCity } from './city-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
+import { useGoodsFlow, stopNodeId } from '../solver';
+import type { LegFlow } from '../solver';
+
+const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+function GoodsTable({ flows }: { flows: LegFlow[] }) {
+  const sorted = [...flows].sort((a, b) => b.units - a.units);
+
+  if (sorted.length === 0) {
+    return <p className="station-page__empty">None.</p>;
+  }
+
+  return (
+    <table className="station-page__table">
+      <thead>
+        <tr>
+          <th>Good</th>
+          <th>Units per week</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sorted.map((flow) => (
+          <tr key={flow.good}>
+            <td>{flow.good}</td>
+            <td>{perWeek(flow.units)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 export function StationPage({ slug }: { slug: string }) {
   const { trainStations } = useTrainStations();
@@ -14,7 +46,19 @@ export function StationPage({ slug }: { slug: string }) {
   const { ruralBusinesses } = useRuralBusinesses();
   const { trainLines } = useTrainLines();
   const { navigate } = useNavigation();
+  const { network, solution, droppedLines } = useGoodsFlow();
   const station = trainStations.find((existing) => stationSlug(existing) === slug);
+
+  useEffect(() => {
+    if (station === undefined) {
+      return;
+    }
+    const previousTitle = document.title;
+    document.title = `Stn: ${station.name}`;
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [station]);
 
   if (station === undefined) {
     return (
@@ -35,6 +79,7 @@ export function StationPage({ slug }: { slug: string }) {
   const connectingLines = trainLines.filter((line) =>
     line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name),
   );
+  const nodeId = stopNodeId({ kind: 'station', name: station.name });
 
   return (
     <section className="station-page">
@@ -76,22 +121,53 @@ export function StationPage({ slug }: { slug: string }) {
         {connectingLines.length === 0 ? (
           <p className="station-page__train-lines-empty">No train lines connect here.</p>
         ) : (
-          <ul>
-            {connectingLines.map((line) => (
-              <li key={line.name}>
-                <a
-                  href={pathForTrainLine(line)}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    navigate(pathForTrainLine(line));
-                  }}
-                >
-                  {line.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+          connectingLines.map((line) => {
+            const dropped = droppedLines.find((entry) => entry.line === line.name);
+            const legs = network.legs.filter((leg) => leg.line === line.name);
+            const arriving = legs.find((leg) => leg.to === nodeId);
+            const departing = legs.find((leg) => leg.from === nodeId);
+            const broughtIn = arriving
+              ? solution.legFlows.filter((flow) => flow.leg === arriving.id)
+              : [];
+            const takenAway = departing
+              ? solution.legFlows.filter((flow) => flow.leg === departing.id)
+              : [];
+
+            return (
+              <section className="station-page__train-line" key={line.name}>
+                <h3>
+                  <a
+                    href={pathForTrainLine(line)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(pathForTrainLine(line));
+                    }}
+                  >
+                    {line.name}
+                  </a>
+                </h3>
+                {dropped !== undefined ? (
+                  <p className="station-page__empty">Not modelled: {dropped.reason}.</p>
+                ) : (
+                  <>
+                    <div className="station-page__train-line-flow">
+                      <h4>Brings in</h4>
+                      <GoodsTable flows={broughtIn} />
+                    </div>
+                    <div className="station-page__train-line-flow">
+                      <h4>Takes away</h4>
+                      <GoodsTable flows={takenAway} />
+                    </div>
+                  </>
+                )}
+              </section>
+            );
+          })
         )}
+        {connectingLines.some((line) => droppedLines.find((entry) => entry.line === line.name) === undefined) &&
+          !solution.converged && (
+            <p className="station-page__hint">The flow solver did not converge; these figures are its last estimate.</p>
+          )}
       </section>
     </section>
   );
