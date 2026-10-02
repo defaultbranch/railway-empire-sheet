@@ -6,6 +6,7 @@ export type CityState = {
   addCity: (name: string) => void;
   removeCity: (name: string) => void;
   setCityPopulation: (name: string, population: number) => void;
+  replaceCities: (cities: City[]) => void;
 };
 
 const CityContext = createContext<CityState | undefined>(undefined);
@@ -25,8 +26,14 @@ export function CityProvider({ initialCities, children }: { initialCities: City[
     setCities((prev) => prev.map((existing) => (existing.name === name ? { ...existing, population } : existing)));
   };
 
+  const replaceCities = (cities: City[]) => {
+    setCities(cities);
+  };
+
   return (
-    <CityContext.Provider value={{ cities, addCity, removeCity, setCityPopulation }}>{children}</CityContext.Provider>
+    <CityContext.Provider value={{ cities, addCity, removeCity, setCityPopulation, replaceCities }}>
+      {children}
+    </CityContext.Provider>
   );
 }
 

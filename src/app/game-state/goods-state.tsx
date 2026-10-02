@@ -5,6 +5,7 @@ export type GoodsState = {
   goods: Good[];
   addGood: (good: Good) => void;
   removeGood: (good: Good) => void;
+  replaceGoods: (goods: Good[]) => void;
 };
 
 const GoodsContext = createContext<GoodsState | undefined>(undefined);
@@ -20,7 +21,13 @@ export function GoodsProvider({ initialGoods, children }: { initialGoods: Good[]
     setGoods((prev) => prev.filter((existing) => existing !== good));
   };
 
-  return <GoodsContext.Provider value={{ goods, addGood, removeGood }}>{children}</GoodsContext.Provider>;
+  const replaceGoods = (goods: Good[]) => {
+    setGoods(goods);
+  };
+
+  return (
+    <GoodsContext.Provider value={{ goods, addGood, removeGood, replaceGoods }}>{children}</GoodsContext.Provider>
+  );
 }
 
 export function useGoods() {

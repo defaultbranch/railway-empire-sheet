@@ -1,4 +1,5 @@
 import type { GameState } from './game-state/types';
+import { loadGameStateFromStorage } from './game-state/persistence';
 import { defaultGoods } from './default-goods';
 import { defaultRuralBusinessTypes } from './default-rural-business-types';
 import { defaultRuralBusinesses } from './default-rural-businesses';
@@ -10,7 +11,7 @@ import { defaultTrainStations } from './default-train-stations';
 import { defaultWarehouses } from './default-warehouses';
 import { defaultTrainLines } from './default-train-lines';
 
-function emptyGameState(): GameState {
+export function emptyGameState(): GameState {
   return {
     goods: [],
     ruralBusinessTypes: [],
@@ -25,7 +26,7 @@ function emptyGameState(): GameState {
   };
 }
 
-function fakeGameState(): GameState {
+export function defaultGameState(): GameState {
   return {
     goods: [...defaultGoods],
     ruralBusinessTypes: [...defaultRuralBusinessTypes],
@@ -40,16 +41,18 @@ function fakeGameState(): GameState {
   };
 }
 
-
-// swap this to 'empty' or a future 'saved' source to change dev/startup behavior
-type InitialStateSource = 'empty' | 'fake';
-const initialStateSource: InitialStateSource = 'fake';
+// swap this to 'empty' to change startup behavior when nothing is persisted yet
+type InitialStateSource = 'empty' | 'default';
+const initialStateSource: InitialStateSource = 'default';
 
 export function getInitialGameState(): GameState {
+  const stored = loadGameStateFromStorage();
+  if (stored) return stored;
+
   switch (initialStateSource) {
     case 'empty':
       return emptyGameState();
-    case 'fake':
-      return fakeGameState();
+    case 'default':
+      return defaultGameState();
   }
 }

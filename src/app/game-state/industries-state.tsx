@@ -6,6 +6,7 @@ export type IndustriesState = {
   addIndustry: (industry: Industry) => void;
   removeIndustry: (city: string, citySlot: IndustrySlot) => void;
   setIndustryLevel: (city: string, citySlot: IndustrySlot, level: BusinessLevel) => void;
+  replaceIndustries: (industries: Industry[]) => void;
 };
 
 const IndustriesContext = createContext<IndustriesState | undefined>(undefined);
@@ -39,8 +40,12 @@ export function IndustriesProvider({
     );
   };
 
+  const replaceIndustries = (industries: Industry[]) => {
+    setIndustries(industries);
+  };
+
   return (
-    <IndustriesContext.Provider value={{ industries, addIndustry, removeIndustry, setIndustryLevel }}>
+    <IndustriesContext.Provider value={{ industries, addIndustry, removeIndustry, setIndustryLevel, replaceIndustries }}>
       {children}
     </IndustriesContext.Provider>
   );

@@ -5,6 +5,7 @@ export type TrainStationsState = {
   trainStations: TrainStation[];
   addTrainStation: (station: TrainStation) => void;
   removeTrainStation: (name: string) => void;
+  replaceTrainStations: (stations: TrainStation[]) => void;
 };
 
 const TrainStationsContext = createContext<TrainStationsState | undefined>(undefined);
@@ -28,8 +29,12 @@ export function TrainStationsProvider({
     setTrainStations((prev) => prev.filter((existing) => existing.name !== name));
   };
 
+  const replaceTrainStations = (stations: TrainStation[]) => {
+    setTrainStations(stations);
+  };
+
   return (
-    <TrainStationsContext.Provider value={{ trainStations, addTrainStation, removeTrainStation }}>
+    <TrainStationsContext.Provider value={{ trainStations, addTrainStation, removeTrainStation, replaceTrainStations }}>
       {children}
     </TrainStationsContext.Provider>
   );

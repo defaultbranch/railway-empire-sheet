@@ -5,6 +5,7 @@ export type TrainLinesState = {
   trainLines: TrainLine[];
   addTrainLine: (line: TrainLine) => void;
   removeTrainLine: (name: string) => void;
+  replaceTrainLines: (lines: TrainLine[]) => void;
 };
 
 const TrainLinesContext = createContext<TrainLinesState | undefined>(undefined);
@@ -26,8 +27,12 @@ export function TrainLinesProvider({
     setTrainLines((prev) => prev.filter((existing) => existing.name !== name));
   };
 
+  const replaceTrainLines = (lines: TrainLine[]) => {
+    setTrainLines(lines);
+  };
+
   return (
-    <TrainLinesContext.Provider value={{ trainLines, addTrainLine, removeTrainLine }}>
+    <TrainLinesContext.Provider value={{ trainLines, addTrainLine, removeTrainLine, replaceTrainLines }}>
       {children}
     </TrainLinesContext.Provider>
   );

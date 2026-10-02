@@ -10,6 +10,7 @@ import { CityProvider } from './city-state';
 import { TrainStationsProvider } from './train-stations-state';
 import { WarehousesProvider } from './warehouses-state';
 import { TrainLinesProvider } from './train-lines-state';
+import { GameStatePersistence } from './game-actions';
 
 export * from './types';
 export { GoodsProvider, useGoods } from './goods-state';
@@ -22,6 +23,7 @@ export { CityProvider, useCities } from './city-state';
 export { TrainStationsProvider, useTrainStations } from './train-stations-state';
 export { WarehousesProvider, useWarehouses } from './warehouses-state';
 export { TrainLinesProvider, useTrainLines } from './train-lines-state';
+export { useGameActions } from './game-actions';
 
 // composes the independent dimensions, each keeping its own state, wired to a single initial load
 export function GameStateProvider({ children }: { children: ReactNode }) {
@@ -37,7 +39,9 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
                 <CityProvider initialCities={initialState.cities}>
                   <TrainStationsProvider initialTrainStations={initialState.trainStations}>
                     <WarehousesProvider initialWarehouses={initialState.warehouses}>
-                      <TrainLinesProvider initialTrainLines={initialState.trainLines}>{children}</TrainLinesProvider>
+                      <TrainLinesProvider initialTrainLines={initialState.trainLines}>
+                        <GameStatePersistence>{children}</GameStatePersistence>
+                      </TrainLinesProvider>
                     </WarehousesProvider>
                   </TrainStationsProvider>
                 </CityProvider>

@@ -5,6 +5,7 @@ export type WarehousesState = {
   warehouses: Warehouse[];
   addWarehouse: (warehouse: Warehouse) => void;
   removeWarehouse: (name: string) => void;
+  replaceWarehouses: (warehouses: Warehouse[]) => void;
 };
 
 const WarehousesContext = createContext<WarehousesState | undefined>(undefined);
@@ -28,8 +29,12 @@ export function WarehousesProvider({
     setWarehouses((prev) => prev.filter((existing) => existing.name !== name));
   };
 
+  const replaceWarehouses = (warehouses: Warehouse[]) => {
+    setWarehouses(warehouses);
+  };
+
   return (
-    <WarehousesContext.Provider value={{ warehouses, addWarehouse, removeWarehouse }}>
+    <WarehousesContext.Provider value={{ warehouses, addWarehouse, removeWarehouse, replaceWarehouses }}>
       {children}
     </WarehousesContext.Provider>
   );

@@ -6,6 +6,7 @@ export type RuralBusinessesState = {
   addRuralBusiness: (business: RuralBusiness) => void;
   removeRuralBusiness: (name: string) => void;
   setRuralBusinessLevel: (name: string, level: BusinessLevel) => void;
+  replaceRuralBusinesses: (businesses: RuralBusiness[]) => void;
 };
 
 const RuralBusinessesContext = createContext<RuralBusinessesState | undefined>(undefined);
@@ -35,9 +36,13 @@ export function RuralBusinessesProvider({
     );
   };
 
+  const replaceRuralBusinesses = (businesses: RuralBusiness[]) => {
+    setRuralBusinesses(businesses);
+  };
+
   return (
     <RuralBusinessesContext.Provider
-      value={{ ruralBusinesses, addRuralBusiness, removeRuralBusiness, setRuralBusinessLevel }}
+      value={{ ruralBusinesses, addRuralBusiness, removeRuralBusiness, setRuralBusinessLevel, replaceRuralBusinesses }}
     >
       {children}
     </RuralBusinessesContext.Provider>

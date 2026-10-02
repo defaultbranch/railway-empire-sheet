@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigation } from './navigation';
+import { useGameActions } from './game-state';
 import { pages, pathForPageIndex } from './pages/pages';
 
 export function NavMenu() {
   const [open, setOpen] = useState(false);
   const { route, navigate } = useNavigation();
+  const { resetToDefault, wipeToEmpty } = useGameActions();
 
   useEffect(() => {
     if (!open) return;
@@ -65,6 +67,30 @@ export function NavMenu() {
                 );
               })}
             </ul>
+            <footer className="nav-menu__footer">
+              <button
+                type="button"
+                className="nav-menu__action"
+                onClick={() => {
+                  if (window.confirm('Reset all data to the default state? This discards your current data.')) {
+                    resetToDefault();
+                  }
+                }}
+              >
+                Reset to default
+              </button>
+              <button
+                type="button"
+                className="nav-menu__action"
+                onClick={() => {
+                  if (window.confirm('Wipe all data to an empty state? This discards your current data.')) {
+                    wipeToEmpty();
+                  }
+                }}
+              >
+                Wipe to empty
+              </button>
+            </footer>
           </nav>
         </div>
       )}

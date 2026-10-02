@@ -16,6 +16,7 @@ export type IndustryState = {
     amount: number | undefined,
   ) => void;
   setIndustrySetupCostBasis: (name: string, setupCostBasis: number | undefined) => void;
+  replaceIndustryTypes: (types: IndustryType[]) => void;
 };
 
 const IndustryContext = createContext<IndustryState | undefined>(undefined);
@@ -94,6 +95,10 @@ export function IndustryProvider({
     );
   };
 
+  const replaceIndustryTypes = (types: IndustryType[]) => {
+    setIndustryTypes(types);
+  };
+
   return (
     <IndustryContext.Provider
       value={{
@@ -105,6 +110,7 @@ export function IndustryProvider({
         setIndustryFlowGood,
         setIndustryFlowAmount,
         setIndustrySetupCostBasis,
+        replaceIndustryTypes,
       }}
     >
       {children}

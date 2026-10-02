@@ -168,6 +168,21 @@ body {
 			background: var(--color-border);
 		}
 	}
+
+	&__footer {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 1.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	&__action {
+		@extend %icon-button;
+		font-size: 0.9rem;
+		text-align: center;
+	}
 }
 
 .page-frame {

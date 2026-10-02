@@ -7,6 +7,7 @@ export type DemandsState = {
   removeDemand: (good: Good) => void;
   setDemandMinPopulation: (good: Good, minPopulation: number) => void;
   setDemandWagonsPerMillion: (good: Good, wagonsPerMillion: number) => void;
+  replaceDemands: (demands: Demand[]) => void;
 };
 
 const DemandsContext = createContext<DemandsState | undefined>(undefined);
@@ -34,9 +35,13 @@ export function DemandsProvider({ initialDemands, children }: { initialDemands: 
     );
   };
 
+  const replaceDemands = (demands: Demand[]) => {
+    setDemands(demands);
+  };
+
   return (
     <DemandsContext.Provider
-      value={{ demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion }}
+      value={{ demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion, replaceDemands }}
     >
       {children}
     </DemandsContext.Provider>
