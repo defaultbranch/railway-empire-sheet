@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { GameStateProvider } from './game-state';
 import { ThemeProvider, useTheme } from './theme';
 import { NavigationProvider, useNavigation } from './navigation';
+import { NavMenu } from './nav-menu';
 import { PageFrame } from './pages/page-frame';
 import { pages, pathForPageIndex } from './pages/pages';
 import { CityPage } from './entities/city-page';
@@ -87,6 +88,7 @@ export function App() {
       <GameStateProvider>
         <NavigationProvider>
           <main className="app-shell">
+            <NavMenu />
             <ThemeToggle />
             <AppRoutes />
           </main>
