@@ -26,31 +26,90 @@ body {
 	min-height: 100vh;
 }
 
+// Shared look for the small bordered buttons used to open/close chrome (theme toggle, nav menu).
+%icon-button {
+	background: none;
+	color: var(--color-text);
+	border: 1px solid var(--color-border);
+	border-radius: 0.5rem;
+	padding: 0.25rem 0.6rem;
+	font-size: 1.1rem;
+	line-height: 1.2;
+	cursor: pointer;
+}
+
 .theme-toggle {
+	@extend %icon-button;
 	position: fixed;
 	top: 1rem;
 	right: 1rem;
-	background: none;
-	border: 1px solid var(--color-border);
-	border-radius: 0.5rem;
-	padding: 0.25rem 0.5rem;
-	cursor: pointer;
+}
+
+// Pages follow a `<block>__<element>` naming convention (BEM-ish). Rather than repeating the
+// same handful of rules in every `*-page`/`*-entity` block, style the recurring element names
+// once here so any new page gets consistent spacing/typography for free.
+[class$='__empty'],
+[class$='__hint'] {
+	color: var(--color-muted-light);
+	font-style: italic;
+}
+
+[class$='__add'] {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+[class$='__connections'] {
+	margin-top: 1rem;
+}
+
+[class$='__city-select'] {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: normal;
+}
+
+[class$='__list'] {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+%data-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	th,
+	td {
+		padding: 0.25rem 0.5rem;
+		text-align: left;
+	}
+
+	input[type='number'] {
+		width: 4rem;
+	}
+}
+
+[class$='__table'] {
+	@extend %data-table;
+}
+
+// The only table that isn't itself tagged `__table` (it sits inside industry-types-page__flows).
+.industry-types-page__flows table {
+	@extend %data-table;
 }
 
 .nav-menu {
 	&__toggle {
+		@extend %icon-button;
 		position: fixed;
 		top: 1rem;
 		left: 1rem;
 		z-index: 20;
-		background: none;
-		color: var(--color-text);
-		border: 1px solid var(--color-border);
-		border-radius: 0.5rem;
-		padding: 0.25rem 0.6rem;
-		font-size: 1.1rem;
-		line-height: 1.2;
-		cursor: pointer;
 	}
 
 	&__overlay {
@@ -82,22 +141,15 @@ body {
 	}
 
 	&__close {
-		background: none;
-		color: var(--color-text);
-		border: 1px solid var(--color-border);
-		border-radius: 0.5rem;
+		@extend %icon-button;
 		padding: 0.1rem 0.5rem;
-		font-size: 1.1rem;
-		cursor: pointer;
 	}
 
 	&__list {
-		list-style: none;
-		padding: 0;
-		margin: 1rem 0 0;
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+		margin-top: 1rem;
 	}
 
 	&__link {
@@ -140,62 +192,11 @@ body {
 	}
 }
 
-.goods-page {
-	&__list {
-		list-style: none;
-		padding: 0;
-
-		li {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0.25rem 0;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__add {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-}
-
-.rural-business-types-page {
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-
-		input[type='number'] {
-			width: 4rem;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__add {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
+.goods-page__list li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.25rem 0;
 }
 
 .industry-types-page {
@@ -216,210 +217,31 @@ body {
 		}
 	}
 
-	&__flows {
-		margin-top: 0.5rem;
-
-		table {
-			width: 100%;
-			border-collapse: collapse;
-		}
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-
-		input[type='number'] {
-			width: 4rem;
-		}
-	}
-
 	&__flows-label {
+		display: block;
 		color: var(--color-muted);
 		font-size: 0.85rem;
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__add {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
+		margin-top: 0.5rem;
 	}
 }
 
-.demands-page {
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-
-		input[type='number'] {
-			width: 5rem;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__add {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-}
-
-.production-pipelines-page {
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-}
-
-.population-demand-page {
-	&__city-select {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-weight: normal;
-	}
-
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-}
-
-.total-demand-page {
-	&__city-select {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-weight: normal;
-	}
-
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-}
-
-.supply-demand-page {
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-		}
-	}
-
-	&__empty {
-		color: var(--color-muted-light);
-		font-style: italic;
+// Train-line/station balance matrices: a denser, bordered table plus colour-coded in/out cells.
+.warehouse-page__table {
+	th,
+	td {
+		border: 1px solid var(--color-border);
 	}
 }
 
 .warehouse-page {
-	&__table {
-		width: 100%;
-		border-collapse: collapse;
-
-		th,
-		td {
-			padding: 0.25rem 0.5rem;
-			text-align: left;
-			border: 1px solid var(--color-border);
-		}
-	}
-
-	&__cell--empty {
+	&__cell--empty,
+	&__cell--dropped {
 		color: var(--color-muted-light);
 	}
 
-	&__cell-in {
-		color: var(--color-muted);
-	}
-
+	&__cell-in,
 	&__cell-out {
 		color: var(--color-muted);
-	}
-
-	&__empty,
-	&__train-lines-empty {
-		color: var(--color-muted-light);
-		font-style: italic;
-	}
-
-	&__hint {
-		color: var(--color-muted-light);
-		font-style: italic;
 	}
 }
 
