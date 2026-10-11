@@ -1,3 +1,4 @@
+import { businessLevels, type BusinessLevel } from '../game-state/types';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
@@ -11,7 +12,7 @@ const hostsBusiness = (host: StopHost, businessName: string): boolean =>
   host.kind === 'ruralBusinesses' && host.ruralBusinesses.includes(businessName);
 
 export function RuralBusinessPage({ slug }: { slug: string }) {
-  const { ruralBusinesses } = useRuralBusinesses();
+  const { ruralBusinesses, setRuralBusinessLevel } = useRuralBusinesses();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { navigate } = useNavigation();
@@ -32,7 +33,21 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
     <section className="rural-business-page">
       <h1>{business.name}</h1>
       <p className="rural-business-page__type">Type: {business.typeName}</p>
-      <p className="rural-business-page__level">Level: {business.level}</p>
+      <label className="rural-business-page__level">
+        Level
+        <select
+          value={business.level}
+          onChange={(event) =>
+            setRuralBusinessLevel(business.name, Number(event.target.value) as BusinessLevel)
+          }
+        >
+          {businessLevels.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+      </label>
       <section className="rural-business-page__connections">
         <h2>Stations</h2>
         {connectedStations.length === 0 ? (

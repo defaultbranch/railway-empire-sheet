@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { businessLevels } from '../game-state/types';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
@@ -8,8 +8,9 @@ import { ruralBusinessTypeSlug } from './rural-business-type-routes';
 
 export function RuralBusinessTypePage({ slug }: { slug: string }) {
   const { ruralBusinessTypes } = useRuralBusinessTypes();
-  const { ruralBusinesses } = useRuralBusinesses();
+  const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
   const { navigate } = useNavigation();
+  const [newBusinessName, setNewBusinessName] = useState('');
   const type = ruralBusinessTypes.find((existing) => ruralBusinessTypeSlug(existing) === slug);
 
   useEffect(() => {
@@ -29,9 +30,16 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
     );
   }
 
-  const businesses = ruralBusinesses
-    .filter((business) => business.typeName === type.name)
-    .sort((first, second) => first.name.localeCompare(second.name));
+  const businesses = ruralBusinesses.filter((business) => business.typeName === type.name);
+  const trimmedBusinessName = newBusinessName.trim();
+  const canAddBusiness =
+    trimmedBusinessName !== '' && !ruralBusinesses.some((business) => business.name === trimmedBusinessName);
+
+  const addBusiness = () => {
+    if (!canAddBusiness) return;
+    addRuralBusiness({ name: trimmedBusinessName, typeName: type.name, level: 1 });
+    setNewBusinessName('');
+  };
 
   return (
     <section className="rural-business-type-page">
@@ -96,6 +104,24 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
             </tbody>
           </table>
         )}
+        <form
+          className="rural-business-type-page__add"
+          onSubmit={(event) => {
+            event.preventDefault();
+            addBusiness();
+          }}
+        >
+          <input
+            type="text"
+            value={newBusinessName}
+            onChange={(event) => setNewBusinessName(event.target.value)}
+            placeholder="New business name"
+            aria-label={`New ${type.name} business name`}
+          />
+          <button type="submit" disabled={!canAddBusiness}>
+            Add
+          </button>
+        </form>
       </section>
     </section>
   );
