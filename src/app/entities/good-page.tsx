@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCities } from '../game-state/city-state';
 import { useDemands } from '../game-state/demands-state';
 import { useGoods } from '../game-state/goods-state';
@@ -10,6 +10,7 @@ import { demandForCity } from '../pages/population-demand';
 import { useNavigation } from '../navigation';
 import { pathForCity } from './city-routes';
 import { goodSlug } from './good-routes';
+import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
 
 export function GoodPage({ slug }: { slug: string }) {
@@ -18,8 +19,10 @@ export function GoodPage({ slug }: { slug: string }) {
   const { demands } = useDemands();
   const { industryTypes } = useIndustryTypes();
   const { ruralBusinessTypes } = useRuralBusinessTypes();
-  const { ruralBusinesses } = useRuralBusinesses();
+  const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
   const { navigate } = useNavigation();
+  const [newProducerName, setNewProducerName] = useState('');
+  const [selectedProducerTypeName, setSelectedProducerTypeName] = useState('');
   const good = goods.find((existing) => goodSlug(existing) === slug);
 
   useEffect(() => {
@@ -43,7 +46,23 @@ export function GoodPage({ slug }: { slug: string }) {
   const demandingCities = demand === undefined ? [] : cities
     .map((city) => ({ city, amount: demandForCity(demand, city) }))
     .filter(({ amount }) => amount > 0);
-  const producers = ruralBusinessTypes.filter((type) => type.good === good);
+  const producerTypes = ruralBusinessTypes.filter((type) => type.good === good);
+  const selectedProducerType =
+    producerTypes.find((type) => type.name === selectedProducerTypeName) ?? producerTypes[0];
+  const producers = ruralBusinesses.flatMap((business) => {
+    const type = ruralBusinessTypes.find((existing) => existing.name === business.typeName && existing.good === good);
+    return type === undefined ? [] : [{ business, type }];
+  });
+  const trimmedProducerName = newProducerName.trim();
+  const canAddProducer =
+    selectedProducerType !== undefined &&
+    trimmedProducerName !== '' &&
+    !ruralBusinesses.some((business) => business.name === trimmedProducerName);
+  const addProducer = () => {
+    if (!canAddProducer || selectedProducerType === undefined) return;
+    addRuralBusiness({ name: trimmedProducerName, typeName: selectedProducerType.name, level: 1 });
+    setNewProducerName('');
+  };
   const industryFlows = industryTypes.flatMap((type) => [
     ...type.rawMaterials
       .filter((flow) => flow.good === good)
@@ -101,43 +120,87 @@ export function GoodPage({ slug }: { slug: string }) {
       <section className="good-page__rural-producers">
         <h2>Rural producers</h2>
         {producers.length === 0 ? (
-          <p className="good-page__empty">No rural business type produces this good.</p>
+          <p className="good-page__empty">No placed rural businesses produce this good.</p>
         ) : (
           <table className="good-page__table">
             <thead>
               <tr>
+                <th>Name</th>
                 <th>Type</th>
-                <th>Placed businesses</th>
-                {businessLevels.map((level) => (
-                  <th key={level}>Level {level}</th>
-                ))}
+                <th>Level</th>
+                <th>Weekly production</th>
               </tr>
             </thead>
             <tbody>
-              {producers.map((type) => {
-                const path = pathForRuralBusinessType(type);
+              {producers.map(({ business, type }) => {
+                const businessPath = pathForRuralBusiness(business);
+                const typePath = pathForRuralBusinessType(type);
                 return (
-                  <tr key={type.name}>
+                  <tr key={business.name}>
                     <td>
                       <a
-                        href={path}
+                        href={businessPath}
                         onClick={(event) => {
                           event.preventDefault();
-                          navigate(path);
+                          navigate(businessPath);
+                        }}
+                      >
+                        {business.name}
+                      </a>
+                    </td>
+                    <td>
+                      <a
+                        href={typePath}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          navigate(typePath);
                         }}
                       >
                         {type.name}
                       </a>
                     </td>
-                    <td>{ruralBusinesses.filter((business) => business.typeName === type.name).length}</td>
-                    {businessLevels.map((level) => (
-                      <td key={level}>{type.productionByLevel[level] ?? '?'}</td>
-                    ))}
+                    <td>{business.level}</td>
+                    <td>{type.productionByLevel[business.level] ?? '?'}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+        )}
+        {producerTypes.length > 0 && (
+          <form
+            className="good-page__add"
+            onSubmit={(event) => {
+              event.preventDefault();
+              addProducer();
+            }}
+          >
+            <input
+              type="text"
+              value={newProducerName}
+              onChange={(event) => setNewProducerName(event.target.value)}
+              placeholder="New producer name"
+              aria-label={`New ${good} producer name`}
+            />
+            {producerTypes.length === 1 ? (
+              <span>{producerTypes[0].name}</span>
+            ) : (
+              <select
+                aria-label="Producer type"
+                value={selectedProducerType?.name ?? ''}
+                onChange={(event) => setSelectedProducerTypeName(event.target.value)}
+              >
+                {producerTypes.map((type) => (
+                  <option key={type.name} value={type.name}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button type="submit" disabled={!canAddProducer}>
+              Add
+            </button>
+          </form>
         )}
       </section>
       <section className="good-page__industry-recipes">
