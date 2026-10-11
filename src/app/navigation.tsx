@@ -7,6 +7,7 @@ export type Route =
   | { kind: 'station'; slug: string }
   | { kind: 'warehouse'; slug: string }
   | { kind: 'ruralBusiness'; slug: string }
+  | { kind: 'ruralBusinessType'; slug: string }
   | { kind: 'trainLine'; slug: string };
 
 export function routeForPath(pathname: string): Route {
@@ -18,6 +19,8 @@ export function routeForPath(pathname: string): Route {
   if (warehouseMatch) return { kind: 'warehouse', slug: warehouseMatch[1] };
   const ruralBusinessMatch = /^\/rural-businesses\/([^/]+)\/?$/.exec(pathname);
   if (ruralBusinessMatch) return { kind: 'ruralBusiness', slug: ruralBusinessMatch[1] };
+  const ruralBusinessTypeMatch = /^\/rural-business-types\/([^/]+)\/?$/.exec(pathname);
+  if (ruralBusinessTypeMatch) return { kind: 'ruralBusinessType', slug: ruralBusinessTypeMatch[1] };
   const trainLineMatch = /^\/train-lines\/([^/]+)\/?$/.exec(pathname);
   if (trainLineMatch) return { kind: 'trainLine', slug: trainLineMatch[1] };
   return { kind: 'page', index: pageIndexForPath(pathname) };

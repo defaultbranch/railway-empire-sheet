@@ -61,9 +61,10 @@ export function CityPage({ slug }: { slug: string }) {
     return {
       good,
       supplied: suppliedToCityForGood(network, solution, city.name, good),
-      demand: hasUnknownIndustryDemand ? undefined : demand,
+      actualDemand: suppliedToCityForGood(network, solution, city.name, good),
+      maxDemand: hasUnknownIndustryDemand ? undefined : demand,
     };
-  }).filter(({ demand }) => demand === undefined || demand > 0);
+  }).filter(({ maxDemand }) => maxDemand === undefined || maxDemand > 0);
   const rawMaterialGoods = [...new Set(cityIndustries.flatMap((industry) =>
     industryTypes
       .find((type) => type.name === industry.typeName)
@@ -142,11 +143,12 @@ export function CityPage({ slug }: { slug: string }) {
             <tr>
               <th>Good</th>
               <th>Supplied</th>
-              <th>Demand</th>
+              <th>Actual demand</th>
+              <th>Max demand</th>
             </tr>
           </thead>
           <tbody>
-            {goodsBalances.map(({ good, supplied, demand }) => (
+            {goodsBalances.map(({ good, supplied, actualDemand, maxDemand }) => (
               <tr key={good}>
                 <td>{good}</td>
                 <td>
@@ -160,12 +162,13 @@ export function CityPage({ slug }: { slug: string }) {
                     {supplied.toFixed(2)}
                   </a>
                 </td>
-                <td>{demand === undefined ? '?' : demand.toFixed(2)}</td>
+                <td>{actualDemand.toFixed(2)}</td>
+                <td>{maxDemand === undefined ? '?' : maxDemand.toFixed(2)}</td>
               </tr>
             ))}
             {goodsBalances.length === 0 && (
               <tr>
-                <td colSpan={3} className="city-page__empty">No goods yet.</td>
+                <td colSpan={4} className="city-page__empty">No goods yet.</td>
               </tr>
             )}
           </tbody>

@@ -4,6 +4,7 @@ import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useNavigation } from '../navigation';
 import { pathForRuralBusiness } from '../entities/rural-business-routes';
+import { pathForRuralBusinessType } from '../entities/rural-business-type-routes';
 
 export function RuralBusinessesPage() {
   const { ruralBusinessTypes } = useRuralBusinessTypes();
@@ -11,6 +12,7 @@ export function RuralBusinessesPage() {
   const { navigate } = useNavigation();
   const [newName, setNewName] = useState('');
   const [newTypeName, setNewTypeName] = useState('');
+  const sortedRuralBusinesses = [...ruralBusinesses].sort((first, second) => first.name.localeCompare(second.name));
 
   const handleAdd = () => {
     const name = newName.trim();
@@ -39,7 +41,7 @@ export function RuralBusinessesPage() {
               </td>
             </tr>
           )}
-          {ruralBusinesses.map((business) => (
+          {sortedRuralBusinesses.map((business) => (
             <tr key={business.name}>
               <td>
                 <a
@@ -52,7 +54,17 @@ export function RuralBusinessesPage() {
                   {business.name}
                 </a>
               </td>
-              <td>{business.typeName}</td>
+              <td>
+                <a
+                  href={pathForRuralBusinessType({ name: business.typeName })}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    navigate(pathForRuralBusinessType({ name: business.typeName }));
+                  }}
+                >
+                  {business.typeName}
+                </a>
+              </td>
               <td>
                 <select
                   value={business.level}

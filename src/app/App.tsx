@@ -9,6 +9,7 @@ import { CityPage } from './entities/city-page';
 import { StationPage } from './entities/station-page';
 import { WarehousePage } from './entities/warehouse-page';
 import { RuralBusinessPage } from './entities/rural-business-page';
+import { RuralBusinessTypePage } from './entities/rural-business-type-page';
 import { TrainLinePage } from './entities/train-line-page';
 
 function ThemeToggle() {
@@ -73,6 +74,10 @@ function AppRoutes() {
 
   if (route.kind === 'ruralBusiness') {
     return <RuralBusinessPage slug={route.slug} />;
+  }
+
+  if (route.kind === 'ruralBusinessType') {
+    return <RuralBusinessTypePage slug={route.slug} />;
   }
 
   if (route.kind === 'trainLine') {

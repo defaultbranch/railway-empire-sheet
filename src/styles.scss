@@ -257,11 +257,15 @@ body {
 	&__cell--dropped {
 		color: var(--color-muted-light);
 	}
-
 	&__cell-in,
 	&__cell-out {
 		color: var(--color-muted);
 	}
+}
+
+.rural-business-type-page__table {
+	width: max-content;
+	max-width: 100%;
 }
 
 .city-page__industries-scroll {
