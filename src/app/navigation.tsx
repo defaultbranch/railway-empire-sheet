@@ -3,6 +3,7 @@ import { pageIndexForPath } from './pages/pages';
 
 export type Route =
   | { kind: 'page'; index: number }
+  | { kind: 'good'; slug: string }
   | { kind: 'city'; slug: string }
   | { kind: 'station'; slug: string }
   | { kind: 'warehouse'; slug: string }
@@ -11,6 +12,8 @@ export type Route =
   | { kind: 'trainLine'; slug: string };
 
 export function routeForPath(pathname: string): Route {
+  const goodMatch = /^\/goods\/([^/]+)\/?$/.exec(pathname);
+  if (goodMatch) return { kind: 'good', slug: goodMatch[1] };
   const cityMatch = /^\/cities\/([^/]+)\/?$/.exec(pathname);
   if (cityMatch) return { kind: 'city', slug: cityMatch[1] };
   const stationMatch = /^\/stations\/([^/]+)\/?$/.exec(pathname);

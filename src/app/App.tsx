@@ -11,6 +11,7 @@ import { WarehousePage } from './entities/warehouse-page';
 import { RuralBusinessPage } from './entities/rural-business-page';
 import { RuralBusinessTypePage } from './entities/rural-business-type-page';
 import { TrainLinePage } from './entities/train-line-page';
+import { GoodPage } from './entities/good-page';
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -59,6 +60,10 @@ function PagesRoute({ pageIndex }: { pageIndex: number }) {
 
 function AppRoutes() {
   const { route } = useNavigation();
+
+  if (route.kind === 'good') {
+    return <GoodPage slug={route.slug} />;
+  }
 
   if (route.kind === 'city') {
     return <CityPage slug={route.slug} />;
