@@ -1,22 +1,62 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCities } from '../game-state/city-state';
 import { useGoods } from '../game-state/goods-state';
 import { useGoodsFlow } from '../solver';
 
+function selectionsFromUrl(): { city: string; good: string } {
+  const params = new URLSearchParams(window.location.search);
+  return { city: params.get('city') ?? '', good: params.get('good') ?? '' };
+}
+
 export function CityGoodBalancePage() {
   const { cities } = useCities();
   const { goods } = useGoods();
-  const { solution } = useGoodsFlow();
-  const [selectedCity, setSelectedCity] = useState('');
-  const [selectedGood, setSelectedGood] = useState('');
+  const { network, solution } = useGoodsFlow();
+  const [initialSelections] = useState(selectionsFromUrl);
+  const [selectedCity, setSelectedCity] = useState(initialSelections.city);
+  const [selectedGood, setSelectedGood] = useState(initialSelections.good);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (selectedCity === '') params.delete('city');
+    else params.set('city', selectedCity);
+    if (selectedGood === '') params.delete('good');
+    else params.set('good', selectedGood);
+    const query = params.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${query === '' ? '' : `?${query}`}`);
+  }, [selectedCity, selectedGood]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const selections = selectionsFromUrl();
+      setSelectedCity(selections.city);
+      setSelectedGood(selections.good);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const industrySlotsDemandingGood = new Set(
+    network.nodes.flatMap((node) =>
+      node.conversions.flatMap((conversion) =>
+        conversion.contributor.kind === 'industry' &&
+        conversion.contributor.city === selectedCity &&
+        conversion.rawMaterials.some((rawMaterial) => rawMaterial.good === selectedGood)
+          ? [conversion.contributor.slot]
+          : [],
+      ),
+    ),
+  );
   const supplied = solution.contributorFlows
-    .filter(
-      (flow) =>
-        flow.contributor.kind === 'population' &&
+    .filter((flow) => {
+      if (flow.good !== selectedGood) return false;
+      if (flow.contributor.kind === 'population') return flow.contributor.city === selectedCity;
+      return (
+        flow.contributor.kind === 'industry' &&
         flow.contributor.city === selectedCity &&
-        flow.good === selectedGood,
-    )
+        industrySlotsDemandingGood.has(flow.contributor.slot)
+      );
+    })
     .reduce((total, flow) => total + flow.served, 0);
 
   return (
@@ -54,7 +94,7 @@ export function CityGoodBalancePage() {
         </label>
       </div>
       <div className="city-good-balance-page__result">
-        <span className="city-good-balance-page__label">Population demand supplied</span>
+        <span className="city-good-balance-page__label">Population and industry demand supplied</span>
         <output className="city-good-balance-page__value" aria-live="polite">
           {selectedCity === '' || selectedGood === '' ? '—' : `${supplied.toFixed(2)} wagons/week`}
         </output>

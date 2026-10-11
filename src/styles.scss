@@ -264,6 +264,14 @@ body {
 	}
 }
 
+.city-page__industries-scroll {
+	overflow-x: auto;
+}
+
+.city-page__industries-table {
+	width: max-content;
+}
+
 .city-good-balance-page {
 	display: flex;
 	flex-direction: column;

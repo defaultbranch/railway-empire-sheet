@@ -5,6 +5,7 @@ export type IndustriesState = {
   industries: Industry[];
   addIndustry: (industry: Industry) => void;
   removeIndustry: (city: string, citySlot: IndustrySlot) => void;
+  setIndustryType: (city: string, citySlot: IndustrySlot, typeName: string | undefined) => void;
   setIndustryLevel: (city: string, citySlot: IndustrySlot, level: BusinessLevel) => void;
   replaceIndustries: (industries: Industry[]) => void;
 };
@@ -32,6 +33,21 @@ export function IndustriesProvider({
     setIndustries((prev) => prev.filter((existing) => !(existing.city === city && existing.citySlot === citySlot)));
   };
 
+  const setIndustryType = (city: string, citySlot: IndustrySlot, typeName: string | undefined) => {
+    setIndustries((prev) => {
+      const existing = prev.find((industry) => industry.city === city && industry.citySlot === citySlot);
+      if (typeName === undefined) {
+        return prev.filter((industry) => !(industry.city === city && industry.citySlot === citySlot));
+      }
+      if (existing !== undefined) {
+        return prev.map((industry) =>
+          industry.city === city && industry.citySlot === citySlot ? { ...industry, typeName } : industry,
+        );
+      }
+      return [...prev, { city, citySlot, typeName, level: 1 }];
+    });
+  };
+
   const setIndustryLevel = (city: string, citySlot: IndustrySlot, level: BusinessLevel) => {
     setIndustries((prev) =>
       prev.map((existing) =>
@@ -45,7 +61,9 @@ export function IndustriesProvider({
   };
 
   return (
-    <IndustriesContext.Provider value={{ industries, addIndustry, removeIndustry, setIndustryLevel, replaceIndustries }}>
+    <IndustriesContext.Provider
+      value={{ industries, addIndustry, removeIndustry, setIndustryType, setIndustryLevel, replaceIndustries }}
+    >
       {children}
     </IndustriesContext.Provider>
   );
