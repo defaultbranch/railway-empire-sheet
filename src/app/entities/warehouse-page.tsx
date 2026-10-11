@@ -11,7 +11,7 @@ import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
 import { useGoodsFlow, stopNodeId } from '../solver';
 import type { LegFlow } from '../solver';
-import { warehouseGoodSlotsByTracks } from '../game-state/types';
+import { warehouseGoodSlotsByTracks, warehouseTrackCounts, type WarehouseTrackCount } from '../game-state/types';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
@@ -37,7 +37,7 @@ function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: numb
 }
 
 export function WarehousePage({ slug }: { slug: string }) {
-  const { warehouses, setWarehouseGoods } = useWarehouses();
+  const { warehouses, setWarehouseTracks, setWarehouseGoods } = useWarehouses();
   const { cities } = useCities();
   const { goods } = useGoods();
   const { ruralBusinesses } = useRuralBusinesses();
@@ -115,7 +115,21 @@ export function WarehousePage({ slug }: { slug: string }) {
   return (
     <section className="warehouse-page">
       <h1>{warehouse.name}</h1>
-      <p className="warehouse-page__tracks">Tracks: {warehouse.tracks}</p>
+      <label className="warehouse-page__tracks">
+        Tracks
+        <select
+          value={warehouse.tracks}
+          onChange={(event) =>
+            setWarehouseTracks(warehouse.name, Number(event.target.value) as WarehouseTrackCount)
+          }
+        >
+          {warehouseTrackCounts.map((tracks) => (
+            <option key={tracks} value={tracks}>
+              {tracks}
+            </option>
+          ))}
+        </select>
+      </label>
       <section className="warehouse-page__goods">
         <h2>Goods handled</h2>
         <table className="warehouse-page__table warehouse-page__goods-table">
