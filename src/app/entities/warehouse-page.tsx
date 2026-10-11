@@ -11,6 +11,7 @@ import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
 import { useGoodsFlow, stopNodeId } from '../solver';
 import type { LegFlow } from '../solver';
+import { warehouseGoodSlotsByTracks } from '../game-state/types';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
@@ -36,7 +37,7 @@ function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: numb
 }
 
 export function WarehousePage({ slug }: { slug: string }) {
-  const { warehouses } = useWarehouses();
+  const { warehouses, setWarehouseGoods } = useWarehouses();
   const { cities } = useCities();
   const { goods } = useGoods();
   const { ruralBusinesses } = useRuralBusinesses();
@@ -97,11 +98,68 @@ export function WarehousePage({ slug }: { slug: string }) {
   }
   const totalUnloaded = [...totalBroughtIn.values()].reduce((sum, units) => sum + units, 0);
   const totalLoaded = [...totalTakenAway.values()].reduce((sum, units) => sum + units, 0);
+  const goodSlots = Array.from({ length: warehouseGoodSlotsByTracks[warehouse.tracks] }, (_, index) => index);
+
+  const updateGoodSlot = (slotIndex: number, good: string) => {
+    const nextGoods = warehouse.goods.slice();
+    if (good === '') {
+      nextGoods.splice(slotIndex, 1);
+    } else if (slotIndex < nextGoods.length) {
+      nextGoods[slotIndex] = good;
+    } else {
+      nextGoods.push(good);
+    }
+    setWarehouseGoods(warehouse.name, nextGoods);
+  };
 
   return (
     <section className="warehouse-page">
       <h1>{warehouse.name}</h1>
       <p className="warehouse-page__tracks">Tracks: {warehouse.tracks}</p>
+      <section className="warehouse-page__goods">
+        <h2>Goods handled</h2>
+        <table className="warehouse-page__table warehouse-page__goods-table">
+          <thead>
+            <tr>
+              <th>Good</th>
+              <th>Goods in (units/week)</th>
+              <th>Goods out (units/week)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {goodSlots.map((slotIndex) => {
+              const good = warehouse.goods[slotIndex];
+              const flow = good === undefined
+                ? undefined
+                : solution.nodeFlows.find((entry) => entry.node === nodeId && entry.good === good);
+
+              return (
+                <tr key={slotIndex}>
+                  <td>
+                    <select
+                      aria-label={`Good ${slotIndex + 1}`}
+                      value={good ?? ''}
+                      disabled={slotIndex > warehouse.goods.length}
+                      onChange={(event) => updateGoodSlot(slotIndex, event.target.value)}
+                    >
+                      <option value="">Select good…</option>
+                      {goods
+                        .filter((option) => !warehouse.goods.includes(option) || good === option)
+                        .map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                    </select>
+                  </td>
+                  <td>{good === undefined ? '—' : perWeek(flow?.unloaded ?? 0)}</td>
+                  <td>{good === undefined ? '—' : perWeek(flow?.loaded ?? 0)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </section>
       <section className="warehouse-page__connections">
         <h2>Connects to</h2>
         {hostCity !== undefined && (

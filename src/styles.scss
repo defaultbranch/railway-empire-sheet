@@ -249,6 +249,10 @@ body {
 }
 
 .warehouse-page {
+	&__goods {
+		margin-block: 1.25rem;
+	}
+
 	&__cell--empty,
 	&__cell--dropped {
 		color: var(--color-muted-light);
@@ -257,6 +261,41 @@ body {
 	&__cell-in,
 	&__cell-out {
 		color: var(--color-muted);
+	}
+}
+
+.city-good-balance-page {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+
+	&__selectors {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	&__result {
+		border-top: 1px solid var(--color-border);
+		padding-top: 1rem;
+	}
+
+	&__label {
+		display: block;
+		color: var(--color-muted);
+	}
+
+	&__value {
+		display: block;
+		margin-top: 0.35rem;
+		font-size: 1.5rem;
+		font-weight: 600;
 	}
 }
 

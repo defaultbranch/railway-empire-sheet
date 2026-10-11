@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { Warehouse } from './types';
+import { warehouseGoodSlotsByTracks, type Good, type Warehouse } from './types';
 
 export type WarehousesState = {
   warehouses: Warehouse[];
   addWarehouse: (warehouse: Warehouse) => void;
+  setWarehouseGoods: (name: string, goods: Good[]) => void;
   removeWarehouse: (name: string) => void;
   replaceWarehouses: (warehouses: Warehouse[]) => void;
 };
@@ -25,6 +26,19 @@ export function WarehousesProvider({
     );
   };
 
+  const setWarehouseGoods = (name: string, goods: Good[]) => {
+    setWarehouses((prev) =>
+      prev.map((warehouse) =>
+        warehouse.name !== name
+          ? warehouse
+          : {
+              ...warehouse,
+              goods: [...new Set(goods)].slice(0, warehouseGoodSlotsByTracks[warehouse.tracks]),
+            },
+      ),
+    );
+  };
+
   const removeWarehouse = (name: string) => {
     setWarehouses((prev) => prev.filter((existing) => existing.name !== name));
   };
@@ -34,7 +48,7 @@ export function WarehousesProvider({
   };
 
   return (
-    <WarehousesContext.Provider value={{ warehouses, addWarehouse, removeWarehouse, replaceWarehouses }}>
+    <WarehousesContext.Provider value={{ warehouses, addWarehouse, setWarehouseGoods, removeWarehouse, replaceWarehouses }}>
       {children}
     </WarehousesContext.Provider>
   );
