@@ -1,4 +1,6 @@
 import { useCities } from '../game-state/city-state';
+import { useDemands } from '../game-state/demands-state';
+import { useGoods } from '../game-state/goods-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useIndustries } from '../game-state/industries-state';
@@ -10,16 +12,20 @@ import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import { businessLevels, industrySlots, type BusinessLevel, type StopHost } from '../game-state/types';
 import { pages, pathForPageIndex } from '../pages/pages';
+import { demandForCity } from '../pages/population-demand';
+import { suppliedToCityForGood } from '../pages/city-good-balance';
 
 const hostsCity = (host: StopHost, cityName: string): boolean => host.kind === 'city' && host.city === cityName;
 
 export function CityPage({ slug }: { slug: string }) {
   const { cities, setCityPopulation } = useCities();
+  const { demands } = useDemands();
+  const { goods } = useGoods();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { industries, setIndustryType, setIndustryLevel } = useIndustries();
   const { industryTypes } = useIndustryTypes();
-  const { solution } = useGoodsFlow();
+  const { network, solution } = useGoodsFlow();
   const { navigate } = useNavigation();
   const city = cities.find((existing) => citySlug(existing) === slug);
 
@@ -34,6 +40,30 @@ export function CityPage({ slug }: { slug: string }) {
   const connectedStations = trainStations.filter((station) => hostsCity(station.host, city.name));
   const connectedWarehouses = warehouses.filter((warehouse) => hostsCity(warehouse.host, city.name));
   const cityIndustries = industries.filter((industry) => industry.city === city.name);
+  const goodsBalances = goods.map((good) => {
+    let demand = demandForCity(demands.find((existing) => existing.good === good) ?? {
+      good,
+      minPopulation: Number.POSITIVE_INFINITY,
+      wagonsPerMillion: 0,
+    }, city);
+    let hasUnknownIndustryDemand = false;
+
+    for (const industry of cityIndustries) {
+      const type = industryTypes.find((existing) => existing.name === industry.typeName);
+      for (const rawMaterial of type?.rawMaterials ?? []) {
+        if (rawMaterial.good !== good) continue;
+        const amount = rawMaterial.amountByLevel[industry.level];
+        if (amount === undefined) hasUnknownIndustryDemand = true;
+        else demand += amount;
+      }
+    }
+
+    return {
+      good,
+      supplied: suppliedToCityForGood(network, solution, city.name, good),
+      demand: hasUnknownIndustryDemand ? undefined : demand,
+    };
+  }).filter(({ demand }) => demand === undefined || demand > 0);
   const rawMaterialGoods = [...new Set(cityIndustries.flatMap((industry) =>
     industryTypes
       .find((type) => type.name === industry.typeName)
@@ -70,10 +100,13 @@ export function CityPage({ slug }: { slug: string }) {
   };
 
   const cityGoodBalanceIndex = pages.findIndex((page) => page.slug === 'city-good-balance');
+  const cityGoodBalancePathForGood = (good: string) =>
+    `${pathForPageIndex(cityGoodBalanceIndex)}?${new URLSearchParams({ city: city.name, good })}`;
+
   const formatIndustryAmount = (slot: number, good: string, field: 'rawMaterials' | 'products') => {
     const amount = industryAmount(slot, good, field);
     if (amount === undefined) return '—';
-    const path = `${pathForPageIndex(cityGoodBalanceIndex)}?${new URLSearchParams({ city: city.name, good })}`;
+    const path = cityGoodBalancePathForGood(good);
     return (
       <>
         <a
@@ -102,6 +135,42 @@ export function CityPage({ slug }: { slug: string }) {
           onChange={(event) => setCityPopulation(city.name, Number(event.target.value))}
         />
       </label>
+      <section className="city-page__goods-balance">
+        <h2>Goods supply and demand</h2>
+        <table className="city-page__table city-page__goods-balance-table">
+          <thead>
+            <tr>
+              <th>Good</th>
+              <th>Supplied</th>
+              <th>Demand</th>
+            </tr>
+          </thead>
+          <tbody>
+            {goodsBalances.map(({ good, supplied, demand }) => (
+              <tr key={good}>
+                <td>{good}</td>
+                <td>
+                  <a
+                    href={cityGoodBalancePathForGood(good)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(cityGoodBalancePathForGood(good));
+                    }}
+                  >
+                    {supplied.toFixed(2)}
+                  </a>
+                </td>
+                <td>{demand === undefined ? '?' : demand.toFixed(2)}</td>
+              </tr>
+            ))}
+            {goodsBalances.length === 0 && (
+              <tr>
+                <td colSpan={3} className="city-page__empty">No goods yet.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </section>
       <section className="city-page__industries">
         <h2>Industries</h2>
         <div className="city-page__industries-scroll">

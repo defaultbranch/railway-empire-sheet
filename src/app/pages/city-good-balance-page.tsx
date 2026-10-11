@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useCities } from '../game-state/city-state';
 import { useGoods } from '../game-state/goods-state';
 import { useGoodsFlow } from '../solver';
+import { suppliedToCityForGood } from './city-good-balance';
 
 function selectionsFromUrl(): { city: string; good: string } {
   const params = new URLSearchParams(window.location.search);
@@ -36,28 +37,7 @@ export function CityGoodBalancePage() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  const industrySlotsDemandingGood = new Set(
-    network.nodes.flatMap((node) =>
-      node.conversions.flatMap((conversion) =>
-        conversion.contributor.kind === 'industry' &&
-        conversion.contributor.city === selectedCity &&
-        conversion.rawMaterials.some((rawMaterial) => rawMaterial.good === selectedGood)
-          ? [conversion.contributor.slot]
-          : [],
-      ),
-    ),
-  );
-  const supplied = solution.contributorFlows
-    .filter((flow) => {
-      if (flow.good !== selectedGood) return false;
-      if (flow.contributor.kind === 'population') return flow.contributor.city === selectedCity;
-      return (
-        flow.contributor.kind === 'industry' &&
-        flow.contributor.city === selectedCity &&
-        industrySlotsDemandingGood.has(flow.contributor.slot)
-      );
-    })
-    .reduce((total, flow) => total + flow.served, 0);
+  const supplied = suppliedToCityForGood(network, solution, selectedCity, selectedGood);
 
   return (
     <div className="city-good-balance-page">
