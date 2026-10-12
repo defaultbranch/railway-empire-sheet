@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCities } from '../game-state/city-state';
 import { useDemands } from '../game-state/demands-state';
 import { useGoods } from '../game-state/goods-state';
@@ -10,7 +11,16 @@ import { useNavigation } from '../navigation';
 import { citySlug } from './city-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
-import { businessLevels, industrySlots, type BusinessLevel, type StopHost } from '../game-state/types';
+import {
+  businessLevels,
+  industrySlots,
+  stationTrackCounts,
+  warehouseTrackCounts,
+  type BusinessLevel,
+  type StationTrackCount,
+  type StopHost,
+  type WarehouseTrackCount,
+} from '../game-state/types';
 import { pages, pathForPageIndex } from '../pages/pages';
 import { demandForCity } from '../pages/population-demand';
 import { suppliedToCityForGood } from '../pages/city-good-balance';
@@ -22,12 +32,15 @@ export function CityPage({ slug }: { slug: string }) {
   const { cities, setCityPopulation } = useCities();
   const { demands } = useDemands();
   const { goods } = useGoods();
-  const { trainStations } = useTrainStations();
-  const { warehouses } = useWarehouses();
+  const { trainStations, addTrainStation } = useTrainStations();
+  const { warehouses, addWarehouse } = useWarehouses();
   const { industries, setIndustryType, setIndustryLevel } = useIndustries();
   const { industryTypes } = useIndustryTypes();
   const { network, solution } = useGoodsFlow();
   const { navigate } = useNavigation();
+  const [newStopKind, setNewStopKind] = useState<'station' | 'warehouse'>('station');
+  const [newStopName, setNewStopName] = useState('');
+  const [newStopTracks, setNewStopTracks] = useState<number>(stationTrackCounts[0]);
   const city = cities.find((existing) => citySlug(existing) === slug);
 
   if (city === undefined) {
@@ -40,6 +53,29 @@ export function CityPage({ slug }: { slug: string }) {
 
   const connectedStations = trainStations.filter((station) => hostsCity(station.host, city.name));
   const connectedWarehouses = warehouses.filter((warehouse) => hostsCity(warehouse.host, city.name));
+  const connectedStops = [
+    ...connectedStations.map((station) => ({ kind: 'station' as const, ...station })),
+    ...connectedWarehouses.map((warehouse) => ({ kind: 'warehouse' as const, ...warehouse })),
+  ];
+  const trimmedStopName = newStopName.trim();
+  const existingStopNames = newStopKind === 'station'
+    ? trainStations.map((station) => station.name)
+    : warehouses.map((warehouse) => warehouse.name);
+  const canAddStop = trimmedStopName !== '' && !existingStopNames.includes(trimmedStopName);
+  const handleStopKindChange = (kind: 'station' | 'warehouse') => {
+    setNewStopKind(kind);
+    setNewStopTracks(kind === 'station' ? stationTrackCounts[0] : warehouseTrackCounts[0]);
+  };
+  const addStop = () => {
+    if (!canAddStop) return;
+    const host: StopHost = { kind: 'city', city: city.name };
+    if (newStopKind === 'station') {
+      addTrainStation({ name: trimmedStopName, tracks: newStopTracks as StationTrackCount, host });
+    } else {
+      addWarehouse({ name: trimmedStopName, tracks: newStopTracks as WarehouseTrackCount, host, goods: [] });
+    }
+    setNewStopName('');
+  };
   const cityIndustries = industries.filter((industry) => industry.city === city.name);
   const goodsBalances = goods.map((good) => {
     let demand = demandForCity(demands.find((existing) => existing.good === good) ?? {
@@ -261,46 +297,67 @@ export function CityPage({ slug }: { slug: string }) {
         </div>
       </section>
       <section className="city-page__connections">
-        <h2>Stations</h2>
-        {connectedStations.length === 0 ? (
-          <p className="city-page__empty">No connected stations.</p>
+        <h2>Stations &amp; Warehouses</h2>
+        {connectedStops.length === 0 ? (
+          <p className="city-page__empty">No connected stations or warehouses.</p>
         ) : (
           <ul>
-            {connectedStations.map((station) => (
-              <li key={station.name}>
-                <a
-                  href={pathForStation(station)}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    navigate(pathForStation(station));
-                  }}
-                >
-                  {station.name}
-                </a>
-              </li>
-            ))}
+            {connectedStops.map((stop) => {
+              const path = stop.kind === 'station' ? pathForStation(stop) : pathForWarehouse(stop);
+              return (
+                <li key={`${stop.kind}-${stop.name}`}>
+                  <a
+                    href={path}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(path);
+                    }}
+                  >
+                    {stop.name}
+                  </a>{' '}
+                  ({stop.kind === 'station' ? 'Station' : 'Warehouse'}, {stop.tracks} tracks)
+                </li>
+              );
+            })}
           </ul>
         )}
-        <h2>Warehouses</h2>
-        {connectedWarehouses.length === 0 ? (
-          <p className="city-page__empty">No connected warehouses.</p>
-        ) : (
-          <ul>
-            {connectedWarehouses.map((warehouse) => (
-              <li key={warehouse.name}>
-                <a
-                  href={pathForWarehouse(warehouse)}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    navigate(pathForWarehouse(warehouse));
-                  }}
-                >
-                  {warehouse.name}
-                </a>
-              </li>
+        <form
+          className="city-page__add"
+          onSubmit={(event) => {
+            event.preventDefault();
+            addStop();
+          }}
+        >
+          <input
+            type="text"
+            value={newStopName}
+            onChange={(event) => setNewStopName(event.target.value)}
+            placeholder="New station or warehouse name"
+            aria-label="New station or warehouse name"
+          />
+          <select
+            value={newStopKind}
+            onChange={(event) => handleStopKindChange(event.target.value as 'station' | 'warehouse')}
+            aria-label="Connection type"
+          >
+            <option value="station">Station</option>
+            <option value="warehouse">Warehouse</option>
+          </select>
+          <select
+            value={newStopTracks}
+            onChange={(event) => setNewStopTracks(Number(event.target.value))}
+            aria-label="Track count"
+          >
+            {(newStopKind === 'station' ? stationTrackCounts : warehouseTrackCounts).map((tracks) => (
+              <option key={tracks} value={tracks}>
+                {tracks} tracks
+              </option>
             ))}
-          </ul>
-        )}
+          </select>
+          <button type="submit" disabled={!canAddStop}>
+            Add
+          </button>
+        </form>
       </section>
     </section>
   );
