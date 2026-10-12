@@ -30,7 +30,9 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
     );
   }
 
-  const businesses = ruralBusinesses.filter((business) => business.typeName === type.name);
+  const businesses = ruralBusinesses
+    .filter((business) => business.typeName === type.name)
+    .sort((left, right) => left.name.localeCompare(right.name));
   const trimmedBusinessName = newBusinessName.trim();
   const canAddBusiness =
     trimmedBusinessName !== '' && !ruralBusinesses.some((business) => business.name === trimmedBusinessName);

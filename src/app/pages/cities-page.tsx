@@ -33,7 +33,7 @@ export function CitiesPage() {
               </td>
             </tr>
           )}
-          {cities.map((city) => (
+          {[...cities].sort((left, right) => left.name.localeCompare(right.name)).map((city) => (
             <tr key={city.name}>
               <td>
                 <a
