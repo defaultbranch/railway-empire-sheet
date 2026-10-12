@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useCities } from '../game-state/city-state';
 import { useGoods } from '../game-state/goods-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
+import { useTrainStations } from '../game-state/train-stations-state';
+import { trainCargoTypes, type StopRef, type TrainCargo } from '../game-state/types';
 import { useNavigation } from '../navigation';
 import { warehouseSlug } from './warehouse-routes';
 import { pathForCity } from './city-routes';
@@ -41,9 +43,16 @@ export function WarehousePage({ slug }: { slug: string }) {
   const { cities } = useCities();
   const { goods } = useGoods();
   const { ruralBusinesses } = useRuralBusinesses();
-  const { trainLines } = useTrainLines();
+  const { trainStations } = useTrainStations();
+  const { trainLines, addTrainLine } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines } = useGoodsFlow();
+  const [newLineName, setNewLineName] = useState('');
+  const [otherKind, setOtherKind] = useState<StopRef['kind']>('station');
+  const [otherName, setOtherName] = useState('');
+  const [newLineTrains, setNewLineTrains] = useState(1);
+  const [newLineTourDays, setNewLineTourDays] = useState('');
+  const [newLineCargo, setNewLineCargo] = useState<TrainCargo>('anything');
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
 
   useEffect(() => {
@@ -73,6 +82,7 @@ export function WarehousePage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
+  const otherStops = otherKind === 'station' ? trainStations : warehouses.filter((other) => other.name !== warehouse.name);
   const connectingLines = trainLines.filter((line) =>
     line.stops.some((stop) => stop.kind === 'warehouse' && stop.name === warehouse.name),
   );
@@ -99,6 +109,29 @@ export function WarehousePage({ slug }: { slug: string }) {
   const totalUnloaded = [...totalBroughtIn.values()].reduce((sum, units) => sum + units, 0);
   const totalLoaded = [...totalTakenAway.values()].reduce((sum, units) => sum + units, 0);
   const goodSlots = Array.from({ length: warehouseGoodSlotsByTracks[warehouse.tracks] }, (_, index) => index);
+  const canAddTrainLine =
+    newLineName.trim() !== '' && otherName !== '' && newLineTrains > 0 &&
+    !trainLines.some((line) => line.name === newLineName.trim());
+
+  const addConnectedTrainLine = () => {
+    if (!canAddTrainLine) return;
+    const parsedTourDays = newLineTourDays.trim() === '' ? undefined : Number(newLineTourDays);
+    addTrainLine({
+      name: newLineName.trim(),
+      stops: [
+        { kind: 'warehouse', name: warehouse.name },
+        { kind: otherKind, name: otherName },
+      ],
+      trains: newLineTrains,
+      tourDays: parsedTourDays,
+      cargo: newLineCargo,
+    });
+    setNewLineName('');
+    setOtherName('');
+    setNewLineTrains(1);
+    setNewLineTourDays('');
+    setNewLineCargo('anything');
+  };
 
   const updateGoodSlot = (slotIndex: number, good: string) => {
     const nextGoods = warehouse.goods.slice();
@@ -264,6 +297,70 @@ export function WarehousePage({ slug }: { slug: string }) {
           !solution.converged && (
             <p className="warehouse-page__hint">The flow solver did not converge; these figures are its last estimate.</p>
           )}
+        <form
+          className="train-lines-page__add"
+          onSubmit={(event) => {
+            event.preventDefault();
+            addConnectedTrainLine();
+          }}
+        >
+          <input
+            type="text"
+            value={newLineName}
+            onChange={(event) => setNewLineName(event.target.value)}
+            placeholder="Name"
+            aria-label="Train line name"
+          />
+          <span>{warehouse.name} (Warehouse)</span>
+          <select
+            value={otherKind}
+            onChange={(event) => {
+              setOtherKind(event.target.value as StopRef['kind']);
+              setOtherName('');
+            }}
+            aria-label="Other stop type"
+          >
+            <option value="station">Station</option>
+            <option value="warehouse">Warehouse</option>
+          </select>
+          <select value={otherName} onChange={(event) => setOtherName(event.target.value)} aria-label="Other stop">
+            <option value="">Select stop…</option>
+            {otherStops.map((stop) => (
+              <option key={stop.name} value={stop.name}>
+                {stop.name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="number"
+            min={1}
+            value={newLineTrains}
+            onChange={(event) => setNewLineTrains(Number(event.target.value))}
+            aria-label="Trains"
+          />
+          <input
+            type="number"
+            min={0}
+            value={newLineTourDays}
+            onChange={(event) => setNewLineTourDays(event.target.value)}
+            placeholder="Tour days"
+            aria-label="Tour days"
+          />
+          <select
+            value={newLineCargo}
+            onChange={(event) => setNewLineCargo(event.target.value as TrainCargo)}
+            aria-label="Cargo"
+          >
+            {trainCargoTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+          <button type="submit" disabled={!canAddTrainLine}>
+            Add
+          </button>
+        </form>
       </section>
     </section>
   );
