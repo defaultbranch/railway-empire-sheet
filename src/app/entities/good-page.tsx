@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useCities } from '../game-state/city-state';
 import { useDemands } from '../game-state/demands-state';
 import { useGoods } from '../game-state/goods-state';
+import { useIndustries } from '../game-state/industries-state';
 import { useIndustryTypes } from '../game-state/industry-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
@@ -17,6 +18,7 @@ export function GoodPage({ slug }: { slug: string }) {
   const { goods } = useGoods();
   const { cities } = useCities();
   const { demands } = useDemands();
+  const { industries } = useIndustries();
   const { industryTypes } = useIndustryTypes();
   const { ruralBusinessTypes } = useRuralBusinessTypes();
   const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
@@ -52,6 +54,16 @@ export function GoodPage({ slug }: { slug: string }) {
   const producers = ruralBusinesses.flatMap((business) => {
     const type = ruralBusinessTypes.find((existing) => existing.name === business.typeName && existing.good === good);
     return type === undefined ? [] : [{ business, type }];
+  });
+  const cityIndustryProducers = industries.flatMap((industry) => {
+    const type = industryTypes.find((existing) => existing.name === industry.typeName);
+    if (type === undefined) return [];
+    const productFlows = type.products.filter((flow) => flow.good === good);
+    if (productFlows.length === 0) return [];
+    const outputs = productFlows.map((flow) => flow.amountByLevel[industry.level]);
+    return [{ industry, type, output: outputs.some((amount) => amount === undefined)
+      ? undefined
+      : outputs.reduce<number>((total, amount) => total + amount!, 0) }];
   });
   const trimmedProducerName = newProducerName.trim();
   const canAddProducer =
@@ -117,11 +129,12 @@ export function GoodPage({ slug }: { slug: string }) {
           </>
         )}
       </section>
-      <section className="good-page__rural-producers">
-        <h2>Rural producers</h2>
-        {producers.length === 0 ? (
-          <p className="good-page__empty">No placed rural businesses produce this good.</p>
-        ) : (
+      {producerTypes.length > 0 && (
+        <section className="good-page__rural-producers">
+          <h2>Rural producers</h2>
+          {producers.length === 0 ? (
+            <p className="good-page__empty">No placed rural businesses produce this good.</p>
+          ) : (
           <table className="good-page__table">
             <thead>
               <tr>
@@ -166,8 +179,7 @@ export function GoodPage({ slug }: { slug: string }) {
               })}
             </tbody>
           </table>
-        )}
-        {producerTypes.length > 0 && (
+          )}
           <form
             className="good-page__add"
             onSubmit={(event) => {
@@ -201,8 +213,48 @@ export function GoodPage({ slug }: { slug: string }) {
               Add
             </button>
           </form>
-        )}
-      </section>
+        </section>
+      )}
+      {cityIndustryProducers.length > 0 && (
+        <section className="good-page__city-industries">
+          <h2>City industries</h2>
+          <table className="good-page__table">
+            <thead>
+              <tr>
+                <th>City</th>
+                <th>Industry</th>
+                <th>Level</th>
+                <th>Weekly production</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cityIndustryProducers.map(({ industry, type, output }) => {
+                const city = cities.find((existing) => existing.name === industry.city);
+                return (
+                  <tr key={`${industry.city}-${industry.citySlot}`}>
+                    <td>
+                      {city === undefined ? industry.city : (
+                        <a
+                          href={pathForCity(city)}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            navigate(pathForCity(city));
+                          }}
+                        >
+                          {city.name}
+                        </a>
+                      )}
+                    </td>
+                    <td>{type.name}</td>
+                    <td>{industry.level}</td>
+                    <td>{output === undefined ? '?' : output}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </section>
+      )}
       <section className="good-page__industry-recipes">
         <h2>Industry recipes</h2>
         {industryFlows.length === 0 ? (

@@ -45,6 +45,7 @@ export function StationsWarehousesPage() {
     ...trainStations.map((station) => ({ kind: 'station' as const, ...station })),
     ...warehouses.map((warehouse) => ({ kind: 'warehouse' as const, ...warehouse })),
   ];
+  const sortedRows = [...rows].sort((first, second) => first.name.localeCompare(second.name));
 
   // rural businesses matter to logistics for the good they produce, not their own name
   const goodForBusiness = (businessName: string) => {
@@ -109,7 +110,7 @@ export function StationsWarehousesPage() {
               </td>
             </tr>
           )}
-          {rows.map((row) => (
+          {sortedRows.map((row) => (
             <tr key={`${row.kind}-${row.name}`}>
               <td>
                 {row.kind === 'station' ? (

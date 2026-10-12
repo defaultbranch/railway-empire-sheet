@@ -14,6 +14,7 @@ import { businessLevels, industrySlots, type BusinessLevel, type StopHost } from
 import { pages, pathForPageIndex } from '../pages/pages';
 import { demandForCity } from '../pages/population-demand';
 import { suppliedToCityForGood } from '../pages/city-good-balance';
+import { pathForGood } from './good-routes';
 
 const hostsCity = (host: StopHost, cityName: string): boolean => host.kind === 'city' && host.city === cityName;
 
@@ -103,6 +104,20 @@ export function CityPage({ slug }: { slug: string }) {
   const cityGoodBalanceIndex = pages.findIndex((page) => page.slug === 'city-good-balance');
   const cityGoodBalancePathForGood = (good: string) =>
     `${pathForPageIndex(cityGoodBalanceIndex)}?${new URLSearchParams({ city: city.name, good })}`;
+  const goodDetailLink = (good: string) => {
+    const path = pathForGood(good);
+    return (
+      <a
+        href={path}
+        onClick={(event) => {
+          event.preventDefault();
+          navigate(path);
+        }}
+      >
+        {good}
+      </a>
+    );
+  };
 
   const formatIndustryAmount = (slot: number, good: string, field: 'rawMaterials' | 'products') => {
     const amount = industryAmount(slot, good, field);
@@ -150,7 +165,7 @@ export function CityPage({ slug }: { slug: string }) {
           <tbody>
             {goodsBalances.map(({ good, supplied, actualDemand, maxDemand }) => (
               <tr key={good}>
-                <td>{good}</td>
+                <td>{goodDetailLink(good)}</td>
                 <td>
                   <a
                     href={cityGoodBalancePathForGood(good)}
@@ -187,10 +202,10 @@ export function CityPage({ slug }: { slug: string }) {
               </tr>
               <tr>
                 {rawMaterialGoods.map((good) => (
-                  <th key={`raw-${good}`}>{good}</th>
+                  <th key={`raw-${good}`}>{goodDetailLink(good)}</th>
                 ))}
                 {productGoods.map((good) => (
-                  <th key={`product-${good}`}>{good}</th>
+                  <th key={`product-${good}`}>{goodDetailLink(good)}</th>
                 ))}
               </tr>
             </thead>

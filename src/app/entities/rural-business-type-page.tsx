@@ -7,7 +7,7 @@ import { pathForRuralBusiness } from './rural-business-routes';
 import { ruralBusinessTypeSlug } from './rural-business-type-routes';
 
 export function RuralBusinessTypePage({ slug }: { slug: string }) {
-  const { ruralBusinessTypes } = useRuralBusinessTypes();
+  const { ruralBusinessTypes, setRuralBusinessProduction } = useRuralBusinessTypes();
   const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
   const { navigate } = useNavigation();
   const [newBusinessName, setNewBusinessName] = useState('');
@@ -61,7 +61,19 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
           <tbody>
             <tr>
               {businessLevels.map((level) => (
-                <td key={level}>{type.productionByLevel[level] ?? '?'}</td>
+                <td key={level}>
+                  <input
+                    type="number"
+                    min={0}
+                    value={type.productionByLevel[level] ?? ''}
+                    placeholder="?"
+                    aria-label={`Level ${level} weekly production`}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setRuralBusinessProduction(type.name, level, value === '' ? undefined : Number(value));
+                    }}
+                  />
+                </td>
               ))}
             </tr>
           </tbody>
