@@ -13,6 +13,7 @@ import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useNavigation } from '../navigation';
 import { ruralBusinessSlug } from './rural-business-routes';
+import { pathForRuralBusinessType } from './rural-business-type-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 
@@ -112,7 +113,18 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
   return (
     <section className="rural-business-page">
       <h1>{business.name}</h1>
-      <p className="rural-business-page__type">Type: {business.typeName}</p>
+      <p className="rural-business-page__type">
+        Type:{' '}
+        <a
+          href={pathForRuralBusinessType({ name: business.typeName })}
+          onClick={(event) => {
+            event.preventDefault();
+            navigate(pathForRuralBusinessType({ name: business.typeName }));
+          }}
+        >
+          {business.typeName}
+        </a>
+      </p>
       <label className="rural-business-page__level">
         Level
         <select
