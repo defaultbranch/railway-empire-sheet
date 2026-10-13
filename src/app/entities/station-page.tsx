@@ -13,30 +13,24 @@ import type { LegFlow } from '../solver';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
-function GoodsTable({ flows }: { flows: LegFlow[] }) {
-  const sorted = [...flows].sort((a, b) => b.units - a.units);
-
-  if (sorted.length === 0) {
-    return <p className="station-page__empty">None.</p>;
+function amountsByGood(flows: LegFlow[]): Map<string, number> {
+  const amounts = new Map<string, number>();
+  for (const flow of flows) {
+    amounts.set(flow.good, (amounts.get(flow.good) ?? 0) + flow.units);
   }
+  return amounts;
+}
 
+function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: number }) {
+  if (inAmount === undefined && outAmount === undefined) {
+    return <td className="warehouse-page__cell--empty">–</td>;
+  }
   return (
-    <table className="station-page__table">
-      <thead>
-        <tr>
-          <th>Good</th>
-          <th>Units per week</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sorted.map((flow) => (
-          <tr key={flow.good}>
-            <td>{flow.good}</td>
-            <td>{perWeek(flow.units)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <td>
+      {inAmount !== undefined && <span className="warehouse-page__cell-in">+{perWeek(inAmount)}</span>}
+      {inAmount !== undefined && outAmount !== undefined && ' / '}
+      {outAmount !== undefined && <span className="warehouse-page__cell-out">-{perWeek(outAmount)}</span>}
+    </td>
   );
 }
 
@@ -44,7 +38,7 @@ export function StationPage({ slug }: { slug: string }) {
   const { trainStations } = useTrainStations();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
-  const { trainLines } = useTrainLines();
+  const { trainLines, replaceTrainLines } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines } = useGoodsFlow();
   const station = trainStations.find((existing) => stationSlug(existing) === slug);
@@ -76,10 +70,33 @@ export function StationPage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
-  const connectingLines = trainLines.filter((line) =>
-    line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name),
-  );
+  const connectingLines = trainLines
+    .filter((line) => line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name))
+    .sort((left, right) => left.name.localeCompare(right.name));
   const nodeId = stopNodeId({ kind: 'station', name: station.name });
+  const trainLineRows = connectingLines.map((line) => {
+    const dropped = droppedLines.find((entry) => entry.line === line.name);
+    const legs = network.legs.filter((leg) => leg.line === line.name);
+    const arriving = legs.find((leg) => leg.to === nodeId);
+    const departing = legs.find((leg) => leg.from === nodeId);
+    const broughtIn = amountsByGood(arriving ? solution.legFlows.filter((flow) => flow.leg === arriving.id) : []);
+    const takenAway = amountsByGood(departing ? solution.legFlows.filter((flow) => flow.leg === departing.id) : []);
+    return { line, dropped, broughtIn, takenAway };
+  });
+  const trainLineGoods = [...new Set(
+    trainLineRows.flatMap((row) => [...row.broughtIn.keys(), ...row.takenAway.keys()]),
+  )].sort((left, right) => left.localeCompare(right));
+  const totalBroughtIn = new Map<string, number>();
+  const totalTakenAway = new Map<string, number>();
+  for (const row of trainLineRows) {
+    if (row.dropped !== undefined) continue;
+    for (const [good, units] of row.broughtIn) {
+      totalBroughtIn.set(good, (totalBroughtIn.get(good) ?? 0) + units);
+    }
+    for (const [good, units] of row.takenAway) {
+      totalTakenAway.set(good, (totalTakenAway.get(good) ?? 0) + units);
+    }
+  }
 
   return (
     <section className="station-page">
@@ -121,48 +138,87 @@ export function StationPage({ slug }: { slug: string }) {
         {connectingLines.length === 0 ? (
           <p className="station-page__train-lines-empty">No train lines connect here.</p>
         ) : (
-          connectingLines.map((line) => {
-            const dropped = droppedLines.find((entry) => entry.line === line.name);
-            const legs = network.legs.filter((leg) => leg.line === line.name);
-            const arriving = legs.find((leg) => leg.to === nodeId);
-            const departing = legs.find((leg) => leg.from === nodeId);
-            const broughtIn = arriving
-              ? solution.legFlows.filter((flow) => flow.leg === arriving.id)
-              : [];
-            const takenAway = departing
-              ? solution.legFlows.filter((flow) => flow.leg === departing.id)
-              : [];
-
-            return (
-              <section className="station-page__train-line" key={line.name}>
-                <h3>
-                  <a
-                    href={pathForTrainLine(line)}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      navigate(pathForTrainLine(line));
-                    }}
-                  >
-                    {line.name}
-                  </a>
-                </h3>
-                {dropped !== undefined ? (
-                  <p className="station-page__empty">Not modelled: {dropped.reason}.</p>
-                ) : (
-                  <>
-                    <div className="station-page__train-line-flow">
-                      <h4>Brings in</h4>
-                      <GoodsTable flows={broughtIn} />
-                    </div>
-                    <div className="station-page__train-line-flow">
-                      <h4>Takes away</h4>
-                      <GoodsTable flows={takenAway} />
-                    </div>
-                  </>
-                )}
-              </section>
-            );
-          })
+          <table className="warehouse-page__table station-page__table">
+            <thead>
+              <tr>
+                <th>Train line</th>
+                <th>Number of trains</th>
+                <th>Tour days</th>
+                {trainLineGoods.map((good) => <th key={good}>{good}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {trainLineRows.map(({ line, dropped, broughtIn, takenAway }) => (
+                <tr key={line.name}>
+                  <td>
+                    <a
+                      href={pathForTrainLine(line)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigate(pathForTrainLine(line));
+                      }}
+                    >
+                      {line.name}
+                    </a>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={line.trains}
+                      onChange={(event) =>
+                        replaceTrainLines(
+                          trainLines.map((existing) =>
+                            existing.name === line.name
+                              ? { ...existing, trains: Number(event.target.value) }
+                              : existing,
+                          ),
+                        )
+                      }
+                      aria-label={`${line.name} number of trains`}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={0}
+                      step="any"
+                      value={line.tourDays ?? ''}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        replaceTrainLines(
+                          trainLines.map((existing) =>
+                            existing.name === line.name
+                              ? { ...existing, tourDays: value === '' ? undefined : Number(value) }
+                              : existing,
+                          ),
+                        );
+                      }}
+                      aria-label={`${line.name} tour days`}
+                    />
+                  </td>
+                  {dropped !== undefined ? (
+                    <td colSpan={Math.max(trainLineGoods.length, 1)} className="warehouse-page__cell--dropped">
+                      Not modelled: {dropped.reason}.
+                    </td>
+                  ) : (
+                    trainLineGoods.map((good) => (
+                      <BalanceCell key={good} in={broughtIn.get(good)} out={takenAway.get(good)} />
+                    ))
+                  )}
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colSpan={3}>Total balance</th>
+                {trainLineGoods.map((good) => (
+                  <BalanceCell key={good} in={totalBroughtIn.get(good)} out={totalTakenAway.get(good)} />
+                ))}
+              </tr>
+            </tfoot>
+          </table>
         )}
         {connectingLines.some((line) => droppedLines.find((entry) => entry.line === line.name) === undefined) &&
           !solution.converged && (
