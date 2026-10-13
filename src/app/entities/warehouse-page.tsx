@@ -44,7 +44,7 @@ export function WarehousePage({ slug }: { slug: string }) {
   const { goods } = useGoods();
   const { ruralBusinesses } = useRuralBusinesses();
   const { trainStations } = useTrainStations();
-  const { trainLines, addTrainLine } = useTrainLines();
+  const { trainLines, addTrainLine, replaceTrainLines } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines } = useGoodsFlow();
   const [newLineName, setNewLineName] = useState('');
@@ -85,7 +85,7 @@ export function WarehousePage({ slug }: { slug: string }) {
   const otherStops = otherKind === 'station' ? trainStations : warehouses.filter((other) => other.name !== warehouse.name);
   const connectingLines = trainLines.filter((line) =>
     line.stops.some((stop) => stop.kind === 'warehouse' && stop.name === warehouse.name),
-  );
+  ).sort((left, right) => left.name.localeCompare(right.name));
   const nodeId = stopNodeId({ kind: 'warehouse', name: warehouse.name });
 
   const trainLineRows = connectingLines.map((line) => {
@@ -247,6 +247,8 @@ export function WarehousePage({ slug }: { slug: string }) {
             <thead>
               <tr>
                 <th>Train line</th>
+                <th>Number of trains</th>
+                <th>Tour days</th>
                 {trainLineGoods.map((good) => (
                   <th key={good}>{good}</th>
                 ))}
@@ -266,6 +268,43 @@ export function WarehousePage({ slug }: { slug: string }) {
                       {line.name}
                     </a>
                   </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={line.trains}
+                      onChange={(event) =>
+                        replaceTrainLines(
+                          trainLines.map((existing) =>
+                            existing.name === line.name
+                              ? { ...existing, trains: Number(event.target.value) }
+                              : existing,
+                          ),
+                        )
+                      }
+                      aria-label={`${line.name} number of trains`}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={0}
+                      step="any"
+                      value={line.tourDays ?? ''}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        replaceTrainLines(
+                          trainLines.map((existing) =>
+                            existing.name === line.name
+                              ? { ...existing, tourDays: value === '' ? undefined : Number(value) }
+                              : existing,
+                          ),
+                        );
+                      }}
+                      aria-label={`${line.name} tour days`}
+                    />
+                  </td>
                   {dropped !== undefined ? (
                     <td colSpan={trainLineGoods.length} className="warehouse-page__cell--dropped">
                       Not modelled: {dropped.reason}.
@@ -280,7 +319,7 @@ export function WarehousePage({ slug }: { slug: string }) {
             </tbody>
             <tfoot>
               <tr>
-                <th>Total balance</th>
+                <th colSpan={3}>Total balance</th>
                 {trainLineGoods.map((good) => (
                   <BalanceCell key={good} in={totalBroughtIn.get(good)} out={totalTakenAway.get(good)} />
                 ))}
