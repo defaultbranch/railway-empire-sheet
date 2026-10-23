@@ -8,12 +8,13 @@ let server;
 let buildWarehouseFlowDiagram;
 let buildGoodsFlowDiagram;
 let buildIndustryFlowDiagram;
+let buildRuralBusinessFlowDiagram;
 let layoutGoodsFlow;
 let FlowSankey;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true }, appType: 'custom' });
-  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram, buildIndustryFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
+  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram, buildIndustryFlowDiagram, buildRuralBusinessFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
   ({ layoutGoodsFlow } = await server.ssrLoadModule('/src/app/pages/goods-flow-layout.ts'));
   ({ FlowSankey } = await server.ssrLoadModule('/src/app/pages/goods-flow-page.tsx'));
 });
@@ -83,6 +84,51 @@ test('industry diagrams trace all upstream sources and downstream sinks over mul
   }
   assert.equal(JSON.stringify({ network, solution }), before);
   assert.deepEqual(buildIndustryFlowDiagram(network, solution, { ...industry, slot: 2 }, 'in'), { nodes: [], links: [] });
+});
+
+test('rural business outflow traces local and branching multi-hop sinks without unrelated suppliers', () => {
+  const { network, solution } = fixture();
+  const farm = { kind: 'rural business', name: 'Farm' };
+  const otherFarm = { kind: 'rural business', name: 'Other farm' };
+  const local = { kind: 'industry', city: 'Local', slot: 0 };
+  const town = { kind: 'population', city: 'Town' };
+  const beyond = { kind: 'industry', city: 'Beyond', slot: 1 };
+  network.nodes[0].sources.push({ contributor: farm, good: 'Wheat', amount: 8 });
+  network.nodes[0].sources.push({ contributor: otherFarm, good: 'Wheat', amount: 2 });
+  network.nodes[0].conversions.push({ contributor: local,
+    rawMaterials: [{ good: 'Wheat', amount: 1 }], products: [] });
+  network.nodes[1].sinks.push({ contributor: town, good: 'Wheat', amount: 2 });
+  network.nodes[3].conversions.push({ contributor: beyond,
+    rawMaterials: [{ good: 'Wheat', amount: 5 }], products: [] });
+  solution.contributorFlows = [
+    { contributor: farm, node: network.nodes[0].id, good: 'Wheat', requested: 8, served: 6 },
+    { contributor: otherFarm, node: network.nodes[0].id, good: 'Wheat', requested: 2, served: 2 },
+    { contributor: local, node: network.nodes[0].id, good: 'Wheat', requested: 1, served: 1 },
+    { contributor: town, node: network.nodes[1].id, good: 'Wheat', requested: 2, served: 2 },
+    { contributor: beyond, node: network.nodes[3].id, good: 'Wheat', requested: 5, served: 5 },
+  ];
+  solution.legFlows = [
+    { leg: 'in@1', good: 'Wheat', units: 2 },
+    { leg: 'out@0', good: 'Wheat', units: 5 },
+    { leg: 'beyond@0', good: 'Wheat', units: 5 },
+  ];
+  const before = JSON.stringify({ network, solution });
+  const diagram = buildRuralBusinessFlowDiagram(network, solution, farm);
+  assert.equal(diagram.links.length, 7);
+  assert.deepEqual(diagram.nodes.filter((node) => node.role === 'producer').map((node) => node.label), ['Farm']);
+  assert.deepEqual(diagram.nodes.filter((node) => node.role === 'consumer').map((node) => node.label).sort(),
+    ['Beyond industry 2', 'Local industry 1', 'Town population']);
+  assert.ok(diagram.links.every((link) => link.good === 'Wheat'));
+  assert.equal(diagram.nodes.find((node) => node.label === 'Farm').served, 6);
+  assert.equal(diagram.nodes.find((node) => node.label === 'Farm').requested, 8);
+  const graph = layoutGoodsFlow(diagram.nodes, diagram.links, 500);
+  assert.ok(graph.links.every((link) => !link.path.includes('NaN')));
+  assert.equal(JSON.stringify({ network, solution }), before);
+  assert.deepEqual(buildRuralBusinessFlowDiagram(network, solution,
+    { kind: 'rural business', name: 'Missing' }), { nodes: [], links: [] });
+  solution.contributorFlows = [];
+  solution.legFlows = [];
+  assert.deepEqual(buildRuralBusinessFlowDiagram(network, solution, farm), { nodes: [], links: [] });
 });
 
 test('warehouse view bundles goods and nets opposing and parallel flows within one hop', () => {

@@ -184,8 +184,6 @@ export function buildIndustryFlowDiagram(
   industry: Extract<Contributor, { kind: 'industry' }>,
   direction: 'in' | 'out',
 ) {
-  const nodes = new Map<string, FlowDiagramNode>();
-  const links: FlowDiagramLink[] = [];
   const goods = new Set<string>();
   for (const node of network.nodes) {
     for (const conversion of node.conversions) {
@@ -193,7 +191,33 @@ export function buildIndustryFlowDiagram(
       for (const entry of direction === 'in' ? conversion.rawMaterials : conversion.products) goods.add(entry.good);
     }
   }
-  const centerId = `${direction === 'in' ? 'consumer' : 'producer'}:${identity(industry)}`;
+  return buildContributorFlowDiagram(network, solution, industry, goods, direction);
+}
+
+export function buildRuralBusinessFlowDiagram(
+  network: FlowNetwork,
+  solution: FlowSolution,
+  business: Extract<Contributor, { kind: 'rural business' }>,
+) {
+  const goods = new Set<string>();
+  for (const node of network.nodes) {
+    for (const source of node.sources) {
+      if (identity(source.contributor) === identity(business)) goods.add(source.good);
+    }
+  }
+  return buildContributorFlowDiagram(network, solution, business, goods, 'out');
+}
+
+function buildContributorFlowDiagram(
+  network: FlowNetwork,
+  solution: FlowSolution,
+  contributor: Contributor,
+  goods: Set<string>,
+  direction: 'in' | 'out',
+) {
+  const nodes = new Map<string, FlowDiagramNode>();
+  const links: FlowDiagramLink[] = [];
+  const centerId = `${direction === 'in' ? 'consumer' : 'producer'}:${identity(contributor)}`;
   for (const good of goods) {
     const diagram = buildGoodsFlowDiagram(network, solution, good);
     const reached = new Set([centerId]);

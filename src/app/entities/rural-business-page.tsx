@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import {
   businessLevels,
   stationTrackCounts,
@@ -16,6 +16,9 @@ import { ruralBusinessSlug } from './rural-business-routes';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
+import { useGoodsFlow } from '../solver';
+import { buildRuralBusinessFlowDiagram } from '../pages/goods-flow';
+import { FlowSankey } from '../pages/goods-flow-page';
 
 const hostsBusiness = (host: StopHost, businessName: string): boolean =>
   host.kind === 'ruralBusinesses' && host.ruralBusinesses.includes(businessName);
@@ -35,6 +38,7 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
   const { trainStations, addTrainStation, replaceTrainStations } = useTrainStations();
   const { warehouses, addWarehouse, replaceWarehouses } = useWarehouses();
   const { navigate } = useNavigation();
+  const { network, solution, droppedLines } = useGoodsFlow();
   const [newStopKind, setNewStopKind] = useState<'station' | 'warehouse'>('station');
   const [newStopName, setNewStopName] = useState('');
   const [newStopTracks, setNewStopTracks] = useState<number>(stationTrackCounts[0]);
@@ -50,6 +54,14 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
     );
   }
 
+  const diagram = buildRuralBusinessFlowDiagram(network, solution, { kind: 'rural business', name: business.name });
+  const modeled = network.nodes.some((node) => node.sources.some((source) =>
+    source.contributor.kind === 'rural business' && source.contributor.name === business.name));
+  const followFlow = (event: MouseEvent<HTMLElement | SVGElement>, path: string) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(path);
+  };
   const connectedStations = trainStations.filter((station) => hostsBusiness(station.host, business.name));
   const connectedWarehouses = warehouses.filter((warehouse) => hostsBusiness(warehouse.host, business.name));
   const connectedStops = [
@@ -140,6 +152,16 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
           ))}
         </select>
       </label>
+      <section aria-label="Outflowing products" className="industry-flow-page__flow">
+        <h2>Outflowing products</h2>
+        {!solution.converged && <p role="status">The solver did not converge after {solution.iterations} iterations. Flows are estimates.</p>}
+        {!modeled && <p role="status">This rural business is not in the modeled network. Check its connected stops and production figures.</p>}
+        {solution.missingCoefficients.length > 0 && <p role="status">{solution.missingCoefficients.length} missing production figures; affected entities are excluded.</p>}
+        {droppedLines.length > 0 && <details><summary>{droppedLines.length} excluded train lines</summary>
+          <ul>{droppedLines.map((line) => <li key={line.line}>{line.line}: {line.reason}</li>)}</ul>
+        </details>}
+        <FlowSankey diagram={diagram} good={`${business.name}: outflowing products`} follow={followFlow} showGross={false} />
+      </section>
       <section className="rural-business-page__connections">
         <h2>Stations &amp; Warehouses</h2>
         {connectedStops.length === 0 ? (
