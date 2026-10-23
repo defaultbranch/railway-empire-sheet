@@ -2,7 +2,7 @@ import { pathForCity } from '../entities/city-routes';
 import { pathForRuralBusiness } from '../entities/rural-business-routes';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
-import type { Contributor, FlowNetwork, FlowSolution } from '../solver/solver-types';
+import type { Contributor, FlowNetwork, FlowSolution, NodeId } from '../solver/solver-types';
 
 export type FlowDiagramNode = {
   id: string;
@@ -11,6 +11,9 @@ export type FlowDiagramNode = {
   role: 'producer' | 'consumer' | 'station' | 'warehouse';
   requested: number;
   served: number;
+  column?: number;
+  good?: string;
+  segments?: { good: string; incoming: number; outgoing: number; capacity?: number }[];
 };
 
 export type FlowDiagramLink = {
@@ -19,6 +22,7 @@ export type FlowDiagramLink = {
   value: number;
   forward: number;
   reverse: number;
+  good?: string;
 };
 
 function identity(contributor: Contributor): string {
@@ -120,4 +124,56 @@ export function buildGoodsFlowDiagram(network: FlowNetwork, solution: FlowSoluti
     consumers: [...entities.values()].filter((node) => node.role === 'consumer'),
     allNodes: nodes,
   };
+}
+
+export function buildWarehouseFlowDiagram(network: FlowNetwork, solution: FlowSolution, warehouse: NodeId) {
+  const nodes = new Map<string, FlowDiagramNode>();
+  const links: FlowDiagramLink[] = [];
+  const goods = new Set([...network.goods, ...solution.legFlows.map((flow) => flow.good),
+    ...solution.contributorFlows.map((flow) => flow.good)]);
+  for (const good of goods) {
+    const diagram = buildGoodsFlowDiagram(network, solution, good);
+    const center = diagram.allNodes.get(warehouse);
+    if (center === undefined) continue;
+    const centerId = warehouse;
+    for (const link of diagram.links) {
+      if (link.source !== warehouse && link.target !== warehouse) continue;
+      const inbound = link.target === warehouse;
+      const neighbor = diagram.allNodes.get(inbound ? link.source : link.target);
+      if (neighbor === undefined) continue;
+      const neighborId = JSON.stringify([inbound ? 'in' : 'out', neighbor.id]);
+      if (!nodes.has(centerId)) nodes.set(centerId, {
+        ...center, id: centerId, column: 1, requested: 0, served: 0,
+      });
+      if (!nodes.has(neighborId)) nodes.set(neighborId, {
+        ...neighbor, id: neighborId, column: inbound ? 0 : 2,
+        requested: 0, served: 0,
+      });
+      const adjacent = nodes.get(neighborId)!;
+      if (neighbor.role === 'producer' || neighbor.role === 'consumer') {
+        if (!adjacent.segments?.some((segment) => segment.good === good)) adjacent.requested += neighbor.requested;
+        adjacent.served += link.value;
+      } else if (inbound) {
+        adjacent.served += link.value;
+      } else {
+        adjacent.requested += link.value;
+      }
+      const central = nodes.get(centerId)!;
+      if (inbound) central.requested += link.value;
+      else central.served += link.value;
+      for (const [node, incoming] of [[central, inbound], [adjacent, !inbound]] as const) {
+        const segments = node.segments ??= [];
+        let segment = segments.find((entry) => entry.good === good);
+        if (segment === undefined) {
+          segment = { good, incoming: 0, outgoing: 0 };
+          segments.push(segment);
+        }
+        if (node.role === 'producer' || node.role === 'consumer') segment.capacity = neighbor.requested;
+        if (incoming) segment.incoming += link.value;
+        else segment.outgoing += link.value;
+      }
+      links.push({ ...link, good, source: inbound ? neighborId : centerId, target: inbound ? centerId : neighborId });
+    }
+  }
+  return { nodes: [...nodes.values()], links };
 }
