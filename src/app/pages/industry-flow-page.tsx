@@ -35,6 +35,7 @@ export function IndustryFlowPage() {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     navigate(path);
+    setSelection(selectionFromUrl());
   };
   const validCity = cities.some((city) => city.name === selection.city);
   const industry = validCity ? industries.find((entry) =>

@@ -2,6 +2,7 @@ import { pathForCity } from '../entities/city-routes';
 import { pathForRuralBusiness } from '../entities/rural-business-routes';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
+import { pages, pathForPageIndex } from './pages';
 import type { Contributor, FlowNetwork, FlowSolution, NodeId } from '../solver/solver-types';
 
 export type FlowDiagramNode = {
@@ -71,7 +72,11 @@ export function buildGoodsFlowDiagram(network: FlowNetwork, solution: FlowSoluti
           id, role, label: contributorLabel(flow.contributor), requested: 0, served: 0,
           path: flow.contributor.kind === 'rural business'
             ? pathForRuralBusiness({ name: flow.contributor.name })
-            : pathForCity({ name: flow.contributor.city }),
+            : flow.contributor.kind === 'industry'
+              ? `${pathForPageIndex(pages.findIndex((page) => page.slug === 'industry-supply-chain'))}?${new URLSearchParams({
+                city: flow.contributor.city, slot: String(flow.contributor.slot + 1),
+              })}`
+              : pathForCity({ name: flow.contributor.city }),
         };
         entities.set(id, entity);
         nodes.set(id, entity);

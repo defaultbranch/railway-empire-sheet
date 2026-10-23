@@ -78,6 +78,11 @@ test('industry diagrams trace all upstream sources and downstream sinks over mul
   assert.ok(outbound.nodes.some((node) => node.label === 'Beyond population'));
   assert.ok(outbound.nodes.every((node) => !node.label.includes('Farm')));
   assert.ok(outbound.links.every((link) => link.good === 'Corn'));
+  assert.equal(inbound.nodes.find((node) => node.label === 'Town industry 1').path,
+    '/pages/18-industry-supply-chain?city=Town&slot=1');
+  assert.equal(outbound.nodes.find((node) => node.label === 'Town industry 1').path,
+    '/pages/18-industry-supply-chain?city=Town&slot=1');
+  assert.equal(outbound.nodes.find((node) => node.label === 'Beyond population').path, '/cities/beyond');
   for (const diagram of [inbound, outbound]) {
     const graph = layoutGoodsFlow(diagram.nodes, diagram.links, 500);
     assert.ok(graph.links.every((link) => !link.path.includes('NaN')));
@@ -92,7 +97,7 @@ test('rural business outflow traces local and branching multi-hop sinks without 
   const otherFarm = { kind: 'rural business', name: 'Other farm' };
   const local = { kind: 'industry', city: 'Local', slot: 0 };
   const town = { kind: 'population', city: 'Town' };
-  const beyond = { kind: 'industry', city: 'Beyond', slot: 1 };
+  const beyond = { kind: 'industry', city: 'Grand Rapids', slot: 1 };
   network.nodes[0].sources.push({ contributor: farm, good: 'Wheat', amount: 8 });
   network.nodes[0].sources.push({ contributor: otherFarm, good: 'Wheat', amount: 2 });
   network.nodes[0].conversions.push({ contributor: local,
@@ -117,7 +122,10 @@ test('rural business outflow traces local and branching multi-hop sinks without 
   assert.equal(diagram.links.length, 7);
   assert.deepEqual(diagram.nodes.filter((node) => node.role === 'producer').map((node) => node.label), ['Farm']);
   assert.deepEqual(diagram.nodes.filter((node) => node.role === 'consumer').map((node) => node.label).sort(),
-    ['Beyond industry 2', 'Local industry 1', 'Town population']);
+    ['Grand Rapids industry 2', 'Local industry 1', 'Town population']);
+  assert.equal(diagram.nodes.find((node) => node.label === 'Grand Rapids industry 2').path,
+    '/pages/18-industry-supply-chain?city=Grand+Rapids&slot=2');
+  assert.equal(diagram.nodes.find((node) => node.label === 'Farm').path, '/rural-businesses/farm');
   assert.ok(diagram.links.every((link) => link.good === 'Wheat'));
   assert.equal(diagram.nodes.find((node) => node.label === 'Farm').served, 6);
   assert.equal(diagram.nodes.find((node) => node.label === 'Farm').requested, 8);
