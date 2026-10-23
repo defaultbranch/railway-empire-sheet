@@ -74,6 +74,7 @@ body {
 		strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 		span { display: block; }
 	}
+	&__capacity { fill-opacity: 0.25; }
 	&__balances {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));

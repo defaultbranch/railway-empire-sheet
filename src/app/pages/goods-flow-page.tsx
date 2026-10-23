@@ -34,12 +34,20 @@ function FlowSankey({ diagram, good, follow }: {
         ))}
         {graph.nodes.map((node) => (
           <a key={node.id} href={node.path} onClick={(event) => follow(event, node.path)} className={`goods-flow-page__node goods-flow-page__node--${node.role}`}>
-            <title>{`${node.label}\n${node.role}\n${rate(node.served)} units/week${node.role === 'producer' ? `; utilization ${percentage(node)}` : node.role === 'consumer' ? `; satisfaction ${percentage(node)}` : ''}`}</title>
-            <rect x={node.x0} y={node.y0} width={node.x1 - node.x0} height={Math.max(2, node.y1 - node.y0)} />
+            <title>{`${node.label}\n${node.role}\n${node.role === 'producer' || node.role === 'consumer'
+              ? `${rate(node.served)} / ${rate(node.requested)} units/week; ${node.role === 'producer' ? 'utilization' : 'satisfaction'} ${percentage(node)}`
+              : `In: ${rate(node.requested)}; out: ${rate(node.served)} units/week`}`}</title>
+            <rect className={node.role === 'producer' || node.role === 'consumer' ? 'goods-flow-page__capacity' : undefined}
+              x={node.x0} y={node.y0} width={node.x1 - node.x0} height={Math.max(2, node.y1 - node.y0)} />
+            {(node.role === 'producer' || node.role === 'consumer') && <rect
+              x={node.x0} y={node.y0} width={node.x1 - node.x0}
+              height={(node.y1 - node.y0) * Math.min(1, node.value > 0 ? node.served / node.value : 0)} />}
             <foreignObject x={(node.x0 + node.x1) / 2 - 105} y={node.y0 - flowNodeLabelOffset} width={210} height={46}>
               <div className="goods-flow-page__node-label">
                 <strong>{node.label}</strong>
-                <span>{rate(node.role === 'consumer' ? node.served : Math.max(node.served, node.requested))} units/week{node.role === 'producer' || node.role === 'consumer' ? ` · ${percentage(node)}` : ''}</span>
+                <span>{node.role === 'producer' || node.role === 'consumer'
+                  ? `${rate(node.served)} / ${rate(node.requested)} units/week · ${percentage(node)}`
+                  : `${rate(Math.max(node.served, node.requested))} units/week`}</span>
               </div>
             </foreignObject>
           </a>

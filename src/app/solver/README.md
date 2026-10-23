@@ -1,9 +1,21 @@
 # Goods Flow Solver — Notes
 
-This folder is meant to hold a generic goods flow solver, implementing the "Goods Flow Solver"
-section of [railway-empire-spec.md](../../../railway-empire-spec.md). Design work is largely
-settled below; [solver-types.ts](solver-types.ts) has the types, and the solving logic itself is
-still to be written.
+This folder implements the "Goods Flow Solver" section of
+[railway-empire-spec.md](../../../railway-empire-spec.md).
+
+## Conservation
+
+After proportional allocation stabilizes, the solver cancels opposing same-good circulation
+without changing net transfers, then reduces unsupported outgoing flows and
+excess incoming deliveries, propagating the restrictions upstream in proportion to existing
+flows. A transfer-only warehouse must forward everything it receives; unused local production
+can remain unshipped, but imported goods cannot silently disappear into storage. Stops sharing
+a host pool goods locally rather than sending trains between themselves.
+
+Industry outputs and contributor figures are recomputed from the corrected flows. Allocation
+and conservation share the `maxIterations` budget; `converged` is true only when both settle.
+The correction only reduces flows, preserving leg capacity limits; it does not optimize routes
+or reallocate the capacity it frees. Run the regression suite with `pnpm test`.
 
 ## Goal
 

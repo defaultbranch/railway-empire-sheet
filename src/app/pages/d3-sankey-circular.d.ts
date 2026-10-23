@@ -5,6 +5,7 @@ declare module 'd3-sankey-circular' {
     y0: number;
     y1: number;
     depth: number;
+    value: number;
     sourceLinks: unknown[];
     targetLinks: unknown[];
   };

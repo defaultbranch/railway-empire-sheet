@@ -30,7 +30,17 @@ export function layoutGoodsFlow(nodes: FlowDiagramNode[], links: FlowDiagramLink
     .nodeAlign((node, columns) => node.role === 'producer' ? 0
       : node.role === 'consumer' ? columns - 1 : node.depth)
     .extent([[120, 64], [1280, height - 48]])({
-      nodes: ordered.map((node) => ({ ...node })),
+      nodes: ordered.map((node) => {
+        let transportedAmount = 0;
+        return {
+          ...node,
+          get value() {
+            return Math.max(transportedAmount,
+              node.role === 'producer' || node.role === 'consumer' ? node.requested : 0);
+          },
+          set value(amount: number) { transportedAmount = amount; },
+        };
+      }),
       links: links.map((link) => ({ ...link })),
     });
 

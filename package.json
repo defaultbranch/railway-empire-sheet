@@ -6,6 +6,7 @@
   "packageManager": "pnpm@12.4.2",
   "scripts": {
     "dev": "vite",
+    "test": "node --test src/app/solver/*.test.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
