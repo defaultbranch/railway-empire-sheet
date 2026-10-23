@@ -16,6 +16,7 @@ import { TotalDemandInReachPage } from './total-demand-in-reach-page';
 import { TrainLinesPage } from './train-lines-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
 import { GoodsFlowPage } from './goods-flow-page';
+import { IndustryFlowPage } from './industry-flow-page';
 
 export type Page = {
   title: string;
@@ -181,6 +182,12 @@ export const pages: Page[] = [
     slug: 'goods-flow',
     description: '',
     Component: GoodsFlowPage,
+  },
+  {
+    title: 'Industry Supply Chain',
+    slug: 'industry-supply-chain',
+    description: '',
+    Component: IndustryFlowPage,
   },
 ];
 

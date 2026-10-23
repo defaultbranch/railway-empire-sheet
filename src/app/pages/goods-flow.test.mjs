@@ -7,12 +7,13 @@ import { createServer } from 'vite';
 let server;
 let buildWarehouseFlowDiagram;
 let buildGoodsFlowDiagram;
+let buildIndustryFlowDiagram;
 let layoutGoodsFlow;
 let FlowSankey;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true }, appType: 'custom' });
-  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
+  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram, buildIndustryFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
   ({ layoutGoodsFlow } = await server.ssrLoadModule('/src/app/pages/goods-flow-layout.ts'));
   ({ FlowSankey } = await server.ssrLoadModule('/src/app/pages/goods-flow-page.tsx'));
 });
@@ -40,6 +41,49 @@ function fixture() {
   ], contributorFlows: [], nodeFlows: [], converged: true, iterations: 1, missingCoefficients: [] };
   return { network, solution };
 }
+
+test('industry diagrams trace all upstream sources and downstream sinks over multiple hops', () => {
+  const { network, solution } = fixture();
+  const industry = { kind: 'industry', city: 'Town', slot: 0 };
+  const otherIndustry = { kind: 'industry', city: 'Town', slot: 1 };
+  const farm = { kind: 'rural business', name: 'Farm' };
+  const localFarm = { kind: 'rural business', name: 'Local farm' };
+  const population = { kind: 'population', city: 'Beyond' };
+  const hub = network.nodes[0];
+  hub.conversions.push({ contributor: industry, rawMaterials: [{ good: 'Wheat', amount: 5 }],
+    products: [{ good: 'Corn', amount: 4 }] });
+  hub.conversions.push({ contributor: otherIndustry, rawMaterials: [{ good: 'Wheat', amount: 2 }], products: [] });
+  network.nodes[1].sources.push({ contributor: farm, good: 'Wheat', amount: 6 });
+  hub.sources.push({ contributor: localFarm, good: 'Wheat', amount: 1 });
+  network.nodes[3].sinks.push({ contributor: population, good: 'Corn', amount: 4 });
+  solution.contributorFlows = [
+    { contributor: farm, node: network.nodes[1].id, good: 'Wheat', requested: 6, served: 4 },
+    { contributor: localFarm, node: hub.id, good: 'Wheat', requested: 1, served: 1 },
+    { contributor: industry, node: hub.id, good: 'Wheat', requested: 5, served: 3 },
+    { contributor: otherIndustry, node: hub.id, good: 'Wheat', requested: 2, served: 2 },
+    { contributor: industry, node: hub.id, good: 'Corn', requested: 4, served: 4 },
+    { contributor: population, node: network.nodes[3].id, good: 'Corn', requested: 4, served: 4 },
+  ];
+  solution.legFlows = [{ leg: 'in@0', good: 'Wheat', units: 4 },
+    { leg: 'out@0', good: 'Corn', units: 4 }, { leg: 'beyond@0', good: 'Corn', units: 4 }];
+  const before = JSON.stringify({ network, solution });
+  const inbound = buildIndustryFlowDiagram(network, solution, industry, 'in');
+  assert.equal(inbound.links.length, 4);
+  assert.deepEqual(inbound.nodes.filter((node) => node.role === 'producer').map((node) => node.label), ['Farm', 'Local farm']);
+  assert.equal(inbound.nodes.filter((node) => node.role === 'consumer').length, 1);
+  assert.ok(inbound.links.every((link) => link.good === 'Wheat'));
+  const outbound = buildIndustryFlowDiagram(network, solution, industry, 'out');
+  assert.equal(outbound.links.length, 4);
+  assert.ok(outbound.nodes.some((node) => node.label === 'Beyond population'));
+  assert.ok(outbound.nodes.every((node) => !node.label.includes('Farm')));
+  assert.ok(outbound.links.every((link) => link.good === 'Corn'));
+  for (const diagram of [inbound, outbound]) {
+    const graph = layoutGoodsFlow(diagram.nodes, diagram.links, 500);
+    assert.ok(graph.links.every((link) => !link.path.includes('NaN')));
+  }
+  assert.equal(JSON.stringify({ network, solution }), before);
+  assert.deepEqual(buildIndustryFlowDiagram(network, solution, { ...industry, slot: 2 }, 'in'), { nodes: [], links: [] });
+});
 
 test('warehouse view bundles goods and nets opposing and parallel flows within one hop', () => {
   const { network, solution } = fixture();

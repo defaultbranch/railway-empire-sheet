@@ -138,6 +138,7 @@ export function CityPage({ slug }: { slug: string }) {
   };
 
   const cityGoodBalanceIndex = pages.findIndex((page) => page.slug === 'city-good-balance');
+  const industryFlowIndex = pages.findIndex((page) => page.slug === 'industry-supply-chain');
   const cityGoodBalancePathForGood = (good: string) =>
     `${pathForPageIndex(cityGoodBalanceIndex)}?${new URLSearchParams({ city: city.name, good })}`;
   const goodDetailLink = (good: string) => {
@@ -282,6 +283,13 @@ export function CityPage({ slug }: { slug: string }) {
                           ))}
                         </select>
                       )}
+                      {industry !== undefined && <>{' '}<a
+                        href={`${pathForPageIndex(industryFlowIndex)}?${new URLSearchParams({ city: city.name, slot: String(slot + 1) })}`}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          navigate(`${pathForPageIndex(industryFlowIndex)}?${new URLSearchParams({ city: city.name, slot: String(slot + 1) })}`);
+                        }}
+                      >Supply chain</a></>}
                     </td>
                     {rawMaterialGoods.map((good) => (
                       <td key={`raw-${good}`}>{formatIndustryAmount(slot, good, 'rawMaterials')}</td>

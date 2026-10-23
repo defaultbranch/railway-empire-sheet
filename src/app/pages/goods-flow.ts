@@ -32,7 +32,7 @@ function identity(contributor: Contributor): string {
 function contributorLabel(contributor: Contributor): string {
   if (contributor.kind === 'rural business') return contributor.name;
   if (contributor.kind === 'population') return `${contributor.city} population`;
-  return `${contributor.city} industry ${contributor.slot}`;
+  return `${contributor.city} industry ${contributor.slot + 1}`;
 }
 
 export function buildGoodsFlowDiagram(network: FlowNetwork, solution: FlowSolution, good: string) {
@@ -173,6 +173,66 @@ export function buildWarehouseFlowDiagram(network: FlowNetwork, solution: FlowSo
         else segment.outgoing += link.value;
       }
       links.push({ ...link, good, source: inbound ? neighborId : centerId, target: inbound ? centerId : neighborId });
+    }
+  }
+  return { nodes: [...nodes.values()], links };
+}
+
+export function buildIndustryFlowDiagram(
+  network: FlowNetwork,
+  solution: FlowSolution,
+  industry: Extract<Contributor, { kind: 'industry' }>,
+  direction: 'in' | 'out',
+) {
+  const nodes = new Map<string, FlowDiagramNode>();
+  const links: FlowDiagramLink[] = [];
+  const goods = new Set<string>();
+  for (const node of network.nodes) {
+    for (const conversion of node.conversions) {
+      if (identity(conversion.contributor) !== identity(industry)) continue;
+      for (const entry of direction === 'in' ? conversion.rawMaterials : conversion.products) goods.add(entry.good);
+    }
+  }
+  const centerId = `${direction === 'in' ? 'consumer' : 'producer'}:${identity(industry)}`;
+  for (const good of goods) {
+    const diagram = buildGoodsFlowDiagram(network, solution, good);
+    const reached = new Set([centerId]);
+    const pending = [centerId];
+    while (pending.length > 0) {
+      const current = pending.pop()!;
+      for (const link of diagram.links) {
+        if ((direction === 'in' ? link.target : link.source) !== current) continue;
+        const next = direction === 'in' ? link.source : link.target;
+        if (!reached.has(next)) {
+          reached.add(next);
+          pending.push(next);
+        }
+      }
+    }
+    for (const link of diagram.links) {
+      if (!reached.has(link.source) || !reached.has(link.target)) continue;
+      links.push({ ...link, good });
+      for (const [id, incoming] of [[link.source, false], [link.target, true]] as const) {
+        const original = diagram.allNodes.get(id)!;
+        let node = nodes.get(id);
+        if (node === undefined) {
+          node = { ...original, requested: 0, served: 0, segments: [] };
+          nodes.set(id, node);
+        }
+        let segment = node.segments!.find((entry) => entry.good === good);
+        if (segment === undefined) {
+          segment = { good, incoming: 0, outgoing: 0 };
+          if (node.role === 'producer' || node.role === 'consumer') {
+            segment.capacity = original.requested;
+            node.requested += original.requested;
+          }
+          node.segments!.push(segment);
+        }
+        if (incoming) segment.incoming += link.value;
+        else segment.outgoing += link.value;
+        if (node.role === 'producer' || node.role === 'consumer' || !incoming) node.served += link.value;
+        else node.requested += link.value;
+      }
     }
   }
   return { nodes: [...nodes.values()], links };
