@@ -17,6 +17,7 @@ import { TrainLinesPage } from './train-lines-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
 import { GoodsFlowPage } from './goods-flow-page';
 import { IndustryFlowPage } from './industry-flow-page';
+import { AnalyticsPage } from './analytics-page';
 
 export type Page = {
   title: string;
@@ -188,6 +189,12 @@ export const pages: Page[] = [
     slug: 'industry-supply-chain',
     description: '',
     Component: IndustryFlowPage,
+  },
+  {
+    title: 'Analytics',
+    slug: 'analytics',
+    description: '',
+    Component: AnalyticsPage,
   },
 ];
 
