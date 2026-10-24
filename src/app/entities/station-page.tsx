@@ -79,9 +79,10 @@ export function StationPage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
-  const otherStops = otherKind === 'station'
+  const otherStops = [...(otherKind === 'station'
     ? trainStations.filter((other) => other.name !== station.name)
-    : warehouses;
+    : warehouses)]
+    .sort((left, right) => left.name.localeCompare(right.name));
   const connectingLines = trainLines
     .filter((line) => line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name))
     .sort((left, right) => left.name.localeCompare(right.name));

@@ -26,7 +26,8 @@ export function TrainLinesPage() {
   const [tourDays, setTourDays] = useState('');
   const [cargo, setCargo] = useState<TrainCargo>('anything');
 
-  const optionsFor = (kind: StopKind) => (kind === 'station' ? trainStations : warehouses);
+  const optionsFor = (kind: StopKind) => [...(kind === 'station' ? trainStations : warehouses)]
+    .sort((left, right) => left.name.localeCompare(right.name));
 
   const stopLabel = (stop: StopRef) => `${stop.name} (${stop.kind === 'station' ? 'Station' : 'Warehouse'})`;
 

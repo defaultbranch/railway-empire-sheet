@@ -84,7 +84,8 @@ export function WarehousePage({ slug }: { slug: string }) {
           .map((name) => ruralBusinesses.find((business) => business.name === name))
           .filter((business) => business !== undefined)
       : [];
-  const otherStops = otherKind === 'station' ? trainStations : warehouses.filter((other) => other.name !== warehouse.name);
+  const otherStops = [...(otherKind === 'station' ? trainStations : warehouses.filter((other) => other.name !== warehouse.name))]
+    .sort((left, right) => left.name.localeCompare(right.name));
   const connectingLines = trainLines.filter((line) =>
     line.stops.some((stop) => stop.kind === 'warehouse' && stop.name === warehouse.name),
   ).sort((left, right) => left.name.localeCompare(right.name));
