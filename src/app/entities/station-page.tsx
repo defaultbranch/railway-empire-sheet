@@ -41,7 +41,7 @@ export function StationPage({ slug }: { slug: string }) {
   const { warehouses } = useWarehouses();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
-  const { trainLines, addTrainLine, replaceTrainLines } = useTrainLines();
+  const { trainLines, addTrainLine, removeTrainLine, replaceTrainLines } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines } = useGoodsFlow();
   const [newLineName, setNewLineName] = useState('');
@@ -181,6 +181,7 @@ export function StationPage({ slug }: { slug: string }) {
                 <th>Train line</th>
                 <th>Number of trains</th>
                 <th>Tour days</th>
+                <th scope="col" aria-label="Actions" />
                 {trainLineGoods.map((good) => <th key={good}>{good}</th>)}
               </tr>
             </thead>
@@ -235,6 +236,16 @@ export function StationPage({ slug }: { slug: string }) {
                       aria-label={`${line.name} tour days`}
                     />
                   </td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => removeTrainLine(line.name)}
+                      aria-label={`Remove ${line.name}`}
+                      title={`Remove ${line.name}`}
+                    >
+                      ✕
+                    </button>
+                  </td>
                   {dropped !== undefined ? (
                     <td colSpan={Math.max(trainLineGoods.length, 1)} className="warehouse-page__cell--dropped">
                       Not modelled: {dropped.reason}.
@@ -249,7 +260,7 @@ export function StationPage({ slug }: { slug: string }) {
             </tbody>
             <tfoot>
               <tr>
-                <th colSpan={3}>Total balance</th>
+                <th colSpan={4}>Total balance</th>
                 {trainLineGoods.map((good) => (
                   <BalanceCell key={good} in={totalBroughtIn.get(good)} out={totalTakenAway.get(good)} />
                 ))}
