@@ -156,6 +156,37 @@ test('warehouse view bundles goods and nets opposing and parallel flows within o
   assert.equal(JSON.stringify({ network, solution }), before);
 });
 
+test('station view includes incoming and outgoing goods with local production and consumption', () => {
+  const { network, solution } = fixture();
+  const station = network.nodes[0];
+  station.id = 'station:Toledo';
+  for (const leg of network.legs) {
+    if (leg.from === 'warehouse:Hub') leg.from = station.id;
+    if (leg.to === 'warehouse:Hub') leg.to = station.id;
+  }
+  const population = { kind: 'population', city: 'Toledo' };
+  const industry = { kind: 'industry', city: 'Toledo', slot: 0 };
+  station.sinks.push({ contributor: population, good: 'Wheat', amount: 1 });
+  station.conversions.push({ contributor: industry, rawMaterials: [], products: [{ good: 'Corn', amount: 1 }] });
+  solution.contributorFlows.push(
+    { contributor: population, node: station.id, good: 'Wheat', requested: 1, served: 1 },
+    { contributor: industry, node: station.id, good: 'Corn', requested: 1, served: 1 },
+  );
+  const diagram = buildWarehouseFlowDiagram(network, solution, station.id);
+  const center = diagram.nodes.find((node) => node.column === 1);
+  assert.equal(center.role, 'station');
+  assert.equal(center.path, '/stations/toledo');
+  assert.equal(center.requested, 6);
+  assert.equal(center.served, 6);
+  assert.ok(diagram.nodes.some((node) => node.role === 'producer'));
+  assert.ok(diagram.nodes.some((node) => node.role === 'consumer'));
+  const markup = renderToStaticMarkup(createElement(FlowSankey, {
+    diagram, good: 'Toledo', follow: () => {}, showGross: false,
+  }));
+  assert.ok(markup.includes('Toledo'));
+  assert.ok(!markup.includes('NaN'));
+});
+
 test('net ribbons attach inside matching stacked good segments', () => {
   const { network, solution } = fixture();
   const diagram = buildWarehouseFlowDiagram(network, solution, 'warehouse:Hub');

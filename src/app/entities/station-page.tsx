@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { trainCargoTypes, type StopRef, type TrainCargo } from '../game-state/types';
@@ -12,6 +12,8 @@ import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
 import { useGoodsFlow, stopNodeId } from '../solver';
 import type { LegFlow } from '../solver';
+import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
+import { FlowSankey } from '../pages/goods-flow-page';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
@@ -87,6 +89,12 @@ export function StationPage({ slug }: { slug: string }) {
     .filter((line) => line.stops.some((stop) => stop.kind === 'station' && stop.name === station.name))
     .sort((left, right) => left.name.localeCompare(right.name));
   const nodeId = stopNodeId({ kind: 'station', name: station.name });
+  const flowDiagram = buildWarehouseFlowDiagram(network, solution, nodeId);
+  const followFlow = (event: MouseEvent<HTMLElement | SVGElement>, path: string) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(path);
+  };
   const trainLineRows = connectingLines.map((line) => {
     const dropped = droppedLines.find((entry) => entry.line === line.name);
     const legs = network.legs.filter((leg) => leg.line === line.name);
@@ -139,6 +147,11 @@ export function StationPage({ slug }: { slug: string }) {
     <section className="station-page">
       <h1>{station.name}</h1>
       <p className="station-page__tracks">Tracks: {station.tracks}</p>
+      <section className="station-page__flow">
+        <h2>Net goods flow</h2>
+        {!solution.converged && <p role="status">The solver did not converge after {solution.iterations} iterations. Flows are estimates.</p>}
+        <FlowSankey diagram={flowDiagram} good={station.name} follow={followFlow} showGross={false} />
+      </section>
       <section className="station-page__connections">
         <h2>Connects to</h2>
         {hostCity !== undefined && (
