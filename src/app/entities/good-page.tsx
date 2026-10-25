@@ -7,7 +7,7 @@ import { useIndustryTypes } from '../game-state/industry-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { businessLevels } from '../game-state/types';
-import { cityPopulationDemandRows, type PopulationDemandSort } from '../pages/population-demand';
+import { cityGoodDemandRows, formatIndustryAmount, type CityGoodDemandSort } from '../pages/city-good-balance';
 import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
 import { pathForCity } from './city-routes';
@@ -25,7 +25,7 @@ export function GoodPage({ slug }: { slug: string }) {
   const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
   const { navigate } = useNavigation();
   const { solution } = useGoodsFlow();
-  const [sort, setSort] = useState<PopulationDemandSort>({ key: 'city', descending: false });
+  const [sort, setSort] = useState<CityGoodDemandSort>({ key: 'city', descending: false });
   const [newProducerName, setNewProducerName] = useState('');
   const [selectedProducerTypeName, setSelectedProducerTypeName] = useState('');
   const good = goods.find((existing) => goodSlug(existing) === slug);
@@ -49,14 +49,23 @@ export function GoodPage({ slug }: { slug: string }) {
 
   const adjacent = adjacentGoods(goods, good);
   const demand = demands.find((existing) => existing.good === good);
-  const demandingCities = demand === undefined ? [] : cityPopulationDemandRows(demand, cities, solution, sort);
-  const sortHeader = (key: PopulationDemandSort['key'], label: string) => (
-    <th aria-sort={sort.key === key ? sort.descending ? 'descending' : 'ascending' : 'none'}>
+  const showPopulationDemand = demand !== undefined && demand.wagonsPerMillion > 0;
+  const showIndustryDemand = industryTypes.some((type) => type.rawMaterials.some((flow) => flow.good === good));
+  const showIndustryProduction = industryTypes.some((type) => type.products.some((flow) => flow.good === good));
+  const activeSort: CityGoodDemandSort =
+    ((sort.key === 'demand' || sort.key === 'unmet') && !showPopulationDemand) ||
+    (sort.key === 'industryDemand' && !showIndustryDemand) ||
+    (sort.key === 'industryProduction' && !showIndustryProduction)
+      ? { key: 'city', descending: false }
+      : sort;
+  const demandingCities = cityGoodDemandRows(good, cities, demand, industries, industryTypes, solution, activeSort);
+  const sortHeader = (key: CityGoodDemandSort['key'], label: string, title?: string) => (
+    <th title={title} aria-sort={activeSort.key === key ? activeSort.descending ? 'descending' : 'ascending' : 'none'}>
       <button
         type="button"
-        onClick={() => setSort({ key, descending: sort.key === key ? !sort.descending : false })}
+        onClick={() => setSort({ key, descending: activeSort.key === key ? !activeSort.descending : false })}
       >
-        {label} <span aria-hidden="true">{sort.key === key ? sort.descending ? '↓' : '↑' : '↕'}</span>
+        {label} <span aria-hidden="true">{activeSort.key === key ? activeSort.descending ? '↓' : '↑' : '↕'}</span>
       </button>
     </th>
   );
@@ -66,16 +75,6 @@ export function GoodPage({ slug }: { slug: string }) {
   const producers = ruralBusinesses.flatMap((business) => {
     const type = ruralBusinessTypes.find((existing) => existing.name === business.typeName && existing.good === good);
     return type === undefined ? [] : [{ business, type }];
-  });
-  const cityIndustryProducers = industries.flatMap((industry) => {
-    const type = industryTypes.find((existing) => existing.name === industry.typeName);
-    if (type === undefined) return [];
-    const productFlows = type.products.filter((flow) => flow.good === good);
-    if (productFlows.length === 0) return [];
-    const outputs = productFlows.map((flow) => flow.amountByLevel[industry.level]);
-    return [{ industry, type, output: outputs.some((amount) => amount === undefined)
-      ? undefined
-      : outputs.reduce<number>((total, amount) => total + amount!, 0) }];
   });
   const trimmedProducerName = newProducerName.trim();
   const canAddProducer =
@@ -124,26 +123,28 @@ export function GoodPage({ slug }: { slug: string }) {
         )}
       </div>
       <section className="good-page__demand">
-        <h2>Population demand</h2>
-        {demand === undefined ? (
-          <p className="good-page__empty">No population demand configured.</p>
-        ) : (
-          <>
+        <h2>City demand and production (wagons/week)</h2>
+        {showPopulationDemand && (
             <p>
               Minimum population: {demand.minPopulation.toLocaleString()} · Wagons per million: {demand.wagonsPerMillion}
             </p>
-            {demandingCities.length > 0 && (
+        )}
+        {demandingCities.length === 0 ? (
+          <p className="good-page__empty">No population demand, industry demand or industry production.</p>
+        ) : (
               <table className="good-page__table">
                 <thead>
                   <tr>
                     {sortHeader('city', 'City')}
                     <th>Population</th>
-                    {sortHeader('demand', 'Demand per week')}
-                    {sortHeader('unmet', 'Unmet demand per week')}
+                    {showPopulationDemand && sortHeader('demand', 'Population demand')}
+                    {showIndustryDemand && sortHeader('industryDemand', 'Industry demand', 'Solver-predicted raw-material consumption / recipe maximum (percent of maximum); sorted by actual consumption')}
+                    {showIndustryProduction && sortHeader('industryProduction', 'Industry production', 'Solver-predicted output used locally or shipped / recipe maximum (percent of maximum); sorted by actual output')}
+                    {showPopulationDemand && sortHeader('unmet', 'Unmet population demand', 'Population demand minus served population supply; excludes industry demand')}
                   </tr>
                 </thead>
                 <tbody>
-                  {demandingCities.map(({ city, amount, unmet }) => (
+                  {demandingCities.map(({ city, amount, unmet, industryDemand, maxIndustryDemand, industryProduction, maxIndustryProduction }) => (
                     <tr key={city.name}>
                       <td>
                         <a
@@ -157,14 +158,14 @@ export function GoodPage({ slug }: { slug: string }) {
                         </a>
                       </td>
                       <td>{city.population.toLocaleString()}</td>
-                      <td>{amount.toFixed(2)}</td>
-                      <td>{unmet.toFixed(2)}</td>
+                      {showPopulationDemand && <td>{amount.toFixed(2)}</td>}
+                      {showIndustryDemand && <td>{formatIndustryAmount(industryDemand, maxIndustryDemand)}</td>}
+                      {showIndustryProduction && <td>{formatIndustryAmount(industryProduction, maxIndustryProduction)}</td>}
+                      {showPopulationDemand && <td>{unmet.toFixed(2)}</td>}
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
-          </>
         )}
       </section>
       {producerTypes.length > 0 && (
@@ -251,46 +252,6 @@ export function GoodPage({ slug }: { slug: string }) {
               Add
             </button>
           </form>
-        </section>
-      )}
-      {cityIndustryProducers.length > 0 && (
-        <section className="good-page__city-industries">
-          <h2>City industries</h2>
-          <table className="good-page__table">
-            <thead>
-              <tr>
-                <th>City</th>
-                <th>Industry</th>
-                <th>Level</th>
-                <th>Weekly production</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cityIndustryProducers.map(({ industry, type, output }) => {
-                const city = cities.find((existing) => existing.name === industry.city);
-                return (
-                  <tr key={`${industry.city}-${industry.citySlot}`}>
-                    <td>
-                      {city === undefined ? industry.city : (
-                        <a
-                          href={pathForCity(city)}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            navigate(pathForCity(city));
-                          }}
-                        >
-                          {city.name}
-                        </a>
-                      )}
-                    </td>
-                    <td>{type.name}</td>
-                    <td>{industry.level}</td>
-                    <td>{output === undefined ? '?' : output}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
         </section>
       )}
       <section className="good-page__industry-recipes">
