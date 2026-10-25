@@ -21,6 +21,7 @@ import type { WarehouseRecommendationsRequest } from '../solver/warehouse-recomm
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+const percentage = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 1 });
 
 function amountsByGood(flows: LegFlow[]): Map<string, number> {
   const amounts = new Map<string, number>();
@@ -157,7 +158,14 @@ export function WarehousePage({ slug }: { slug: string }) {
     const departing = legs.find((leg) => leg.from === nodeId);
     const broughtIn = amountsByGood(arriving ? solution.legFlows.filter((flow) => flow.leg === arriving.id) : []);
     const takenAway = amountsByGood(departing ? solution.legFlows.filter((flow) => flow.leg === departing.id) : []);
-    return { line, dropped, broughtIn, takenAway };
+    const utilization = dropped !== undefined || legs.length === 0 ? undefined : legs.reduce((sum, leg) => {
+      const units = solution.legFlows.filter((flow) => flow.leg === leg.id).reduce((total, flow) => total + flow.units, 0);
+      return sum + (leg.capacity > 0 ? units / leg.capacity : 0);
+    }, 0) / legs.length;
+    const weeklyYield = dropped !== undefined
+      ? undefined
+      : revenue.lines.find((entry) => entry.line === line.name)?.weeklyYieldPerTrain ?? 0;
+    return { line, dropped, broughtIn, takenAway, utilization, weeklyYield };
   });
   const trainLineGoodsSet = new Set(trainLineRows.flatMap((row) => [...row.broughtIn.keys(), ...row.takenAway.keys()]));
   const trainLineGoods = goods.filter((good) => trainLineGoodsSet.has(good));
@@ -355,6 +363,8 @@ export function WarehousePage({ slug }: { slug: string }) {
                 <th>Train line</th>
                 <th>Number of trains</th>
                 <th>Tour days</th>
+                <th title="Average over both directions">Utilization</th>
+                <th>Yield / week / train</th>
                 <th scope="col" aria-label="Actions" />
                 {trainLineGoods.map((good) => (
                   <th key={good}>{good}</th>
@@ -362,7 +372,7 @@ export function WarehousePage({ slug }: { slug: string }) {
               </tr>
             </thead>
             <tbody>
-              {trainLineRows.map(({ line, dropped, broughtIn, takenAway }) => (
+              {trainLineRows.map(({ line, dropped, broughtIn, takenAway, utilization, weeklyYield }) => (
                 <tr key={line.name}>
                   <td>
                     <a
@@ -412,6 +422,8 @@ export function WarehousePage({ slug }: { slug: string }) {
                       aria-label={`${line.name} tour days`}
                     />
                   </td>
+                  <td>{utilization === undefined ? '—' : percentage.format(utilization)}</td>
+                  <td>{weeklyYield === undefined ? '—' : currency.format(weeklyYield)}</td>
                   <td>
                     <button
                       type="button"
@@ -436,7 +448,7 @@ export function WarehousePage({ slug }: { slug: string }) {
             </tbody>
             <tfoot>
               <tr>
-                <th colSpan={4}>Total balance</th>
+                <th colSpan={6}>Total balance</th>
                 {trainLineGoods.map((good) => (
                   <BalanceCell key={good} in={totalBroughtIn.get(good)} out={totalTakenAway.get(good)} />
                 ))}
