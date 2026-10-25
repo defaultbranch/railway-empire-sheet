@@ -153,6 +153,22 @@ body {
 	right: 1rem;
 }
 
+.good-page {
+	&__heading {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		h1 { min-width: 0; overflow-wrap: anywhere; }
+	}
+	&__navigate {
+		@extend %icon-button;
+		flex: 0 0 auto;
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0;
+	}
+}
+
 // Pages follow a `<block>__<element>` naming convention (BEM-ish). Rather than repeating the
 // same handful of rules in every `*-page`/`*-entity` block, style the recurring element names
 // once here so any new page gets consistent spacing/typography for free.

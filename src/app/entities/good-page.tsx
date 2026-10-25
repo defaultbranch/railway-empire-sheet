@@ -11,7 +11,7 @@ import { cityPopulationDemandRows, type PopulationDemandSort } from '../pages/po
 import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
 import { pathForCity } from './city-routes';
-import { goodSlug } from './good-routes';
+import { adjacentGoods, goodSlug, pathForGood } from './good-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
 
@@ -47,6 +47,7 @@ export function GoodPage({ slug }: { slug: string }) {
     );
   }
 
+  const adjacent = adjacentGoods(goods, good);
   const demand = demands.find((existing) => existing.good === good);
   const demandingCities = demand === undefined ? [] : cityPopulationDemandRows(demand, cities, solution, sort);
   const sortHeader = (key: PopulationDemandSort['key'], label: string) => (
@@ -97,7 +98,31 @@ export function GoodPage({ slug }: { slug: string }) {
 
   return (
     <section className="good-page">
-      <h1>{good}</h1>
+      <div className="good-page__heading">
+        {adjacent !== undefined && goods.length > 1 && (
+          <button
+            className="good-page__navigate"
+            type="button"
+            aria-label={`Previous good: ${adjacent.previous}`}
+            title={`Previous good: ${adjacent.previous}`}
+            onClick={() => navigate(pathForGood(adjacent.previous))}
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+        )}
+        <h1>{good}</h1>
+        {adjacent !== undefined && goods.length > 1 && (
+          <button
+            className="good-page__navigate"
+            type="button"
+            aria-label={`Next good: ${adjacent.next}`}
+            title={`Next good: ${adjacent.next}`}
+            onClick={() => navigate(pathForGood(adjacent.next))}
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
+      </div>
       <section className="good-page__demand">
         <h2>Population demand</h2>
         {demand === undefined ? (
