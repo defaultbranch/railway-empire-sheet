@@ -4,10 +4,12 @@ import { createServer } from 'vite';
 
 let server;
 let analyzePopulationSupply;
+let cityPopulationDemandRows;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   ({ analyzePopulationSupply } = await server.ssrLoadModule('/src/app/pages/analytics.ts'));
+  ({ cityPopulationDemandRows } = await server.ssrLoadModule('/src/app/pages/population-demand.ts'));
 });
 after(async () => { await server?.close(); });
 
@@ -22,6 +24,42 @@ const solution = (contributorFlows = []) => ({ contributorFlows, legFlows: [], n
   converged: true, iterations: 1, missingCoefficients: [] });
 const populationFlow = (city, good, served, node = 'station:Town') => ({
   contributor: { kind: 'population', city }, good, requested: 10, served, node,
+});
+
+test('unmet population demand sums served flows, excludes industry and other goods, and never goes negative', () => {
+  const cities = ['Partial', 'Unconnected', 'Supplied', 'Locked'].map((name) => ({
+    name, population: name === 'Locked' ? 1 : 100000,
+  }));
+  const demand = { good: 'Fruit', minPopulation: 100, wagonsPerMillion: 10 };
+  const flows = solution([
+    populationFlow('Partial', 'Fruit', 0.2),
+    populationFlow('Partial', 'Fruit', 0.3, 'warehouse:Town'),
+    populationFlow('Partial', 'Beer', 5),
+    { contributor: { kind: 'industry', city: 'Partial', slot: 0 }, good: 'Fruit', served: 5 },
+    populationFlow('Supplied', 'Fruit', 2),
+  ]);
+  const snapshot = structuredClone({ cities, flows });
+  assert.deepEqual(cityPopulationDemandRows(demand, cities, flows, { key: 'city', descending: false })
+    .map(({ city, amount, unmet }) => [city.name, amount, unmet]),
+  [['Partial', 1, 0.5], ['Supplied', 1, 0], ['Unconnected', 1, 1]]);
+  assert.deepEqual({ cities, flows }, snapshot);
+});
+
+test('population demand rows sort by city, demand and unmet demand in both directions with city tie breaks', () => {
+  const cities = [
+    { name: 'Zulu', population: 100000 }, { name: 'Alpha', population: 300000 },
+    { name: 'Beta', population: 100000 },
+  ];
+  const demand = { good: 'Fruit', minPopulation: 0, wagonsPerMillion: 10 };
+  const flows = solution([populationFlow('Alpha', 'Fruit', 2.5)]);
+  const names = (key, descending) => cityPopulationDemandRows(demand, cities, flows, { key, descending })
+    .map(({ city }) => city.name);
+  assert.deepEqual(names('city', false), ['Alpha', 'Beta', 'Zulu']);
+  assert.deepEqual(names('city', true), ['Zulu', 'Beta', 'Alpha']);
+  assert.deepEqual(names('demand', false), ['Beta', 'Zulu', 'Alpha']);
+  assert.deepEqual(names('demand', true), ['Alpha', 'Beta', 'Zulu']);
+  assert.deepEqual(names('unmet', false), ['Alpha', 'Beta', 'Zulu']);
+  assert.deepEqual(names('unmet', true), ['Beta', 'Zulu', 'Alpha']);
 });
 
 test('missing supply includes disconnected cities and prioritizes earlier goods even in large cities', () => {

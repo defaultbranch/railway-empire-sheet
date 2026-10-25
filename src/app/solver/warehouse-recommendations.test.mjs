@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { Worker } from 'node:worker_threads';
+import { once } from 'node:events';
 import { solveFlowNetwork } from './solve-flow.ts';
 import { analyzeTransportRevenue } from './transport-revenue.ts';
 import { simulateWarehouseGoods } from './warehouse-recommendations.ts';
@@ -53,6 +55,32 @@ test('full, missing and disconnected warehouses have no simulations', () => {
   assert.deepEqual(simulateWarehouseGoods(baseline, { ...warehouse, goods: ['Beer', 'Corn', 'Coal'] }, lines), []);
   assert.deepEqual(simulateWarehouseGoods(baseline, { ...warehouse, name: 'Missing' }, lines), []);
   assert.deepEqual(simulateWarehouseGoods({ ...baseline, network: { ...baseline.network, legs: [] } }, warehouse, lines), []);
+});
+
+test('worker computes recommendations from a cloned snapshot off the main thread', { timeout: 10000 }, async () => {
+  const workerUrl = new URL('./warehouse-recommendations.worker.ts', import.meta.url);
+  const worker = new Worker(`
+    const { parentPort } = require('node:worker_threads');
+    globalThis.addEventListener = (type, listener) => {
+      if (type === 'message') parentPort.on('message', (data) => listener({ data }));
+    };
+    globalThis.postMessage = (data) => parentPort.postMessage(data);
+    import(${JSON.stringify(workerUrl.href)}).catch((error) => { throw error; });
+  `, { eval: true });
+  try {
+    const baseline = fixture();
+    const snapshot = structuredClone(baseline);
+    const response = once(worker, 'message');
+    worker.postMessage({ baseline, warehouse, trainLines: lines });
+    const [results] = await response;
+    assert.deepEqual(results, simulateWarehouseGoods(baseline, warehouse, lines));
+    assert.deepEqual(baseline, snapshot);
+    const nextResponse = once(worker, 'message');
+    worker.postMessage({ baseline, warehouse: { ...warehouse, goods: ['Beer', 'Corn', 'Coal'] }, trainLines: lines });
+    assert.deepEqual((await nextResponse)[0], []);
+  } finally {
+    await worker.terminate();
+  }
 });
 
 test('shared capacity accounts for displaced goods rather than adding gross new revenue', () => {

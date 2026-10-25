@@ -7,7 +7,8 @@ import { useIndustryTypes } from '../game-state/industry-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { businessLevels } from '../game-state/types';
-import { demandForCity } from '../pages/population-demand';
+import { cityPopulationDemandRows, type PopulationDemandSort } from '../pages/population-demand';
+import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
 import { pathForCity } from './city-routes';
 import { goodSlug } from './good-routes';
@@ -23,6 +24,8 @@ export function GoodPage({ slug }: { slug: string }) {
   const { ruralBusinessTypes } = useRuralBusinessTypes();
   const { ruralBusinesses, addRuralBusiness } = useRuralBusinesses();
   const { navigate } = useNavigation();
+  const { solution } = useGoodsFlow();
+  const [sort, setSort] = useState<PopulationDemandSort>({ key: 'city', descending: false });
   const [newProducerName, setNewProducerName] = useState('');
   const [selectedProducerTypeName, setSelectedProducerTypeName] = useState('');
   const good = goods.find((existing) => goodSlug(existing) === slug);
@@ -45,9 +48,17 @@ export function GoodPage({ slug }: { slug: string }) {
   }
 
   const demand = demands.find((existing) => existing.good === good);
-  const demandingCities = demand === undefined ? [] : cities
-    .map((city) => ({ city, amount: demandForCity(demand, city) }))
-    .filter(({ amount }) => amount > 0);
+  const demandingCities = demand === undefined ? [] : cityPopulationDemandRows(demand, cities, solution, sort);
+  const sortHeader = (key: PopulationDemandSort['key'], label: string) => (
+    <th aria-sort={sort.key === key ? sort.descending ? 'descending' : 'ascending' : 'none'}>
+      <button
+        type="button"
+        onClick={() => setSort({ key, descending: sort.key === key ? !sort.descending : false })}
+      >
+        {label} <span aria-hidden="true">{sort.key === key ? sort.descending ? '↓' : '↑' : '↕'}</span>
+      </button>
+    </th>
+  );
   const producerTypes = ruralBusinessTypes.filter((type) => type.good === good);
   const selectedProducerType =
     producerTypes.find((type) => type.name === selectedProducerTypeName) ?? producerTypes[0];
@@ -100,13 +111,14 @@ export function GoodPage({ slug }: { slug: string }) {
               <table className="good-page__table">
                 <thead>
                   <tr>
-                    <th>City</th>
+                    {sortHeader('city', 'City')}
                     <th>Population</th>
-                    <th>Demand per week</th>
+                    {sortHeader('demand', 'Demand per week')}
+                    {sortHeader('unmet', 'Unmet demand per week')}
                   </tr>
                 </thead>
                 <tbody>
-                  {demandingCities.map(({ city, amount }) => (
+                  {demandingCities.map(({ city, amount, unmet }) => (
                     <tr key={city.name}>
                       <td>
                         <a
@@ -121,6 +133,7 @@ export function GoodPage({ slug }: { slug: string }) {
                       </td>
                       <td>{city.population.toLocaleString()}</td>
                       <td>{amount.toFixed(2)}</td>
+                      <td>{unmet.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>

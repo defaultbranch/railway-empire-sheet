@@ -47,6 +47,10 @@ cumulative plan. The warehouse view shows up to three converged improvements of 
 least $1/week and flags inconclusive solves. Existing solver exclusions, such as
 unknown tour durations and passenger-only trains, still apply.
 
+The warehouse view runs these trials in a dedicated Web Worker and displays a
+computing status while results are pending. Input changes or leaving the page
+terminate the worker; only results for the current inputs are displayed.
+
 ## Goal
 
 One generic, pure function over the game state — something like `solveGoodsFlow(gameState)` —

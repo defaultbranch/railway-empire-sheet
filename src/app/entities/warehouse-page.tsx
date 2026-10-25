@@ -16,7 +16,8 @@ import type { LegFlow } from '../solver';
 import { warehouseGoodSlotsByTracks, warehouseTrackCounts, type WarehouseTrackCount } from '../game-state/types';
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
 import { FlowSankey } from '../pages/goods-flow-page';
-import { simulateWarehouseGoods } from '../solver/warehouse-recommendations';
+import type { WarehouseGoodSimulation } from '../solver/warehouse-recommendations';
+import type { WarehouseRecommendationsRequest } from '../solver/warehouse-recommendations.worker';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -59,16 +60,55 @@ export function WarehousePage({ slug }: { slug: string }) {
   const [newLineTourDays, setNewLineTourDays] = useState('');
   const [newLineCargo, setNewLineCargo] = useState<TrainCargo>('anything');
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
-  const goodSimulations = useMemo(
-    () => warehouse === undefined || !goodsFlow.solution.converged
-      ? []
-      : simulateWarehouseGoods(goodsFlow, warehouse, trainLines),
+  const recommendationRequest = useMemo<WarehouseRecommendationsRequest | undefined>(
+    () => warehouse === undefined || !goodsFlow.solution.converged ||
+      warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]
+      ? undefined
+      : { baseline: goodsFlow, warehouse, trainLines },
     [goodsFlow, warehouse, trainLines],
   );
+  const [recommendationResult, setRecommendationResult] = useState<{
+    request: WarehouseRecommendationsRequest;
+    simulations: WarehouseGoodSimulation[];
+    failed: boolean;
+  }>();
+  const recommendationsPending = recommendationRequest !== undefined && recommendationResult?.request !== recommendationRequest;
+  const recommendationsFailed = !recommendationsPending && recommendationResult?.failed;
+  const goodSimulations = recommendationResult?.request === recommendationRequest
+    ? recommendationResult?.simulations ?? []
+    : [];
   const goodRecommendations = goodSimulations
     .filter((candidate) => candidate.converged && candidate.weeklyYieldChange >= 1)
     .slice(0, 3);
   const incompleteSimulations = goodSimulations.some((candidate) => !candidate.converged);
+
+  useEffect(() => {
+    if (recommendationRequest === undefined) return;
+    let worker: Worker | undefined;
+    let active = true;
+    const fail = () => {
+      if (!active) return;
+      setRecommendationResult({ request: recommendationRequest, simulations: [], failed: true });
+      worker?.terminate();
+    };
+    try {
+      worker = new Worker(new URL('../solver/warehouse-recommendations.worker.ts', import.meta.url), { type: 'module' });
+      worker.onmessage = (event: MessageEvent<WarehouseGoodSimulation[]>) => {
+        if (!active) return;
+        setRecommendationResult({ request: recommendationRequest, simulations: event.data, failed: false });
+        worker?.terminate();
+      };
+      worker.onerror = fail;
+      worker.onmessageerror = fail;
+      worker.postMessage(recommendationRequest);
+    } catch {
+      fail();
+    }
+    return () => {
+      active = false;
+      worker?.terminate();
+    };
+  }, [recommendationRequest]);
 
   useEffect(() => {
     if (warehouse === undefined) {
@@ -250,6 +290,10 @@ export function WarehousePage({ slug }: { slug: string }) {
           <p role="status">
             {!solution.converged
               ? 'Recommendations unavailable: the current flow did not converge.'
+              : recommendationsPending
+                ? 'Computing recommendations...'
+                : recommendationsFailed
+                  ? 'Recommendations unavailable: the simulation failed.'
               : goodRecommendations.length > 0
                 ? <>Best next goods (connected-line yield): {goodRecommendations.map((candidate, index) => (
                     <span key={candidate.good}>
