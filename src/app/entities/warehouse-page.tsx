@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useMemo, useState, type MouseEvent } from 'react';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useCities } from '../game-state/city-state';
 import { useGoods } from '../game-state/goods-state';
@@ -16,6 +16,7 @@ import type { LegFlow } from '../solver';
 import { warehouseGoodSlotsByTracks, warehouseTrackCounts, type WarehouseTrackCount } from '../game-state/types';
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
 import { FlowSankey } from '../pages/goods-flow-page';
+import { simulateWarehouseGoods } from '../solver/warehouse-recommendations';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
@@ -49,7 +50,8 @@ export function WarehousePage({ slug }: { slug: string }) {
   const { trainStations } = useTrainStations();
   const { trainLines, addTrainLine, removeTrainLine, replaceTrainLines } = useTrainLines();
   const { navigate } = useNavigation();
-  const { network, solution, droppedLines, revenue } = useGoodsFlow();
+  const goodsFlow = useGoodsFlow();
+  const { network, solution, droppedLines, revenue } = goodsFlow;
   const [newLineName, setNewLineName] = useState('');
   const [otherKind, setOtherKind] = useState<StopRef['kind']>('station');
   const [otherName, setOtherName] = useState('');
@@ -57,6 +59,16 @@ export function WarehousePage({ slug }: { slug: string }) {
   const [newLineTourDays, setNewLineTourDays] = useState('');
   const [newLineCargo, setNewLineCargo] = useState<TrainCargo>('anything');
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
+  const goodSimulations = useMemo(
+    () => warehouse === undefined || !goodsFlow.solution.converged
+      ? []
+      : simulateWarehouseGoods(goodsFlow, warehouse, trainLines),
+    [goodsFlow, warehouse, trainLines],
+  );
+  const goodRecommendations = goodSimulations
+    .filter((candidate) => candidate.converged && candidate.weeklyYieldChange >= 1)
+    .slice(0, 3);
+  const incompleteSimulations = goodSimulations.some((candidate) => !candidate.converged);
 
   useEffect(() => {
     if (warehouse === undefined) {
@@ -234,6 +246,23 @@ export function WarehousePage({ slug }: { slug: string }) {
             })}
           </tbody>
         </table>
+        {warehouse.goods.length < goodSlots.length && (
+          <p role="status">
+            {!solution.converged
+              ? 'Recommendations unavailable: the current flow did not converge.'
+              : goodRecommendations.length > 0
+                ? <>Best next goods (connected-line yield): {goodRecommendations.map((candidate, index) => (
+                    <span key={candidate.good}>
+                      {index > 0 && '; '}
+                      {candidate.good} (+{currency.format(candidate.weeklyYieldChange)}/week)
+                    </span>
+                  ))}.</>
+                : incompleteSimulations
+                  ? 'No confirmed yield improvement.'
+                  : 'No additional good improves connected-line yield.'}
+            {incompleteSimulations && ' Some simulations did not converge.'}
+          </p>
+        )}
       </section>
       <section className="warehouse-page__flow">
         <h2>Net goods flow</h2>

@@ -35,6 +35,18 @@ remaining transport values at stops. Remaining values are display summaries;
 journey-specific times are retained during revenue attribution. The train-line
 list and detail views use the same analysis returned by `solveGoodsFlow`.
 
+## Warehouse Recommendations
+
+`simulateWarehouseGoods` runs independent what-if solves for every remaining good
+when a warehouse has a free slot. Each trial copies only that warehouse's load/unload
+gates in the compiled network; saved state and baseline results remain unchanged.
+It resolves the whole network with existing trains, cargo eligibility and shared
+capacity, then records the weekly revenue change summed over directly connected
+lines, including displacement of existing cargo. Trials are alternatives, not a
+cumulative plan. The warehouse view shows up to three converged improvements of at
+least $1/week and flags inconclusive solves. Existing solver exclusions, such as
+unknown tour durations and passenger-only trains, still apply.
+
 ## Goal
 
 One generic, pure function over the game state — something like `solveGoodsFlow(gameState)` —
