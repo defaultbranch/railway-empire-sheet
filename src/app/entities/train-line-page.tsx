@@ -57,7 +57,7 @@ function LegCargo({ leg, flows }: { leg: Leg; flows: LegFlow[] }) {
 export function TrainLinePage({ slug }: { slug: string }) {
   const { trainLines } = useTrainLines();
   const { navigate } = useNavigation();
-  const { network, solution, droppedLines } = useGoodsFlow();
+  const { network, solution, droppedLines, revenue } = useGoodsFlow();
   const trainLine = trainLines.find((existing) => trainLineSlug(existing) === slug);
 
   if (trainLine === undefined) {
@@ -70,6 +70,8 @@ export function TrainLinePage({ slug }: { slug: string }) {
 
   const legs = network.legs.filter((leg) => leg.line === trainLine.name);
   const dropped = droppedLines.find((entry) => entry.line === trainLine.name);
+  const lineRevenue = revenue.lines.find((entry) => entry.line === trainLine.name);
+  const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
   return (
     <section className="train-line-page">
@@ -77,6 +79,29 @@ export function TrainLinePage({ slug }: { slug: string }) {
       <p className="train-line-page__trains">Trains: {trainLine.trains}</p>
       <p className="train-line-page__tour-days">Tour days: {trainLine.tourDays ?? '—'}</p>
       <p className="train-line-page__cargo">Cargo: {trainLine.cargo}</p>
+      <section className="train-line-page__yield">
+        <h2>Weekly yield</h2>
+        {dropped !== undefined ? (
+          <p className="train-line-page__empty">Not modelled: {dropped.reason}.</p>
+        ) : (
+          <>
+            <p>Per train: {currency.format(lineRevenue?.weeklyYieldPerTrain ?? 0)} / week</p>
+            <table className="train-line-page__table">
+              <thead>
+                <tr><th>Good</th><th>Yield per week</th></tr>
+              </thead>
+              <tbody>
+                {lineRevenue?.byGood.map((entry) => (
+                  <tr key={entry.good}><td>{entry.good}</td><td>{currency.format(entry.weeklyYield)}</td></tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr><th>Total</th><td>{currency.format(lineRevenue?.weeklyYield ?? 0)}</td></tr>
+              </tfoot>
+            </table>
+          </>
+        )}
+      </section>
       <section className="train-line-page__stops">
         <h2>Stops</h2>
         <ul>

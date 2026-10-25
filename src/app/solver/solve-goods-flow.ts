@@ -2,10 +2,12 @@ import type { GameState } from '../game-state/types';
 import { compileFlowNetwork } from './compile-network';
 import { defaultSolveOptions, solveFlowNetwork } from './solve-flow';
 import type { FlowNetwork, FlowSolution, SolveOptions } from './solver-types';
+import { analyzeTransportRevenue, type TransportRevenue } from './transport-revenue';
 
 export type GoodsFlow = {
   network: FlowNetwork;
   solution: FlowSolution;
+  revenue: TransportRevenue;
   // lines the network leaves out, so a view can say why a line shows no goods at all
   droppedLines: { line: string; reason: string }[];
 };
@@ -27,5 +29,6 @@ export function solveGoodsFlow(state: GameState, options: SolveOptions = default
     console.warn(`Goods flow solver: no convergence after ${solved.iterations} iterations.`);
   }
 
-  return { network, solution: { ...solved, missingCoefficients }, droppedLines };
+  const solution = { ...solved, missingCoefficients };
+  return { network, solution, revenue: analyzeTransportRevenue(network, solution, state.trainLines), droppedLines };
 }

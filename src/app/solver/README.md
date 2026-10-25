@@ -19,6 +19,24 @@ or reallocate the capacity it frees. Run the regression suite with `pnpm test`.
 
 ## Goal
 
+## Transport Revenue
+
+`analyzeTransportRevenue` is a pure post-processing step over solved weekly flows.
+It pools stops sharing a host, cancels same-good directed cycles without mutating
+the solution, and traces producer-to-consumer journeys with proportional mixing.
+Each transported final delivery earns $2,000 by default; callers can supply a
+different payout. Locally consumed production earns no transport revenue.
+Industry inputs end one delivery, and industry outputs start another.
+
+Each journey's payout is allocated to its legs in proportion to their travel
+times (`tourDays / 2`). Weekly throughput is not divided by time again. Results
+include line totals, equal per-train shares, per-good totals, and flow-weighted
+remaining transport values at stops. Remaining values are display summaries;
+journey-specific times are retained during revenue attribution. The train-line
+list and detail views use the same analysis returned by `solveGoodsFlow`.
+
+## Goal
+
 One generic, pure function over the game state — something like `solveGoodsFlow(gameState)` —
 that computes the network's goods flow once, and is then reused by several views:
 

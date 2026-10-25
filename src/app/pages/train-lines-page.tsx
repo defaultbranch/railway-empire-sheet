@@ -8,14 +8,21 @@ import { useNavigation } from '../navigation';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
 import { pathForTrainLine } from '../entities/train-line-routes';
+import { useGoodsFlow } from '../solver';
 
 type StopKind = StopRef['kind'];
+type SortKey = 'name' | 'tourDays' | 'yield';
 
 export function TrainLinesPage() {
   const { navigate } = useNavigation();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { trainLines, addTrainLine, removeTrainLine } = useTrainLines();
+  const { revenue, droppedLines, solution } = useGoodsFlow();
+  const revenueByLine = new Map(revenue.lines.map((entry) => [entry.line, entry]));
+  const droppedByLine = new Map(droppedLines.map((entry) => [entry.line, entry.reason]));
+  const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
 
   const [newName, setNewName] = useState('');
   const [fromKind, setFromKind] = useState<StopKind>('station');
@@ -25,6 +32,29 @@ export function TrainLinesPage() {
   const [trains, setTrains] = useState(1);
   const [tourDays, setTourDays] = useState('');
   const [cargo, setCargo] = useState<TrainCargo>('anything');
+
+  const sortedLines = [...trainLines].sort((left, right) => {
+    const direction = sort.descending ? -1 : 1;
+    if (sort.key === 'name') return direction * left.name.localeCompare(right.name);
+    const leftValue = sort.key === 'tourDays' ? left.tourDays
+      : droppedByLine.has(left.name) ? undefined : revenueByLine.get(left.name)?.weeklyYieldPerTrain ?? 0;
+    const rightValue = sort.key === 'tourDays' ? right.tourDays
+      : droppedByLine.has(right.name) ? undefined : revenueByLine.get(right.name)?.weeklyYieldPerTrain ?? 0;
+    if (leftValue === undefined && rightValue !== undefined) return 1;
+    if (rightValue === undefined && leftValue !== undefined) return -1;
+    return direction * ((leftValue ?? 0) - (rightValue ?? 0)) || left.name.localeCompare(right.name);
+  });
+
+  const sortHeader = (key: SortKey, label: string) => (
+    <th aria-sort={sort.key === key ? sort.descending ? 'descending' : 'ascending' : 'none'}>
+      <button
+        type="button"
+        onClick={() => setSort({ key, descending: sort.key === key ? !sort.descending : false })}
+      >
+        {label} <span aria-hidden="true">{sort.key === key ? sort.descending ? '↓' : '↑' : '↕'}</span>
+      </button>
+    </th>
+  );
 
   const optionsFor = (kind: StopKind) => [...(kind === 'station' ? trainStations : warehouses)]
     .sort((left, right) => left.name.localeCompare(right.name));
@@ -61,23 +91,24 @@ export function TrainLinesPage() {
       <table className="train-lines-page__table">
         <thead>
           <tr>
-            <th>Name</th>
+            {sortHeader('name', 'Name')}
             <th>Stops</th>
             <th>Trains</th>
-            <th>Tour days</th>
+            {sortHeader('tourDays', 'Tour days')}
             <th>Cargo</th>
+            {sortHeader('yield', 'Yield / train / week')}
             <th />
           </tr>
         </thead>
         <tbody>
           {trainLines.length === 0 && (
             <tr>
-              <td colSpan={6} className="train-lines-page__empty">
+              <td colSpan={7} className="train-lines-page__empty">
                 No train lines yet.
               </td>
             </tr>
           )}
-          {trainLines.map((line) => (
+          {sortedLines.map((line) => (
             <tr key={line.name}>
               <td>
                 <a
@@ -108,6 +139,9 @@ export function TrainLinesPage() {
               <td>{line.trains}</td>
               <td>{line.tourDays ?? '—'}</td>
               <td>{line.cargo}</td>
+              <td title={droppedByLine.get(line.name)}>
+                {droppedByLine.has(line.name) ? 'Not modelled' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}
+              </td>
               <td>
                 <button type="button" onClick={() => removeTrainLine(line.name)} aria-label={`Remove ${line.name}`}>
                   ✕
@@ -117,6 +151,9 @@ export function TrainLinesPage() {
           ))}
         </tbody>
       </table>
+      {!solution.converged && (
+        <p className="train-lines-page__hint">The flow solver did not converge; yield rates are estimates.</p>
+      )}
       <form
         className="train-lines-page__add"
         onSubmit={(event) => {

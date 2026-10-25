@@ -1,7 +1,7 @@
 import { useEffect, useState, type MouseEvent } from 'react';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
-import { trainCargoTypes, type StopRef, type TrainCargo } from '../game-state/types';
+import { stationTrackCounts, trainCargoTypes, type StationTrackCount, type StopRef, type TrainCargo } from '../game-state/types';
 import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
@@ -39,7 +39,7 @@ function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: numb
 }
 
 export function StationPage({ slug }: { slug: string }) {
-  const { trainStations } = useTrainStations();
+  const { trainStations, replaceTrainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
@@ -146,7 +146,21 @@ export function StationPage({ slug }: { slug: string }) {
   return (
     <section className="station-page">
       <h1>{station.name}</h1>
-      <p className="station-page__tracks">Tracks: {station.tracks}</p>
+      <label className="station-page__tracks">
+        Tracks
+        <select
+          value={station.tracks}
+          onChange={(event) =>
+            replaceTrainStations(
+              trainStations.map((existing) => existing.name === station.name
+                ? { ...existing, tracks: Number(event.target.value) as StationTrackCount }
+                : existing),
+            )
+          }
+        >
+          {stationTrackCounts.map((tracks) => <option key={tracks} value={tracks}>{tracks}</option>)}
+        </select>
+      </label>
       <section className="station-page__flow">
         <h2>Net goods flow</h2>
         {!solution.converged && <p role="status">The solver did not converge after {solution.iterations} iterations. Flows are estimates.</p>}

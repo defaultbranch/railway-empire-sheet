@@ -79,7 +79,7 @@ type Locality = {
   conversions: Conversion[];
 };
 
-function buildLocalities(nodes: FlowNode[]): Locality[] {
+export function buildLocalities(nodes: FlowNode[]): Locality[] {
   const parent = nodes.map((_, index) => index);
   const find = (index: number): number => {
     let root = index;
