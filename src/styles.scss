@@ -167,6 +167,12 @@ body {
 		height: 2.5rem;
 		padding: 0;
 	}
+	&__balance {
+		overflow-x: auto;
+		thead th { border-bottom: 2px solid var(--color-border); }
+		tfoot th { border-top: 2px solid var(--color-border); }
+	}
+	&__divider { border-left: 2px solid var(--color-border); }
 }
 
 // Pages follow a `<block>__<element>` naming convention (BEM-ish). Rather than repeating the

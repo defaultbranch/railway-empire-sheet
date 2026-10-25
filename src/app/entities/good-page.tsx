@@ -6,14 +6,16 @@ import { useIndustries } from '../game-state/industries-state';
 import { useIndustryTypes } from '../game-state/industry-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useRuralBusinessTypes } from '../game-state/rural-business-state';
-import { businessLevels } from '../game-state/types';
 import { cityGoodDemandRows, formatIndustryAmount, type CityGoodDemandSort } from '../pages/city-good-balance';
 import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
+import { pages, pathForPageIndex } from '../pages/pages';
 import { pathForCity } from './city-routes';
 import { adjacentGoods, goodSlug, pathForGood } from './good-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
+
+type SourceSort = { key: 'source' | 'used' | 'excess' | 'load'; descending: boolean };
 
 export function GoodPage({ slug }: { slug: string }) {
   const { goods } = useGoods();
@@ -26,6 +28,7 @@ export function GoodPage({ slug }: { slug: string }) {
   const { navigate } = useNavigation();
   const { solution } = useGoodsFlow();
   const [sort, setSort] = useState<CityGoodDemandSort>({ key: 'city', descending: false });
+  const [sourceSort, setSourceSort] = useState<SourceSort>({ key: 'source', descending: false });
   const [newProducerName, setNewProducerName] = useState('');
   const [selectedProducerTypeName, setSelectedProducerTypeName] = useState('');
   const good = goods.find((existing) => goodSlug(existing) === slug);
@@ -55,20 +58,44 @@ export function GoodPage({ slug }: { slug: string }) {
   const activeSort: CityGoodDemandSort =
     ((sort.key === 'demand' || sort.key === 'unmet') && !showPopulationDemand) ||
     (sort.key === 'industryDemand' && !showIndustryDemand) ||
-    (sort.key === 'industryProduction' && !showIndustryProduction)
+    sort.key === 'industryProduction'
       ? { key: 'city', descending: false }
       : sort;
-  const demandingCities = cityGoodDemandRows(good, cities, demand, industries, industryTypes, solution, activeSort);
-  const sortHeader = (key: CityGoodDemandSort['key'], label: string, title?: string) => (
-    <th title={title} aria-sort={activeSort.key === key ? activeSort.descending ? 'descending' : 'ascending' : 'none'}>
+  const consumers = cityGoodDemandRows(good, cities, demand, industries, industryTypes, solution, activeSort)
+    .filter((row) => row.amount > 0 || row.hasIndustryDemand);
+  const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
+  const sumOrUnknown = (values: (number | undefined)[]) =>
+    values.some((value) => value === undefined) ? undefined : sum(values as number[]);
+  const link = (path: string, label: string) => (
+    <a
+      href={path}
+      onClick={(event) => {
+        event.preventDefault();
+        navigate(path);
+      }}
+    >
+      {label}
+    </a>
+  );
+  const sortableHeader = <K extends string>(
+    active: { key: K; descending: boolean },
+    setActive: (sort: { key: K; descending: boolean }) => void,
+    key: K,
+    label: string,
+    title?: string,
+    className?: string,
+  ) => (
+    <th className={className} title={title} aria-sort={active.key === key ? active.descending ? 'descending' : 'ascending' : 'none'}>
       <button
         type="button"
-        onClick={() => setSort({ key, descending: activeSort.key === key ? !activeSort.descending : false })}
+        onClick={() => setActive({ key, descending: active.key === key ? !active.descending : false })}
       >
-        {label} <span aria-hidden="true">{activeSort.key === key ? activeSort.descending ? '↓' : '↑' : '↕'}</span>
+        {label} <span aria-hidden="true">{active.key === key ? active.descending ? '↓' : '↑' : '↕'}</span>
       </button>
     </th>
   );
+  const sortHeader = (key: CityGoodDemandSort['key'], label: string, title?: string, className?: string) =>
+    sortableHeader(activeSort, setSort, key, label, title, className);
   const producerTypes = ruralBusinessTypes.filter((type) => type.good === good);
   const selectedProducerType =
     producerTypes.find((type) => type.name === selectedProducerTypeName) ?? producerTypes[0];
@@ -86,14 +113,68 @@ export function GoodPage({ slug }: { slug: string }) {
     addRuralBusiness({ name: trimmedProducerName, typeName: selectedProducerType.name, level: 1 });
     setNewProducerName('');
   };
-  const industryFlows = industryTypes.flatMap((type) => [
-    ...type.rawMaterials
-      .filter((flow) => flow.good === good)
-      .map((flow) => ({ type, role: 'Raw material', flow })),
-    ...type.products
-      .filter((flow) => flow.good === good)
-      .map((flow) => ({ type, role: 'Product', flow })),
-  ]);
+  const sources = [
+    ...producers.map(({ business, type }) => ({
+      key: `rural:${business.name}`,
+      label: business.name,
+      name: link(pathForRuralBusiness(business), business.name),
+      type: link(pathForRuralBusinessType(type), type.name),
+      level: business.level,
+      actual: sum(solution.contributorFlows
+        .filter((flow) => flow.good === good && flow.contributor.kind === 'rural business' &&
+          flow.contributor.name === business.name)
+        .map((flow) => flow.served)),
+      maximum: type.productionByLevel[business.level],
+    })),
+    ...industries.flatMap((industry) => {
+      const type = industryTypes.find((existing) => existing.name === industry.typeName);
+      const outputs = (type?.products ?? []).filter((flow) => flow.good === good);
+      if (type === undefined || outputs.length === 0) return [];
+      const city = cities.find((existing) => existing.name === industry.city);
+      return [{
+        key: `industry:${industry.city}:${industry.citySlot}`,
+        label: industry.city,
+        name: city === undefined ? industry.city : link(pathForCity(city), city.name),
+        type: type.name,
+        level: industry.level,
+        actual: sum(solution.contributorFlows
+          .filter((flow) => flow.good === good && flow.contributor.kind === 'industry' &&
+            flow.contributor.city === industry.city && flow.contributor.slot === industry.citySlot)
+          .map((flow) => flow.served)),
+        maximum: sumOrUnknown(outputs.map((flow) => flow.amountByLevel[industry.level])),
+      }];
+    }),
+  ];
+  const sortValue = ({ actual, maximum }: { actual: number; maximum: number | undefined }) => {
+    if (sourceSort.key === 'used') return actual;
+    if (sourceSort.key === 'excess') return maximum === undefined ? undefined : maximum - actual;
+    return maximum === undefined || maximum <= 0 ? undefined : actual / maximum;
+  };
+  const sortedSources = [...sources].sort((left, right) => {
+    const direction = sourceSort.descending ? -1 : 1;
+    if (sourceSort.key === 'source') return direction * left.label.localeCompare(right.label);
+    const leftValue = sortValue(left);
+    const rightValue = sortValue(right);
+    if (leftValue === undefined && rightValue !== undefined) return 1;
+    if (rightValue === undefined && leftValue !== undefined) return -1;
+    return direction * ((leftValue ?? 0) - (rightValue ?? 0)) || left.label.localeCompare(right.label);
+  });
+  const sourceSortHeader = (key: SourceSort['key'], label: string, title?: string) =>
+    sortableHeader(sourceSort, setSourceSort, key, label, title);
+  const showSources = producerTypes.length > 0 || showIndustryProduction;
+  const sourceColumns = 6;
+  const consumerColumns = 2 + (showPopulationDemand ? 2 : 0) + (showIndustryDemand ? 1 : 0);
+  const divider = showSources ? 'good-page__divider' : undefined;
+  const cityGoodBalancePath = (city: string) =>
+    `${pathForPageIndex(pages.findIndex((page) => page.slug === 'city-good-balance'))}?${new URLSearchParams({ city, good })}`;
+  const productionCells = (actual: number, maximum: number | undefined, Cell: 'td' | 'th' = 'td') => (
+    <>
+      <Cell>{actual.toFixed(2)}</Cell>
+      <Cell>{maximum === undefined ? '?' : (maximum - actual).toFixed(2)}</Cell>
+      <Cell>{maximum === undefined || maximum <= 0 ? '?' : `${Math.round(100 * actual / maximum)}%`}</Cell>
+    </>
+  );
+  const showConsumers = showPopulationDemand || showIndustryDemand;
 
   return (
     <section className="good-page">
@@ -122,103 +203,106 @@ export function GoodPage({ slug }: { slug: string }) {
           </button>
         )}
       </div>
-      <section className="good-page__demand">
-        <h2>City demand and production (wagons/week)</h2>
-        {showPopulationDemand && (
-            <p>
-              Minimum population: {demand.minPopulation.toLocaleString()} · Wagons per million: {demand.wagonsPerMillion}
-            </p>
-        )}
-        {demandingCities.length === 0 ? (
-          <p className="good-page__empty">No population demand, industry demand or industry production.</p>
-        ) : (
-              <table className="good-page__table">
-                <thead>
-                  <tr>
-                    {sortHeader('city', 'City')}
-                    <th>Population</th>
-                    {showPopulationDemand && sortHeader('demand', 'Population demand')}
-                    {showIndustryDemand && sortHeader('industryDemand', 'Industry demand', 'Solver-predicted raw-material consumption / recipe maximum (percent of maximum); sorted by actual consumption')}
-                    {showIndustryProduction && sortHeader('industryProduction', 'Industry production', 'Solver-predicted output used locally or shipped / recipe maximum (percent of maximum); sorted by actual output')}
-                    {showPopulationDemand && sortHeader('unmet', 'Unmet population demand', 'Population demand minus served population supply; excludes industry demand')}
-                  </tr>
-                </thead>
-                <tbody>
-                  {demandingCities.map(({ city, amount, unmet, industryDemand, maxIndustryDemand, industryProduction, maxIndustryProduction }) => (
-                    <tr key={city.name}>
-                      <td>
-                        <a
-                          href={pathForCity(city)}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            navigate(pathForCity(city));
-                          }}
-                        >
-                          {city.name}
-                        </a>
-                      </td>
-                      <td>{city.population.toLocaleString()}</td>
-                      {showPopulationDemand && <td>{amount.toFixed(2)}</td>}
-                      {showIndustryDemand && <td>{formatIndustryAmount(industryDemand, maxIndustryDemand)}</td>}
-                      {showIndustryProduction && <td>{formatIndustryAmount(industryProduction, maxIndustryProduction)}</td>}
-                      {showPopulationDemand && <td>{unmet.toFixed(2)}</td>}
-                    </tr>
+      <h2>Production and consumption (wagons/week)</h2>
+      {showPopulationDemand && (
+        <p>
+          Minimum population: {demand.minPopulation.toLocaleString()} · Wagons per million: {demand.wagonsPerMillion}
+        </p>
+      )}
+      {!showSources && !showConsumers ? (
+        <p className="good-page__empty">No population demand, industry demand or production.</p>
+      ) : (
+      <div className="good-page__balance">
+        <table className="good-page__table">
+          <thead>
+            <tr>
+              {showSources && (
+                <>
+                  {sourceSortHeader('source', 'Source')}
+                  <th>Type</th>
+                  <th>Level</th>
+                  {sourceSortHeader('used', 'Used', 'Solver-predicted output used locally or shipped')}
+                  {sourceSortHeader('excess', 'Excess', 'Weekly capacity that remains unused')}
+                  {sourceSortHeader('load', 'Load', 'Used production as a percentage of capacity')}
+                </>
+              )}
+              {showConsumers && (
+                <>
+                  {sortHeader('city', 'City', undefined, divider)}
+                  <th>Population</th>
+                  {showPopulationDemand && sortHeader('demand', 'Population demand')}
+                  {showIndustryDemand && sortHeader('industryDemand', 'Industry demand', 'Solver-predicted raw-material consumption / recipe maximum (percent of maximum); sorted by actual consumption')}
+                  {showPopulationDemand && sortHeader('unmet', 'Unmet population demand', 'Population demand minus served population supply; excludes industry demand')}
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: Math.max(showSources ? sortedSources.length : 0, showConsumers ? consumers.length : 0) }, (_, index) => {
+              const source = sortedSources[index];
+              const consumer = consumers[index];
+              return (
+                <tr key={index}>
+                  {showSources && (source === undefined ? (
+                    Array.from({ length: sourceColumns }, (_, column) => <td key={`source-${column}`} />)
+                  ) : (
+                    <>
+                      <td>{source.name}</td>
+                      <td>{source.type}</td>
+                      <td>{source.level}</td>
+                      {productionCells(source.actual, source.maximum)}
+                    </>
                   ))}
-                </tbody>
-              </table>
-        )}
-      </section>
-      {producerTypes.length > 0 && (
-        <section className="good-page__rural-producers">
-          <h2>Rural producers</h2>
-          {producers.length === 0 ? (
-            <p className="good-page__empty">No placed rural businesses produce this good.</p>
-          ) : (
-          <table className="good-page__table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Level</th>
-                <th>Weekly production</th>
-              </tr>
-            </thead>
-            <tbody>
-              {producers.map(({ business, type }) => {
-                const businessPath = pathForRuralBusiness(business);
-                const typePath = pathForRuralBusinessType(type);
-                return (
-                  <tr key={business.name}>
-                    <td>
-                      <a
-                        href={businessPath}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          navigate(businessPath);
-                        }}
-                      >
-                        {business.name}
-                      </a>
-                    </td>
-                    <td>
-                      <a
-                        href={typePath}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          navigate(typePath);
-                        }}
-                      >
-                        {type.name}
-                      </a>
-                    </td>
-                    <td>{business.level}</td>
-                    <td>{type.productionByLevel[business.level] ?? '?'}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          )}
+                  {showConsumers && (consumer === undefined ? (
+                    Array.from({ length: consumerColumns }, (_, column) => (
+                      <td key={`consumer-${column}`} className={column === 0 ? divider : undefined} />
+                    ))
+                  ) : (
+                    <>
+                      <td className={divider}>{link(cityGoodBalancePath(consumer.city.name), consumer.city.name)}</td>
+                      <td>{consumer.city.population.toLocaleString()}</td>
+                      {showPopulationDemand && <td>{consumer.amount.toFixed(2)}</td>}
+                      {showIndustryDemand && <td>{formatIndustryAmount(consumer.industryDemand, consumer.maxIndustryDemand)}</td>}
+                      {showPopulationDemand && <td>{consumer.unmet.toFixed(2)}</td>}
+                    </>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot>
+            <tr>
+              {showSources && (
+                <>
+                  <th colSpan={3}>Total</th>
+                  {productionCells(
+                    sum(sources.map((source) => source.actual)),
+                    sumOrUnknown(sources.map((source) => source.maximum)),
+                    'th',
+                  )}
+                </>
+              )}
+              {showConsumers && (
+                <>
+                  <th colSpan={2} className={divider}>Total</th>
+                  {showPopulationDemand && <th>{sum(consumers.map((row) => row.amount)).toFixed(2)}</th>}
+                  {showIndustryDemand && (
+                    <th>
+                      {formatIndustryAmount(
+                        sum(consumers.map((row) => row.industryDemand)),
+                        sumOrUnknown(consumers.map((row) => row.maxIndustryDemand)),
+                      )}
+                    </th>
+                  )}
+                  {showPopulationDemand && <th>{sum(consumers.map((row) => row.unmet)).toFixed(2)}</th>}
+                </>
+              )}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      )}
+          {producerTypes.length > 0 && (
           <form
             className="good-page__add"
             onSubmit={(event) => {
@@ -252,37 +336,7 @@ export function GoodPage({ slug }: { slug: string }) {
               Add
             </button>
           </form>
-        </section>
-      )}
-      <section className="good-page__industry-recipes">
-        <h2>Industry recipes</h2>
-        {industryFlows.length === 0 ? (
-          <p className="good-page__empty">No industry type uses this good.</p>
-        ) : (
-          <table className="good-page__table">
-            <thead>
-              <tr>
-                <th>Industry</th>
-                <th>Role</th>
-                {businessLevels.map((level) => (
-                  <th key={level}>Level {level}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {industryFlows.map(({ type, role, flow }, index) => (
-                <tr key={`${type.name}-${role}-${index}`}>
-                  <td>{type.name}</td>
-                  <td>{role}</td>
-                  {businessLevels.map((level) => (
-                    <td key={level}>{flow.amountByLevel[level] ?? '?'}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </section>
+          )}
     </section>
   );
 }
