@@ -25,8 +25,100 @@ test('a direct delivery earns its payout once and divides equally across trains'
     [flow('AB', 5)], [served('B', 5)], [line('AB', 14, 2)]);
   near(result.lines[0].weeklyYield, 10000);
   near(result.lines[0].weeklyYieldPerTrain, 5000);
-  near(result.storageValues.find((entry) => entry.node === 'station:A').remainingYield, 2000);
-  near(result.storageValues.find((entry) => entry.node === 'station:B').remainingYield, 0);
+  const origin = result.storageValues.find((entry) => entry.node === 'station:A');
+  near(origin.remainingYield, 2000);
+  near(origin.forwardedUnits, 5);
+  near(origin.soldUnits, 0);
+  near(origin.averageArrivalAgeWeeks, 0);
+  const destination = result.storageValues.find((entry) => entry.node === 'station:B');
+  near(destination.averageArrivalAgeWeeks, 1);
+  near(destination.soldUnits, 5);
+  near(destination.forwardedUnits, 0);
+  assert.equal(destination.remainingYield, undefined);
+});
+
+test('local sales do not dilute the remaining value of forwarded goods', () => {
+  const result = analyze([node('A', [source('A')]), node('Hub', [], [sink('Hub')]), node('B', [], [sink('B')])],
+    [leg('AH', 'A', 'Hub'), leg('HB', 'Hub', 'B')], [flow('AH', 10), flow('HB', 6)],
+    [served('Hub', 4), served('B', 6)], [line('AH', 6), line('HB', 14)]);
+  const hub = result.storageValues.find((entry) => entry.node === 'station:Hub');
+  near(hub.soldUnits, 4);
+  near(hub.forwardedUnits, 6);
+  near(hub.averageArrivalAgeWeeks, 3 / 7);
+  near(hub.remainingYield, 1400);
+  near(result.storageValues.find((entry) => entry.node === 'station:B').averageArrivalAgeWeeks, 10 / 7);
+  near(hub.soldUnits / (hub.soldUnits + hub.forwardedUnits), 0.4);
+  assert.deepEqual(yields(result), [11600, 8400]);
+});
+
+test('forwarded value remains journey-weighted when mixed arrivals are also consumed locally', () => {
+  const result = analyze([node('A', [source('A')]), node('B', [source('B')]), node('Hub', [], [sink('Hub')]),
+    node('C', [], [sink('C')])],
+  [leg('AH', 'A', 'Hub'), leg('BH', 'B', 'Hub'), leg('HC', 'Hub', 'C')],
+  [flow('AH', 2), flow('BH', 2), flow('HC', 2)], [served('Hub', 2), served('C', 2)],
+  [line('AH', 2), line('BH', 6), line('HC', 2)], 3000);
+  const hub = result.storageValues.find((entry) => entry.node === 'station:Hub');
+  near(hub.soldUnits, 2);
+  near(hub.forwardedUnits, 2);
+  near(hub.averageArrivalAgeWeeks, 2 / 7);
+  near(hub.remainingYield, 1125);
+  near(yields(result).reduce((sum, value) => sum + value, 0), 12000);
+});
+
+test('arrival age weights unequal volumes and accumulates all upstream legs', () => {
+  const result = analyze([node('A', [source('A')]), node('B', [source('B')]), node('Hub', [], [sink('Hub')]),
+    node('C', [], [sink('C')])],
+  [leg('AH', 'A', 'Hub'), leg('BH', 'B', 'Hub'), leg('HC', 'Hub', 'C')],
+  [flow('AH', 1), flow('BH', 3), flow('HC', 2)], [served('Hub', 2), served('C', 2)],
+  [line('AH', 14), line('BH', 42), line('HC', 14)]);
+  near(result.storageValues.find((entry) => entry.node === 'station:Hub').averageArrivalAgeWeeks, 2.5);
+  near(result.storageValues.find((entry) => entry.node === 'station:C').averageArrivalAgeWeeks, 3.5);
+});
+
+test('arrival age includes used local production at age zero at a mixed source and consumer', () => {
+  const result = analyze([node('A', [source('A')]), node('Hub', [source('Hub')], [sink('Hub')]),
+    node('B', [], [sink('B')])],
+  [leg('AH', 'A', 'Hub'), leg('HB', 'Hub', 'B')], [flow('AH', 2), flow('HB', 4)],
+  [served('Hub', 2), served('B', 4)], [line('AH', 14), line('HB', 14)]);
+  near(result.storageValues.find((entry) => entry.node === 'station:Hub').averageArrivalAgeWeeks, 1 / 3);
+  near(result.storageValues.find((entry) => entry.node === 'station:B').averageArrivalAgeWeeks, 4 / 3);
+});
+
+test('local industry supply lowers the age of older imports without adding transport revenue', () => {
+  const contributor = { kind: 'industry', city: 'City', slot: 0 };
+  const conversion = { contributor, rawMaterials: [], products: [{ good: 'Beer', amount: 100 }] };
+  const result = analyze([node('A', [source('A', 'Beer')]), node('City', [], [sink('City', 'Beer')], [conversion]),
+    node('B', [], [sink('B', 'Beer')])],
+  [leg('AC', 'A', 'City'), leg('CB', 'City', 'B')], [flow('AC', 2, 'Beer'), flow('CB', 6, 'Beer')],
+  [served('City', 4, 'Beer'), served('City', 8, 'Beer', contributor), served('B', 6, 'Beer')],
+  [line('AC', 84), line('CB', 14)]);
+  near(result.storageValues.find((entry) => entry.node === 'station:City' && entry.good === 'Beer').averageArrivalAgeWeeks, 1.2);
+  near(yields(result).reduce((sum, value) => sum + value, 0), (6 + 0.8) * 2000);
+});
+
+test('a city warehouse with only local industry supply shows zero age and no transport revenue', () => {
+  const contributor = { kind: 'industry', city: 'City', slot: 0 };
+  const conversion = { contributor, rawMaterials: [], products: [{ good: 'Beer', amount: 10 }] };
+  const result = analyze([{ ...node('City', [], [sink('City', 'Beer')], [conversion]), id: 'warehouse:City' }], [], [],
+    [{ ...served('City', 3, 'Beer'), node: 'warehouse:City' },
+      { ...served('City', 3, 'Beer', contributor), node: 'warehouse:City' }], []);
+  const storage = result.storageValues.find((entry) => entry.node === 'warehouse:City' && entry.good === 'Beer');
+  near(storage.averageArrivalAgeWeeks, 0);
+  assert.equal(storage.remainingYield, undefined);
+  assert.deepEqual(result.lines, []);
+  near(storage.soldUnits, 0);
+});
+
+test('arrival age belongs to the receiving stop rather than every stop serving the same city', () => {
+  const result = analyze([node('A', [source('A')]), node('B', [source('B')]),
+    { ...node('First', [], [sink('City')]), id: 'warehouse:First' },
+    { ...node('Second', [], [sink('City')]), id: 'warehouse:Second' }],
+  [{ ...leg('AF', 'A', 'First'), to: 'warehouse:First' }, { ...leg('BS', 'B', 'Second'), to: 'warehouse:Second' }],
+  [flow('AF', 1), flow('BS', 3)],
+  [{ ...served('City', 1), node: 'warehouse:First' }, { ...served('City', 3), node: 'warehouse:Second' }],
+  [line('AF', 14), line('BS', 42)]);
+  near(result.storageValues.find((entry) => entry.node === 'warehouse:First').averageArrivalAgeWeeks, 1);
+  near(result.storageValues.find((entry) => entry.node === 'warehouse:Second').averageArrivalAgeWeeks, 3);
 });
 
 test('serial legs divide revenue by travel time without dividing weekly throughput again', () => {

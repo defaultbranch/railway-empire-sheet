@@ -13,7 +13,14 @@ export type LineRevenue = {
 
 export type TransportRevenue = {
   lines: LineRevenue[];
-  storageValues: { node: NodeId; good: Good; remainingYield: number }[];
+  storageValues: {
+    node: NodeId;
+    good: Good;
+    soldUnits: number;
+    forwardedUnits: number;
+    averageArrivalAgeWeeks: number | undefined;
+    remainingYield: number | undefined;
+  }[];
 };
 
 type Edge = { leg: Leg; from: number; to: number; units: number; days: number };
@@ -63,7 +70,8 @@ export function analyzeTransportRevenue(
   const localityOf = new Map(localities.flatMap((locality, index) => locality.nodes.map((node) => [node.id, index] as const)));
   const lineByName = new Map(trainLines.map((line) => [line.name, line]));
   const revenue = new Map(trainLines.map((line) => [line.name, new Map<Good, number>()]));
-  const storage = new Map<NodeId, Map<Good, { units: number; value: number }>>();
+  const storage = new Map<NodeId, Map<Good, { soldUnits: number; forwardedUnits: number; value: number }>>();
+  const arrivals = new Map<NodeId, Map<Good, { units: number; unitDays: number }>>();
   const legById = new Map(network.legs.map((leg) => [leg.id, leg]));
 
   for (const good of network.goods) {
@@ -98,25 +106,37 @@ export function analyzeTransportRevenue(
     const received = localities.map(() => 0);
     for (const edge of edges) received[edge.to] += edge.units;
 
-    const recordStorage = (locality: number, units: number, value: number) => {
+    const recordStorage = (locality: number, units: number, value: number, sold: boolean) => {
       for (const node of localities[locality].nodes) {
         if (!node.loadableGoods.has(good) && !node.unloadableGoods.has(good)) continue;
         const goods = storage.get(node.id) ?? new Map();
-        const previous = goods.get(good) ?? { units: 0, value: 0 };
-        goods.set(good, { units: previous.units + units, value: previous.value + units * value });
+        const previous = goods.get(good) ?? { soldUnits: 0, forwardedUnits: 0, value: 0 };
+        goods.set(good, {
+          soldUnits: previous.soldUnits + (sold ? units : 0),
+          forwardedUnits: previous.forwardedUnits + (sold ? 0 : units),
+          value: previous.value + (sold ? 0 : units * value),
+        });
         storage.set(node.id, goods);
       }
+    };
+
+    const recordArrival = (node: NodeId, units: number, days: number) => {
+      const goods = arrivals.get(node) ?? new Map();
+      const previous = goods.get(good) ?? { units: 0, unitDays: 0 };
+      goods.set(good, { units: previous.units + units, unitDays: previous.unitDays + units * days });
+      arrivals.set(node, goods);
     };
 
     const deliver = (path: Edge[], units: number, totalDays: number) => {
       if (path.length === 0 || units <= 1e-9) return;
       let elapsed = 0;
-      recordStorage(path[0].from, units, payout);
-      for (const edge of path) {
+      recordStorage(path[0].from, units, payout, false);
+      for (const [index, edge] of path.entries()) {
         const goods = revenue.get(edge.leg.line);
         if (goods !== undefined) goods.set(good, (goods.get(good) ?? 0) + units * payout * edge.days / totalDays);
         elapsed += edge.days;
-        recordStorage(edge.to, units, payout * Math.max(0, totalDays - elapsed) / totalDays);
+        recordArrival(edge.leg.to, units, elapsed);
+        recordStorage(edge.to, units, payout * Math.max(0, totalDays - elapsed) / totalDays, index === path.length - 1);
       }
     };
 
@@ -130,7 +150,12 @@ export function analyzeTransportRevenue(
     };
     localities.forEach((_, index) => {
       const produced = Math.max(0, consumed[index] + sent[index] - received[index]);
-      if (produced > 1e-9) trace(index, produced, [], 0);
+      if (produced <= 1e-9) return;
+      recordStorage(index, 0, 0, false);
+      for (const node of localities[index].nodes) {
+        if (node.loadableGoods.has(good)) recordArrival(node.id, produced, 0);
+      }
+      trace(index, produced, [], 0);
     });
   }
 
@@ -141,8 +166,15 @@ export function analyzeTransportRevenue(
       const weeklyYield = byGood.reduce((sum, entry) => sum + entry.weeklyYield, 0);
       return { line: line.name, weeklyYield, weeklyYieldPerTrain: line.trains > 0 ? weeklyYield / line.trains : 0, byGood };
     }),
-    storageValues: [...storage].flatMap(([node, goods]) => [...goods].map(([good, value]) => ({
-      node, good, remainingYield: value.value / value.units,
-    }))),
+    storageValues: [...storage].flatMap(([node, goods]) => [...goods].map(([good, value]) => {
+      const arrival = arrivals.get(node)?.get(good);
+      return {
+        node, good,
+        soldUnits: value.soldUnits,
+        forwardedUnits: value.forwardedUnits,
+        averageArrivalAgeWeeks: arrival === undefined ? undefined : arrival.unitDays / arrival.units / 7,
+        remainingYield: value.forwardedUnits > 0 ? value.value / value.forwardedUnits : undefined,
+      };
+    })),
   };
 }

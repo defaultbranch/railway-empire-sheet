@@ -18,6 +18,7 @@ import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
 import { FlowSankey } from '../pages/goods-flow-page';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
+const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
 function amountsByGood(flows: LegFlow[]): Map<string, number> {
   const amounts = new Map<string, number>();
@@ -48,7 +49,7 @@ export function WarehousePage({ slug }: { slug: string }) {
   const { trainStations } = useTrainStations();
   const { trainLines, addTrainLine, removeTrainLine, replaceTrainLines } = useTrainLines();
   const { navigate } = useNavigation();
-  const { network, solution, droppedLines } = useGoodsFlow();
+  const { network, solution, droppedLines, revenue } = useGoodsFlow();
   const [newLineName, setNewLineName] = useState('');
   const [otherKind, setOtherKind] = useState<StopRef['kind']>('station');
   const [otherName, setOtherName] = useState('');
@@ -180,6 +181,8 @@ export function WarehousePage({ slug }: { slug: string }) {
               <th>Good</th>
               <th>Goods in (units/week)</th>
               <th>Goods out (units/week)</th>
+              <th>Average age (days)</th>
+              <th>Unrealized yield / unit</th>
             </tr>
           </thead>
           <tbody>
@@ -188,6 +191,16 @@ export function WarehousePage({ slug }: { slug: string }) {
               const flow = good === undefined
                 ? undefined
                 : solution.nodeFlows.find((entry) => entry.node === nodeId && entry.good === good);
+              const valuation = good === undefined
+                ? undefined
+                : revenue.storageValues.find((entry) => entry.node === nodeId && entry.good === good);
+              const arrivalAgeDays = valuation?.averageArrivalAgeWeeks === undefined
+                ? undefined
+                : valuation.averageArrivalAgeWeeks * 7;
+              const totalUnits = valuation === undefined ? 0 : valuation.soldUnits + valuation.forwardedUnits;
+              const soldShare = valuation === undefined || totalUnits === 0
+                ? 0
+                : Math.round(100 * valuation.soldUnits / totalUnits);
 
               return (
                 <tr key={slotIndex}>
@@ -210,6 +223,12 @@ export function WarehousePage({ slug }: { slug: string }) {
                   </td>
                   <td>{good === undefined ? '—' : perWeek(flow?.unloaded ?? 0)}</td>
                   <td>{good === undefined ? '—' : perWeek(flow?.loaded ?? 0)}</td>
+                  <td title={arrivalAgeDays === undefined ? undefined : `${perWeek(arrivalAgeDays)} days; local supply has age zero`}>
+                    {arrivalAgeDays === undefined ? '—' : arrivalAgeDays === 0 ? 0 : arrivalAgeDays < 1 ? '<1' : Math.round(arrivalAgeDays)}
+                  </td>
+                  <td title={valuation === undefined ? undefined : `${perWeek(valuation.forwardedUnits)} units/week forwarded`}>
+                    {valuation?.remainingYield === undefined ? '—' : <>{currency.format(valuation.remainingYield)} [{100 - soldShare}%]</>}
+                  </td>
                 </tr>
               );
             })}
