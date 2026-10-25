@@ -5,7 +5,7 @@ import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import type { StopRef } from '../game-state/types';
 import { useGoodsFlow } from '../solver';
-import type { Leg, LegFlow } from '../solver';
+import type { LegId } from '../solver';
 
 const stopLabel = (stop: StopRef) => `${stop.name} (${stop.kind === 'station' ? 'Station' : 'Warehouse'})`;
 
@@ -15,44 +15,8 @@ const nodeLabel = (node: string) => node.slice(node.indexOf(':') + 1);
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
-function LegCargo({ leg, flows }: { leg: Leg; flows: LegFlow[] }) {
-  const carried = flows.filter((flow) => flow.leg === leg.id).sort((a, b) => b.units - a.units);
-  const total = carried.reduce((sum, flow) => sum + flow.units, 0);
-
-  return (
-    <section className="train-line-page__leg">
-      <h3>
-        {nodeLabel(leg.from)} → {nodeLabel(leg.to)}
-      </h3>
-      {carried.length === 0 ? (
-        <p className="train-line-page__empty">Runs empty.</p>
-      ) : (
-        <table className="train-line-page__table">
-          <thead>
-            <tr>
-              <th>Good</th>
-              <th>Units per week</th>
-            </tr>
-          </thead>
-          <tbody>
-            {carried.map((flow) => (
-              <tr key={flow.good}>
-                <td>{flow.good}</td>
-                <td>{perWeek(flow.units)}</td>
-              </tr>
-            ))}
-            <tr>
-              <td>Total</td>
-              <td>
-                {perWeek(total)} of {perWeek(leg.capacity)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      )}
-    </section>
-  );
-}
+const utilizationPercent = (units: number, capacity: number) =>
+  capacity > 0 ? ((units / capacity) * 100).toLocaleString(undefined, { maximumFractionDigits: 1 }) : '0';
 
 export function TrainLinePage({ slug }: { slug: string }) {
   const { trainLines } = useTrainLines();
@@ -72,6 +36,22 @@ export function TrainLinePage({ slug }: { slug: string }) {
   const dropped = droppedLines.find((entry) => entry.line === trainLine.name);
   const lineRevenue = revenue.lines.find((entry) => entry.line === trainLine.name);
   const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const lineFlows = solution.legFlows.filter((flow) => legs.some((leg) => leg.id === flow.leg));
+  const goods = [...new Set([
+    ...lineFlows.map((flow) => flow.good),
+    ...(lineRevenue?.byGood.map((entry) => entry.good) ?? []),
+  ])].sort((left, right) => left.localeCompare(right));
+  const unitsByGood = new Map<string, Map<LegId, number>>();
+  for (const flow of lineFlows) {
+    const byLeg = unitsByGood.get(flow.good) ?? new Map<LegId, number>();
+    byLeg.set(flow.leg, flow.units);
+    unitsByGood.set(flow.good, byLeg);
+  }
+  const yieldByGood = new Map(lineRevenue?.byGood.map((entry) => [entry.good, entry.weeklyYield]) ?? []);
+  const totalByLeg = new Map(legs.map((leg) => [
+    leg.id,
+    lineFlows.filter((flow) => flow.leg === leg.id).reduce((sum, flow) => sum + flow.units, 0),
+  ]));
 
   return (
     <section className="train-line-page">
@@ -79,29 +59,6 @@ export function TrainLinePage({ slug }: { slug: string }) {
       <p className="train-line-page__trains">Trains: {trainLine.trains}</p>
       <p className="train-line-page__tour-days">Tour days: {trainLine.tourDays ?? '—'}</p>
       <p className="train-line-page__cargo">Cargo: {trainLine.cargo}</p>
-      <section className="train-line-page__yield">
-        <h2>Weekly yield</h2>
-        {dropped !== undefined ? (
-          <p className="train-line-page__empty">Not modelled: {dropped.reason}.</p>
-        ) : (
-          <>
-            <p>Per train: {currency.format(lineRevenue?.weeklyYieldPerTrain ?? 0)} / week</p>
-            <table className="train-line-page__table">
-              <thead>
-                <tr><th>Good</th><th>Yield per week</th></tr>
-              </thead>
-              <tbody>
-                {lineRevenue?.byGood.map((entry) => (
-                  <tr key={entry.good}><td>{entry.good}</td><td>{currency.format(entry.weeklyYield)}</td></tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr><th>Total</th><td>{currency.format(lineRevenue?.weeklyYield ?? 0)}</td></tr>
-              </tfoot>
-            </table>
-          </>
-        )}
-      </section>
       <section className="train-line-page__stops">
         <h2>Stops</h2>
         <ul>
@@ -121,11 +78,59 @@ export function TrainLinePage({ slug }: { slug: string }) {
         </ul>
       </section>
       <section className="train-line-page__flow">
-        <h2>Goods carried</h2>
+        <h2>Goods carried and weekly yield</h2>
         {dropped !== undefined ? (
           <p className="train-line-page__empty">Not modelled: {dropped.reason}.</p>
         ) : (
-          legs.map((leg) => <LegCargo key={leg.id} leg={leg} flows={solution.legFlows} />)
+          <>
+            <p>Per train: {currency.format(lineRevenue?.weeklyYieldPerTrain ?? 0)} / week</p>
+            <table className="train-line-page__table">
+              <thead>
+                <tr>
+                  <th>Good</th>
+                  {legs.map((leg, index) => (
+                    <th key={leg.id} title={`${nodeLabel(leg.from)} → ${nodeLabel(leg.to)} units per week`}>
+                      {index === 0 ? 'Outbound / week' : 'Return / week'}
+                    </th>
+                  ))}
+                  <th>Yield / week</th>
+                </tr>
+              </thead>
+              <tbody>
+                {goods.length === 0 ? (
+                  <tr><td colSpan={legs.length + 2}>Runs empty.</td></tr>
+                ) : goods.map((good) => (
+                  <tr key={good}>
+                    <td>{good}</td>
+                    {legs.map((leg) => (
+                      <td key={leg.id}>{perWeek(unitsByGood.get(good)?.get(leg.id) ?? 0)}</td>
+                    ))}
+                    <td>{currency.format(yieldByGood.get(good) ?? 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  {legs.map((leg) => (
+                    <td key={leg.id} title="Average utilization per train per ride, out of 8 goods">
+                      <div>{perWeek(totalByLeg.get(leg.id) ?? 0)} of {perWeek(leg.capacity)}</div>
+                    </td>
+                  ))}
+                  <td>{currency.format(lineRevenue?.weeklyYield ?? 0)}</td>
+                </tr>
+                <tr>
+                  <th>Utilization</th>
+                  {legs.map((leg) => (
+                    <td key={leg.id} title="Average utilization per train per ride, out of 8 goods">
+                      {utilizationPercent(totalByLeg.get(leg.id) ?? 0, leg.capacity)}%
+                    </td>
+                  ))}
+                  <td>—</td>
+                </tr>
+              </tfoot>
+            </table>
+          </>
         )}
         {dropped === undefined && !solution.converged && (
           <p className="train-line-page__hint">

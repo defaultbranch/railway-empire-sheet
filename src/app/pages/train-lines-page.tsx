@@ -11,17 +11,30 @@ import { pathForTrainLine } from '../entities/train-line-routes';
 import { useGoodsFlow } from '../solver';
 
 type StopKind = StopRef['kind'];
-type SortKey = 'name' | 'tourDays' | 'yield';
+type SortKey = 'name' | 'tourDays' | 'yield' | 'utilization';
 
 export function TrainLinesPage() {
   const { navigate } = useNavigation();
   const { trainStations } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { trainLines, addTrainLine, removeTrainLine } = useTrainLines();
-  const { revenue, droppedLines, solution } = useGoodsFlow();
+  const { network, revenue, droppedLines, solution } = useGoodsFlow();
   const revenueByLine = new Map(revenue.lines.map((entry) => [entry.line, entry]));
   const droppedByLine = new Map(droppedLines.map((entry) => [entry.line, entry.reason]));
+  const unitsByLeg = new Map<string, number>();
+  for (const flow of solution.legFlows) {
+    unitsByLeg.set(flow.leg, (unitsByLeg.get(flow.leg) ?? 0) + flow.units);
+  }
+  const utilizationByLine = new Map(trainLines.map((line) => {
+    const legs = network.legs.filter((leg) => leg.line === line.name);
+    if (droppedByLine.has(line.name) || legs.length !== 2) return [line.name, undefined] as const;
+    const utilization = legs.reduce((sum, leg) => {
+      return sum + (leg.capacity > 0 ? (unitsByLeg.get(leg.id) ?? 0) / leg.capacity : 0);
+    }, 0) / legs.length;
+    return [line.name, utilization] as const;
+  }));
   const currency = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const percentage = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 1 });
   const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
 
   const [newName, setNewName] = useState('');
@@ -37,9 +50,13 @@ export function TrainLinesPage() {
     const direction = sort.descending ? -1 : 1;
     if (sort.key === 'name') return direction * left.name.localeCompare(right.name);
     const leftValue = sort.key === 'tourDays' ? left.tourDays
-      : droppedByLine.has(left.name) ? undefined : revenueByLine.get(left.name)?.weeklyYieldPerTrain ?? 0;
+      : sort.key === 'yield'
+        ? droppedByLine.has(left.name) ? undefined : revenueByLine.get(left.name)?.weeklyYieldPerTrain ?? 0
+        : utilizationByLine.get(left.name);
     const rightValue = sort.key === 'tourDays' ? right.tourDays
-      : droppedByLine.has(right.name) ? undefined : revenueByLine.get(right.name)?.weeklyYieldPerTrain ?? 0;
+      : sort.key === 'yield'
+        ? droppedByLine.has(right.name) ? undefined : revenueByLine.get(right.name)?.weeklyYieldPerTrain ?? 0
+        : utilizationByLine.get(right.name);
     if (leftValue === undefined && rightValue !== undefined) return 1;
     if (rightValue === undefined && leftValue !== undefined) return -1;
     return direction * ((leftValue ?? 0) - (rightValue ?? 0)) || left.name.localeCompare(right.name);
@@ -97,13 +114,14 @@ export function TrainLinesPage() {
             {sortHeader('tourDays', 'Tour days')}
             <th>Cargo</th>
             {sortHeader('yield', 'Yield / train / week')}
+            {sortHeader('utilization', 'Utilization')}
             <th />
           </tr>
         </thead>
         <tbody>
           {trainLines.length === 0 && (
             <tr>
-              <td colSpan={7} className="train-lines-page__empty">
+              <td colSpan={8} className="train-lines-page__empty">
                 No train lines yet.
               </td>
             </tr>
@@ -141,6 +159,9 @@ export function TrainLinesPage() {
               <td>{line.cargo}</td>
               <td title={droppedByLine.get(line.name)}>
                 {droppedByLine.has(line.name) ? 'Not modelled' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}
+              </td>
+              <td title={droppedByLine.get(line.name)}>
+                {utilizationByLine.get(line.name) === undefined ? 'Not modelled' : percentage.format(utilizationByLine.get(line.name) ?? 0)}
               </td>
               <td>
                 <button type="button" onClick={() => removeTrainLine(line.name)} aria-label={`Remove ${line.name}`}>
