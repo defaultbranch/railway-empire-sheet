@@ -8,13 +8,14 @@ let server;
 let buildWarehouseFlowDiagram;
 let buildGoodsFlowDiagram;
 let buildIndustryFlowDiagram;
+let buildCityGoodFlowDiagram;
 let buildRuralBusinessFlowDiagram;
 let layoutGoodsFlow;
 let FlowSankey;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true }, appType: 'custom' });
-  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram, buildIndustryFlowDiagram, buildRuralBusinessFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
+  ({ buildWarehouseFlowDiagram, buildGoodsFlowDiagram, buildIndustryFlowDiagram, buildCityGoodFlowDiagram, buildRuralBusinessFlowDiagram } = await server.ssrLoadModule('/src/app/pages/goods-flow.ts'));
   ({ layoutGoodsFlow } = await server.ssrLoadModule('/src/app/pages/goods-flow-layout.ts'));
   ({ FlowSankey } = await server.ssrLoadModule('/src/app/pages/goods-flow-page.tsx'));
 });
@@ -89,6 +90,49 @@ test('industry diagrams trace all upstream sources and downstream sinks over mul
   }
   assert.equal(JSON.stringify({ network, solution }), before);
   assert.deepEqual(buildIndustryFlowDiagram(network, solution, { ...industry, slot: 2 }, 'in'), { nodes: [], links: [] });
+});
+
+test('city good supply traces net upstream flows to separate population and industry sinks', () => {
+  const { network, solution } = fixture();
+  const farm = { kind: 'rural business', name: 'Farm' };
+  const population = { kind: 'population', city: 'Town' };
+  const industry = { kind: 'industry', city: 'Town', slot: 0 };
+  const otherCity = { kind: 'population', city: 'Other town' };
+  network.nodes[1].sources.push({ contributor: farm, good: 'Wheat', amount: 6 });
+  network.nodes[3].sinks.push({ contributor: population, good: 'Wheat', amount: 2 });
+  network.nodes[3].sinks.push({ contributor: otherCity, good: 'Wheat', amount: 1 });
+  network.nodes[3].conversions.push({ contributor: industry,
+    rawMaterials: [{ good: 'Wheat', amount: 1 }], products: [{ good: 'Corn', amount: 1 }] });
+  solution.contributorFlows = [
+    { contributor: farm, node: network.nodes[1].id, good: 'Wheat', requested: 6, served: 3 },
+    { contributor: population, node: network.nodes[3].id, good: 'Wheat', requested: 2, served: 2 },
+    { contributor: industry, node: network.nodes[3].id, good: 'Wheat', requested: 1, served: 1 },
+    { contributor: industry, node: network.nodes[3].id, good: 'Corn', requested: 1, served: 1 },
+    { contributor: otherCity, node: network.nodes[3].id, good: 'Wheat', requested: 1, served: 0 },
+  ];
+  const before = JSON.stringify({ network, solution });
+  const diagram = buildCityGoodFlowDiagram(network, solution, 'Town', 'Wheat');
+  assert.equal(diagram.links.length, 6);
+  assert.deepEqual(diagram.nodes.filter((node) => node.role === 'consumer').map((node) => node.label),
+    ['Town population', 'Town industry 1']);
+  assert.deepEqual(diagram.nodes.filter((node) => node.role === 'producer').map((node) => node.label), ['Farm']);
+  assert.ok(diagram.links.every((link) => link.good === 'Wheat'));
+  assert.equal(diagram.links.find((link) => link.source === 'warehouse:Before' && link.target === 'warehouse:Hub').value, 3);
+  const graph = layoutGoodsFlow(diagram.nodes, diagram.links, 500);
+  const sinks = graph.nodes.filter((node) => node.role === 'consumer');
+  assert.ok(sinks.every((sink) => sink.x0 === Math.max(...graph.nodes.map((node) => node.x0))));
+  assert.ok(graph.links.every((link) => link.source.x1 < link.target.x0 && !link.path.includes('NaN')));
+  const markup = renderToStaticMarkup(createElement(FlowSankey, {
+    diagram, good: 'Wheat', follow: () => {}, showGross: false,
+  }));
+  assert.ok(markup.includes('Town population') && markup.includes('Town industry 1'));
+  assert.ok(!markup.includes('Gross forward'));
+  assert.equal(JSON.stringify({ network, solution }), before);
+  assert.deepEqual(buildCityGoodFlowDiagram(network, solution, 'Missing', 'Wheat'), { nodes: [], links: [] });
+  assert.deepEqual(buildCityGoodFlowDiagram(network, solution, 'Town', 'Corn'), { nodes: [], links: [] });
+  solution.legFlows.find((flow) => flow.leg === 'in@1' && flow.good === 'Wheat').units = 5;
+  const cancelled = buildCityGoodFlowDiagram(network, solution, 'Town', 'Wheat');
+  assert.ok(cancelled.nodes.every((node) => node.label !== 'Farm' && node.id !== 'warehouse:Before'));
 });
 
 test('rural business outflow traces local and branching multi-hop sinks without unrelated suppliers', () => {

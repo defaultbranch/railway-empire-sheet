@@ -196,7 +196,7 @@ export function buildIndustryFlowDiagram(
       for (const entry of direction === 'in' ? conversion.rawMaterials : conversion.products) goods.add(entry.good);
     }
   }
-  return buildContributorFlowDiagram(network, solution, industry, goods, direction);
+  return buildContributorFlowDiagram(network, solution, [industry], goods, direction);
 }
 
 export function buildRuralBusinessFlowDiagram(
@@ -210,23 +210,38 @@ export function buildRuralBusinessFlowDiagram(
       if (identity(source.contributor) === identity(business)) goods.add(source.good);
     }
   }
-  return buildContributorFlowDiagram(network, solution, business, goods, 'out');
+  return buildContributorFlowDiagram(network, solution, [business], goods, 'out');
+}
+
+export function buildCityGoodFlowDiagram(
+  network: FlowNetwork,
+  solution: FlowSolution,
+  city: string,
+  good: string,
+) {
+  const consumers = network.nodes.flatMap((node) => [
+    ...node.sinks.filter((sink) => sink.good === good).map((sink) => sink.contributor),
+    ...node.conversions.filter((conversion) => conversion.rawMaterials.some((material) => material.good === good))
+      .map((conversion) => conversion.contributor),
+  ]).filter((contributor) => contributor.kind !== 'rural business' && contributor.city === city);
+  return buildContributorFlowDiagram(network, solution, consumers, new Set([good]), 'in');
 }
 
 function buildContributorFlowDiagram(
   network: FlowNetwork,
   solution: FlowSolution,
-  contributor: Contributor,
+  contributors: Contributor[],
   goods: Set<string>,
   direction: 'in' | 'out',
 ) {
   const nodes = new Map<string, FlowDiagramNode>();
   const links: FlowDiagramLink[] = [];
-  const centerId = `${direction === 'in' ? 'consumer' : 'producer'}:${identity(contributor)}`;
+  const centerIds = contributors.map((contributor) =>
+    `${direction === 'in' ? 'consumer' : 'producer'}:${identity(contributor)}`);
   for (const good of goods) {
     const diagram = buildGoodsFlowDiagram(network, solution, good);
-    const reached = new Set([centerId]);
-    const pending = [centerId];
+    const reached = new Set(centerIds);
+    const pending = [...reached];
     while (pending.length > 0) {
       const current = pending.pop()!;
       for (const link of diagram.links) {
