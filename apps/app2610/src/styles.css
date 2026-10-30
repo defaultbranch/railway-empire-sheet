@@ -1,0 +1,19 @@
+:root {
+  font-family: sans-serif;
+  color: #242424;
+  background: #fafafa;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+}
+
+h1 {
+  font-size: 2rem;
+}

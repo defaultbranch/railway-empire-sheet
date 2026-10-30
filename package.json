@@ -5,13 +5,17 @@
   "scripts": {
     "dev": "pnpm run dev:app2609",
     "dev:app2609": "pnpm --filter @railway/app2609 dev",
+    "dev:app2610": "pnpm --filter @railway/app2610 dev",
     "dev:app2312": "pnpm --filter @railway/app2312 start",
     "test": "pnpm --filter @railway/app2609 test",
     "build": "pnpm run build:app2609",
     "build:app2609": "pnpm --filter @railway/app2609 build",
+    "build:app2610": "pnpm --filter @railway/app2610 build",
+    "build:shared": "pnpm --filter @railway/shared build",
     "build:app2312": "pnpm --filter @railway/app2312 build",
     "build:all": "pnpm -r run build",
-    "preview": "pnpm --filter @railway/app2609 preview"
+    "preview": "pnpm --filter @railway/app2609 preview",
+    "preview:app2610": "pnpm --filter @railway/app2610 preview"
   },
   "engines": {
     "node": ">=24.21.0",
