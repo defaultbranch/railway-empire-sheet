@@ -2,8 +2,8 @@
 
 Independent applications managed with pnpm workspaces:
 
-- [React app](apps/react-app/README.md): the current browser-only application.
-- [Angular app](apps/angular-app/README.md): the archived Angular/Nx prototype, previously in `old/`.
+- [app2609](apps/app2609/README.md): the current browser-only application, started in September 2026.
+- [app2312](apps/app2312/README.md): the archived Angular/Nx prototype, started in December 2023, previously in `old/`.
 
 ## Getting Started
 
@@ -17,12 +17,12 @@ pnpm dev
 
 Run these commands from the repository root:
 
-- `pnpm dev` or `pnpm dev:react`: start the React app.
-- `pnpm test`: run the React app's tests.
-- `pnpm build` or `pnpm build:react`: type-check and build the React app.
-- `pnpm preview`: preview the React production build.
-- `pnpm dev:angular`: start the archived Angular app using its local Nx setup.
-- `pnpm build:angular`: build the archived Angular app.
+- `pnpm dev` or `pnpm dev:app2609`: start app2609.
+- `pnpm test`: run app2609's tests.
+- `pnpm build` or `pnpm build:app2609`: type-check and build app2609.
+- `pnpm preview`: preview the app2609 production build.
+- `pnpm dev:app2312`: start app2312 using its local Nx setup.
+- `pnpm build:app2312`: build app2312.
 - `pnpm build:all`: build all workspace packages.
 
 The Angular prototype retains its original dependencies. Angular 17/Nx 18 do not

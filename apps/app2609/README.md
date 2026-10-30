@@ -11,7 +11,7 @@ A small browser-only application for managing a Railway Empire game.
 
 ```sh
 pnpm install # from the repository root
-pnpm --filter @railway/react-app dev
+pnpm --filter @railway/app2609 dev
 ```
 
 ## Scripts
@@ -33,6 +33,6 @@ The implemented pages, in order, are listed in [src/app/pages/pages.ts](./src/ap
 
 ## Archived Prototype
 
-The [Angular app](../angular-app/README.md) contains a previous prototype
+The [app2312](../app2312/README.md) contains a previous prototype
 implementation. It is kept for archival purposes and is not intended to serve
 as a template.

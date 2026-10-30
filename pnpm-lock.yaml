@@ -166,7 +166,7 @@ importers:
 
   .: {}
 
-  apps/angular-app:
+  apps/app2312:
     dependencies:
       '@angular/animations':
         specifier: ^17.2.1
@@ -296,7 +296,7 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
 
-  apps/react-app:
+  apps/app2609:
     dependencies:
       d3-sankey-circular:
         specifier: ^0.34.0
