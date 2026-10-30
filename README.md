@@ -1,37 +1,48 @@
-# Railway Empire Sheet
+# Railway Empire Workspace
 
-A small browser-only application for managing a Railway Empire game.
+Independent applications managed with pnpm workspaces:
 
-## Stack
-
-- React with Vite and TypeScript
-- SCSS for centralized styling in `src/styles.scss`
+- [React app](apps/react-app/README.md): the current browser-only application.
+- [Angular app](apps/angular-app/README.md): the archived Angular/Nx prototype, previously in `old/`.
 
 ## Getting Started
 
+Use Node.js 24.21 or newer and the pnpm version pinned in `package.json`.
+
 ```sh
 corepack enable
-corepack use pnpm@latest
 pnpm install
 pnpm dev
 ```
 
-## Scripts
+Run these commands from the repository root:
 
-- `pnpm dev` starts the local Vite dev server.
-- `pnpm build` type-checks and builds the app.
-- `pnpm preview` serves the production build locally.
+- `pnpm dev` or `pnpm dev:react`: start the React app.
+- `pnpm test`: run the React app's tests.
+- `pnpm build` or `pnpm build:react`: type-check and build the React app.
+- `pnpm preview`: preview the React production build.
+- `pnpm dev:angular`: start the archived Angular app using its local Nx setup.
+- `pnpm build:angular`: build the archived Angular app.
+- `pnpm build:all`: build all workspace packages.
 
-## Development Approach
+The Angular prototype retains its original dependencies. Angular 17/Nx 18 do not
+officially support the root's Node.js 24 runtime; modernizing that application is
+separate from this directory migration.
 
-Rather than a top-level menu, the app presents a sequence of pages that the user navigates through in order. The earliest pages cover simple, independent data, while later pages depend on data established by the ones before them. The purpose of this ordering is to build the application logic from the ground up, focusing on one aspect at a time instead of designing the whole data model up front.
+## Workspace Layout
 
-The implemented pages, in order, are listed in [src/app/pages/pages.ts](./src/app/pages/pages.ts).
+Application source, configuration, and dependencies belong to each application's
+directory under `apps/`. The root owns the package-manager configuration, common
+commands, and shared `pnpm-lock.yaml`. Run `pnpm install` at the root after changing
+any package's dependencies.
 
-## Specification
+Install lifecycle scripts are disabled workspace-wide with `ignoreScripts: true`
+in `pnpm-workspace.yaml`. Explicit commands such as `pnpm test` and `pnpm build`
+remain available.
 
-[railway-empire-spec.md](./railway-empire-spec.md) documents the game mechanics being modeled and the data model derived from them.
+To add another application, create `apps/<name>/package.json` with a unique package
+name and its own scripts. Run it with `pnpm --filter <package-name> <script>`.
 
-## Archived Prototype
-
-The `old/` folder contains a previous prototype implementation. It is kept for archival purposes and is not intended to serve as a template.
+Future shared libraries belong under `packages/`. Consumers can declare a local
+dependency such as `"@railway/shared": "workspace:*"`. Applications otherwise remain
+independent and can use different versions of the same dependency.

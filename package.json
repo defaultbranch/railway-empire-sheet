@@ -1,27 +1,17 @@
 {
-  "name": "railway-empire-sheet",
-  "version": "0.1.0",
+  "name": "railway-empire-workspace",
   "private": true,
-  "type": "module",
   "packageManager": "pnpm@12.4.2",
   "scripts": {
-    "dev": "vite",
-    "test": "node --test src/app/solver/*.test.mjs src/app/pages/*.test.mjs",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "d3-sankey-circular": "^0.34.0",
-    "react": ">=19.3.0",
-    "react-dom": ">=19.3.0"
-  },
-  "devDependencies": {
-    "@types/react": ">=19.3.0",
-    "@types/react-dom": ">=19.3.0",
-    "@vitejs/plugin-react": ">=6.1.1",
-    "sass": ">=1.104.0",
-    "typescript": ">=7.0.2",
-    "vite": ">=8.3.0"
+    "dev": "pnpm run dev:react",
+    "dev:react": "pnpm --filter @railway/react-app dev",
+    "dev:angular": "pnpm --filter @railway/angular-app start",
+    "test": "pnpm --filter @railway/react-app test",
+    "build": "pnpm run build:react",
+    "build:react": "pnpm --filter @railway/react-app build",
+    "build:angular": "pnpm --filter @railway/angular-app build",
+    "build:all": "pnpm -r run build",
+    "preview": "pnpm --filter @railway/react-app preview"
   },
   "engines": {
     "node": ">=24.21.0",

@@ -1,5 +1,8 @@
 packages:
-  - .
+  - 'apps/*'
+  - 'packages/*'
+
+ignoreScripts: true
 
 allowBuilds:
   '@parcel/watcher': false

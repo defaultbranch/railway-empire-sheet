@@ -1,0 +1,29 @@
+{
+  "name": "@railway/react-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "node --test src/app/solver/*.test.mjs src/app/pages/*.test.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "d3-sankey-circular": "^0.34.0",
+    "react": ">=19.3.0",
+    "react-dom": ">=19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": ">=19.3.0",
+    "@types/react-dom": ">=19.3.0",
+    "@vitejs/plugin-react": ">=6.1.1",
+    "sass": ">=1.104.0",
+    "typescript": ">=7.0.2",
+    "vite": ">=8.3.0"
+  },
+  "engines": {
+    "node": ">=24.21.0",
+    "pnpm": ">=12.4.2"
+  }
+}
