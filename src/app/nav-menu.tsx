@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigation } from './navigation';
 import { useGameActions } from './game-state';
+import { deserializeGameState } from './game-state/persistence';
 import { pages, pathForPageIndex } from './pages/pages';
 
 export function NavMenu() {
   const [open, setOpen] = useState(false);
+  const importInput = useRef<HTMLInputElement>(null);
   const { route, navigate } = useNavigation();
-  const { resetToDefault, wipeToEmpty } = useGameActions();
+  const { exportGameState, replaceGameState, resetToDefault, wipeToEmpty } = useGameActions();
 
   useEffect(() => {
     if (!open) return;
@@ -20,6 +22,16 @@ export function NavMenu() {
   const goTo = (path: string) => {
     navigate(path);
     setOpen(false);
+  };
+
+  const exportSave = () => {
+    const blob = new Blob([exportGameState()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `railway-empire-save-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
@@ -68,6 +80,38 @@ export function NavMenu() {
               })}
             </ul>
             <footer className="nav-menu__footer">
+              <button type="button" className="nav-menu__action" onClick={exportSave}>
+                Export save
+              </button>
+              <button type="button" className="nav-menu__action" onClick={() => importInput.current?.click()}>
+                Import save
+              </button>
+              <input
+                ref={importInput}
+                type="file"
+                accept=".json,application/json"
+                hidden
+                onChange={async (event) => {
+                  const input = event.currentTarget;
+                  const file = input.files?.[0];
+                  input.value = '';
+                  if (!file) return;
+
+                  try {
+                    const state = deserializeGameState(await file.text());
+                    if (!state) {
+                      window.alert('This file is not a valid Railway Empire save.');
+                      return;
+                    }
+                    if (window.confirm('Import this save and replace the current game data?')) {
+                      replaceGameState(state);
+                      setOpen(false);
+                    }
+                  } catch {
+                    window.alert('Unable to read this save file. Your current game data was not changed.');
+                  }
+                }}
+              />
               <button
                 type="button"
                 className="nav-menu__action"

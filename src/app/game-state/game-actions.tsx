@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
 import { defaultGameState, emptyGameState } from '../initial-state';
-import { saveGameStateToStorage } from './persistence';
+import { saveGameStateToStorage, serializeGameState } from './persistence';
 import type { GameState } from './types';
 import { useGoods } from './goods-state';
 import { useRuralBusinessTypes } from './rural-business-state';
@@ -14,6 +14,8 @@ import { useWarehouses } from './warehouses-state';
 import { useTrainLines } from './train-lines-state';
 
 export type GameActionsState = {
+  exportGameState: () => string;
+  replaceGameState: (state: GameState) => void;
   resetToDefault: () => void;
   wipeToEmpty: () => void;
 };
@@ -80,9 +82,13 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
 
   const resetToDefault = () => applyState(defaultGameState());
   const wipeToEmpty = () => applyState(emptyGameState());
+  const replaceGameState = (state: GameState) => applyState(state);
+  const exportGameState = () => serializeGameState(currentState);
 
   return (
-    <GameActionsContext.Provider value={{ resetToDefault, wipeToEmpty }}>{children}</GameActionsContext.Provider>
+    <GameActionsContext.Provider value={{ exportGameState, replaceGameState, resetToDefault, wipeToEmpty }}>
+      {children}
+    </GameActionsContext.Provider>
   );
 }
 
