@@ -1,6 +1,6 @@
 import { warehouseGoodSlotsByTracks, type Good, type TrainLine, type Warehouse } from '../game-state/types.ts';
 import type { GoodsFlow } from './solve-goods-flow';
-import { solveFlowNetwork } from './solve-flow.ts';
+import { solveFlowNetwork } from '@railway/shared';
 import { analyzeTransportRevenue } from './transport-revenue.ts';
 
 export type WarehouseGoodSimulation = {

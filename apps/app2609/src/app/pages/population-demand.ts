@@ -1,5 +1,5 @@
 import type { City, Demand } from '../game-state/types';
-import type { FlowSolution } from '../solver/solver-types';
+import type { FlowSolution } from '@railway/shared';
 
 export type PopulationDemandSort = { key: 'city' | 'demand' | 'unmet'; descending: boolean };
 

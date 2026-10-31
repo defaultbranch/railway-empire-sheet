@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { Worker } from 'node:worker_threads';
 import { once } from 'node:events';
-import { solveFlowNetwork } from './solve-flow.ts';
+import { solveFlowNetwork } from '@railway/shared';
 import { analyzeTransportRevenue } from './transport-revenue.ts';
 import { simulateWarehouseGoods } from './warehouse-recommendations.ts';
 

@@ -10,7 +10,7 @@ import type {
   StopRef,
 } from '../game-state/types';
 import { demandForCity } from '../pages/population-demand';
-import type { Contribution, Conversion, FlowNetwork, FlowNode, Leg, LegId, MissingCoefficient, NodeId } from './solver-types';
+import type { Contribution, Conversion, FlowNetwork, FlowNode, Leg, LegId, MissingCoefficient, NodeId } from '@railway/shared';
 
 export type CompiledNetwork = {
   network: FlowNetwork;

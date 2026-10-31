@@ -1,6 +1,6 @@
 import type { Good, TrainLine } from '../game-state/types';
-import { buildLocalities, contributorKey } from './solve-flow.ts';
-import type { FlowNetwork, FlowSolution, Leg, NodeId } from './solver-types';
+import { buildLocalities, contributorKey } from '@railway/shared';
+import type { FlowNetwork, FlowSolution, Leg, NodeId } from '@railway/shared';
 
 export const nominalDeliveryYield = 2000;
 

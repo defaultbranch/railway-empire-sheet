@@ -1,7 +1,6 @@
 import type { GameState } from '../game-state/types';
 import { compileFlowNetwork } from './compile-network';
-import { defaultSolveOptions, solveFlowNetwork } from './solve-flow';
-import type { FlowNetwork, FlowSolution, SolveOptions } from './solver-types';
+import { defaultSolveOptions, solveFlowNetwork, type FlowNetwork, type FlowSolution, type SolveOptions } from '@railway/shared';
 import { analyzeTransportRevenue, type TransportRevenue } from './transport-revenue';
 
 export type GoodsFlow = {

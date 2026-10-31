@@ -1,9 +1,9 @@
-import type { Good } from '../game-state/types';
 import type {
   Contribution,
   Contributor,
   ContributorFlow,
   Conversion,
+  Good,
   FlowNetwork,
   FlowNode,
   FlowSolution,

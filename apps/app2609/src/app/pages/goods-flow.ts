@@ -3,7 +3,7 @@ import { pathForRuralBusiness } from '../entities/rural-business-routes';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
 import { pages, pathForPageIndex } from './pages';
-import type { Contributor, FlowNetwork, FlowSolution, NodeId } from '../solver/solver-types';
+import type { Contributor, FlowNetwork, FlowSolution, NodeId } from '@railway/shared';
 
 export type FlowDiagramNode = {
   id: string;

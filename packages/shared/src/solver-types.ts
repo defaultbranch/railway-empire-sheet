@@ -1,4 +1,5 @@
-import type { Good, IndustrySlot } from '../game-state/types';
+export type Good = string;
+export type IndustrySlot = 0 | 1 | 2;
 
 // The solver works on a flattened, pre-resolved view of the game state: levels have already been
 // looked up in production tables and recipes, hosts have been attributed to their stops, and lines

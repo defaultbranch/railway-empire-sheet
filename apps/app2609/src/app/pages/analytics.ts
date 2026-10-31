@@ -1,5 +1,5 @@
 import type { City, Demand, Good } from '../game-state/types';
-import type { FlowSolution } from '../solver/solver-types';
+import type { FlowSolution } from '@railway/shared';
 import { demandForCity } from './population-demand';
 
 export type MissingPopulationSupply = {

@@ -168,7 +168,7 @@ The decisions recorded above conflict with the spec, or with themselves, in five
 ## Gaps to resolve, step by step
 
 - [x] **Cities gate unloading, much like warehouses.** Settled in the spec: by good only, never by
-      volume, and one-directional. `handledGoods` in [solver-types.ts](solver-types.ts) is now the
+      volume, and one-directional. `handledGoods` in [solver-types.ts](../../../../../packages/shared/src/solver-types.ts) is now the
       pair `unloadableGoods` / `loadableGoods`.
 - [x] **Only two-stop lines are modelled.** Longer lines are dropped with a warning, alongside
       those with unknown `tourDays` or `cargo` set to `'mail and passengers'`; spec amended.
@@ -201,7 +201,7 @@ The decisions recorded above conflict with the spec, or with themselves, in five
 - [x] **Convergence is unspecified.** Deliberately deferred, not a design gap: the damping factor,
       tolerance, iteration cap and no-convergence return value are implementation details to pick
       when the iteration is first written and tuned against real data, not decisions worth locking
-      in on paper first. `SolveOptions` in [solver-types.ts](solver-types.ts) can keep sensible
+      in on paper first. `SolveOptions` in [solver-types.ts](../../../../../packages/shared/src/solver-types.ts) can keep sensible
       defaults until then.
 - [x] **Out-of-scope mechanics are silently dropped.** Confirmed out of scope: the spec's special
       buildings acting as infinite sinks, and the per-city storage limit, are intentionally not

@@ -1,5 +1,5 @@
 import type { City, Demand, Good, Industry, IndustryType } from '../game-state/types';
-import type { FlowNetwork, FlowSolution } from '../solver/solver-types';
+import type { FlowNetwork, FlowSolution } from '@railway/shared';
 import { cityPopulationDemandRows, type PopulationDemandSort } from './population-demand';
 
 export type CityGoodDemandSort = {
