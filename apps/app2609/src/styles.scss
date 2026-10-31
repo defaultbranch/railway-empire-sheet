@@ -20,10 +20,18 @@ html,
 body {
 	background-color: var(--color-bg);
 	color: var(--color-text);
+	margin: 0;
 }
 
 .app-shell {
+	display: grid;
+	grid-template-columns: 18rem minmax(0, 1fr);
 	min-height: 100vh;
+
+	&__content {
+		min-width: 0;
+		padding: 4rem 1.5rem 1.5rem;
+	}
 }
 
 .goods-flow-page {
@@ -233,25 +241,14 @@ body {
 }
 
 .nav-menu {
-	&__toggle {
-		@extend %icon-button;
-		position: fixed;
-		top: 1rem;
-		left: 1rem;
-		z-index: 20;
-	}
-
-	&__overlay {
-		position: fixed;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.4);
-		z-index: 30;
-		display: flex;
-	}
-
 	&__panel {
-		width: min(18rem, 80vw);
-		height: 100%;
+		position: sticky;
+		top: 0;
+		align-self: start;
+		box-sizing: border-box;
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
 		background: var(--color-bg);
 		color: var(--color-text);
 		border-right: 1px solid var(--color-border);
@@ -269,16 +266,12 @@ body {
 		}
 	}
 
-	&__close {
-		@extend %icon-button;
-		padding: 0.1rem 0.5rem;
-	}
-
 	&__list {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
 		margin-top: 1rem;
+		margin-bottom: 1.5rem;
 	}
 
 	&__link {
@@ -302,7 +295,7 @@ body {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		margin-top: 1.5rem;
+		margin-top: auto;
 		padding-top: 1rem;
 		border-top: 1px solid var(--color-border);
 	}
@@ -316,7 +309,6 @@ body {
 
 .page-frame {
 	margin: 0;
-	padding: 4rem 1.5rem 1.5rem;
 
 	&__header {
 		display: flex;

@@ -1,28 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useNavigation } from './navigation';
 import { useGameActions } from './game-state';
 import { deserializeGameState } from './game-state/persistence';
 import { pages, pathForPageIndex } from './pages/pages';
 
 export function NavMenu() {
-  const [open, setOpen] = useState(false);
   const importInput = useRef<HTMLInputElement>(null);
   const { route, navigate } = useNavigation();
   const { exportGameState, replaceGameState, resetToDefault, wipeToEmpty } = useGameActions();
-
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open]);
-
-  const goTo = (path: string) => {
-    navigate(path);
-    setOpen(false);
-  };
 
   const exportSave = () => {
     const blob = new Blob([exportGameState()], { type: 'application/json' });
@@ -35,29 +20,9 @@ export function NavMenu() {
   };
 
   return (
-    <>
-      <button
-        type="button"
-        className="nav-menu__toggle"
-        onClick={() => setOpen(true)}
-        aria-label="Open navigation menu"
-        aria-expanded={open}
-      >
-        ☰
-      </button>
-      {open && (
-        <div className="nav-menu__overlay" onClick={() => setOpen(false)}>
-          <nav className="nav-menu__panel" onClick={(event) => event.stopPropagation()}>
+          <nav className="nav-menu__panel" aria-label="Main navigation">
             <header className="nav-menu__header">
               <h2>Pages</h2>
-              <button
-                type="button"
-                className="nav-menu__close"
-                onClick={() => setOpen(false)}
-                aria-label="Close navigation menu"
-              >
-                ×
-              </button>
             </header>
             <ul className="nav-menu__list">
               {pages.map((page, index) => {
@@ -68,9 +33,10 @@ export function NavMenu() {
                     <a
                       href={path}
                       className={`nav-menu__link${isActive ? ' nav-menu__link--active' : ''}`}
+                      aria-current={isActive ? 'page' : undefined}
                       onClick={(event) => {
                         event.preventDefault();
-                        goTo(path);
+                        navigate(path);
                       }}
                     >
                       {index + 1}. {page.title}
@@ -105,7 +71,6 @@ export function NavMenu() {
                     }
                     if (window.confirm('Import this save and replace the current game data?')) {
                       replaceGameState(state);
-                      setOpen(false);
                     }
                   } catch {
                     window.alert('Unable to read this save file. Your current game data was not changed.');
@@ -136,8 +101,5 @@ export function NavMenu() {
               </button>
             </footer>
           </nav>
-        </div>
-      )}
-    </>
   );
 }

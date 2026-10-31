@@ -97,11 +97,13 @@ export function App() {
     <ThemeProvider>
       <GameStateProvider>
         <NavigationProvider>
-          <main className="app-shell">
+          <div className="app-shell">
             <NavMenu />
-            <ThemeToggle />
-            <AppRoutes />
-          </main>
+            <main className="app-shell__content">
+              <ThemeToggle />
+              <AppRoutes />
+            </main>
+          </div>
         </NavigationProvider>
       </GameStateProvider>
     </ThemeProvider>
