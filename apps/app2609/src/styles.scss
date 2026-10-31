@@ -161,7 +161,7 @@ body {
 	right: 1rem;
 }
 
-.good-page {
+.entity-page {
 	&__heading {
 		display: flex;
 		align-items: center;
@@ -175,6 +175,9 @@ body {
 		height: 2.5rem;
 		padding: 0;
 	}
+}
+
+.good-page {
 	&__balance {
 		overflow-x: auto;
 		thead th { border-bottom: 2px solid var(--color-border); }

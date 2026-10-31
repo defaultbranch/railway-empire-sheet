@@ -8,7 +8,7 @@ import { useIndustries } from '../game-state/industries-state';
 import { useIndustryTypes } from '../game-state/industry-state';
 import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
-import { citySlug } from './city-routes';
+import { adjacentCities, citySlug, pathForCity } from './city-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import {
@@ -51,6 +51,7 @@ export function CityPage({ slug }: { slug: string }) {
     );
   }
 
+  const adjacent = adjacentCities(cities, city);
   const connectedStations = trainStations.filter((station) => hostsCity(station.host, city.name));
   const connectedWarehouses = warehouses.filter((warehouse) => hostsCity(warehouse.host, city.name));
   const connectedStops = [
@@ -178,7 +179,31 @@ export function CityPage({ slug }: { slug: string }) {
 
   return (
     <section className="city-page">
-      <h1>{city.name}</h1>
+      <div className="entity-page__heading">
+        {adjacent !== undefined && cities.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Previous city: ${adjacent.previous.name}`}
+            title={`Previous city: ${adjacent.previous.name}`}
+            onClick={() => navigate(pathForCity(adjacent.previous))}
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+        )}
+        <h1>{city.name}</h1>
+        {adjacent !== undefined && cities.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Next city: ${adjacent.next.name}`}
+            title={`Next city: ${adjacent.next.name}`}
+            onClick={() => navigate(pathForCity(adjacent.next))}
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
+      </div>
       <label className="city-page__population">
         Population
         <input

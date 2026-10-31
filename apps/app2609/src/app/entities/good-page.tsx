@@ -178,10 +178,10 @@ export function GoodPage({ slug }: { slug: string }) {
 
   return (
     <section className="good-page">
-      <div className="good-page__heading">
+      <div className="entity-page__heading">
         {adjacent !== undefined && goods.length > 1 && (
           <button
-            className="good-page__navigate"
+            className="entity-page__navigate"
             type="button"
             aria-label={`Previous good: ${adjacent.previous}`}
             title={`Previous good: ${adjacent.previous}`}
@@ -193,7 +193,7 @@ export function GoodPage({ slug }: { slug: string }) {
         <h1>{good}</h1>
         {adjacent !== undefined && goods.length > 1 && (
           <button
-            className="good-page__navigate"
+            className="entity-page__navigate"
             type="button"
             aria-label={`Next good: ${adjacent.next}`}
             title={`Next good: ${adjacent.next}`}
