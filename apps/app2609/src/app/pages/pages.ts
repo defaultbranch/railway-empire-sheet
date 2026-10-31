@@ -6,7 +6,6 @@ import { IndustryTypesPage } from './industry-types-page';
 import { IndustriesPage } from './industries-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
-import { PopulationDemandPage } from './population-demand-page';
 import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
 import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
@@ -82,15 +81,6 @@ export const pages: Page[] = [
       'A city is a named place with a population. Population drives both the demand for goods and how ' +
       'many industries the city can host. Register cities you discover here as you play.',
     Component: CitiesPage,
-  },
-  {
-    title: 'Population Demand',
-    slug: 'population-demand',
-    description:
-      "Population demand is driven per city, by each city's own population. " +
-      "This table lists, per good, the demand of a single selected city and the sum of that demand " +
-      'across all registered cities; industry consumption within cities is not considered.',
-    Component: PopulationDemandPage,
   },
   {
     title: 'Total Demand',
