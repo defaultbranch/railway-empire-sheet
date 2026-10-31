@@ -1,4 +1,6 @@
-export type Good = string;
+import type { Good } from './game-domain/primitives.ts';
+
+export type { Good } from './game-domain/primitives.ts';
 export type IndustrySlot = 0 | 1 | 2;
 
 // The solver works on a flattened, pre-resolved view of the game state: levels have already been
