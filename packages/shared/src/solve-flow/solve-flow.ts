@@ -13,7 +13,7 @@ import type {
   NodeFlow,
   NodeId,
   SolveOptions,
-} from './solver-types';
+} from '../solver-types.ts';
 
 export const defaultSolveOptions: SolveOptions = { damping: 0.5, tolerance: 1e-4, maxIterations: 200 };
 
