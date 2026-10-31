@@ -1,4 +1,4 @@
-import { Good } from './primitives.ts';
+import { Good } from './good.ts';
 import { BusinessLevel, isProductionByLevel } from './production.ts';
 import { isOptionalNumber, isRecord, isString } from './validation.ts';
 

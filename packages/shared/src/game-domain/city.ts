@@ -1,4 +1,4 @@
-import { Good } from './primitives.ts';
+import { Good } from './good.ts';
 import { isNumber, isRecord, isString } from './validation.ts';
 
 // population demand for a good: not demanded below minPopulation, then wagonsPerMillion per week per million citizens

@@ -1,4 +1,4 @@
-export { Good } from './primitives.ts';
+export { Good } from './good.ts';
 export { BusinessLevel, businessLevels, emptyProductionByLevel } from './production.ts';
 export { City, Demand } from './city.ts';
 export { RuralBusiness, RuralBusinessType } from './rural-business.ts';

@@ -1,1 +1,1 @@
-export * from './solve-flow/index.ts';
+export * from './solve-flow';

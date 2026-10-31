@@ -1,4 +1,4 @@
-import { Good } from './primitives.ts';
+import { Good } from './good.ts';
 import { isArrayOf, isNumber, isOneOf, isRecord, isString } from './validation.ts';
 
 // exclusive: a stop is hosted by either a single city, or by 1-2 rural businesses
