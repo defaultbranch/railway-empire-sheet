@@ -7,7 +7,7 @@ import { useTrainLines } from '../game-state/train-lines-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { trainCargoTypes, type StopRef, type TrainCargo } from '../game-state/types';
 import { useNavigation } from '../navigation';
-import { warehouseSlug } from './warehouse-routes';
+import { adjacentWarehouses, pathForWarehouse, warehouseSlug } from './warehouse-routes';
 import { pathForCity } from './city-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
@@ -130,6 +130,7 @@ export function WarehousePage({ slug }: { slug: string }) {
     );
   }
 
+  const adjacent = adjacentWarehouses(warehouses, warehouse);
   const host = warehouse.host;
   const hostCity = host.kind === 'city' ? cities.find((city) => city.name === host.city) : undefined;
   const hostBusinesses =
@@ -217,7 +218,31 @@ export function WarehousePage({ slug }: { slug: string }) {
 
   return (
     <section className="warehouse-page">
-      <h1>{warehouse.name}</h1>
+      <div className="entity-page__heading">
+        {adjacent !== undefined && warehouses.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Previous warehouse: ${adjacent.previous.name}`}
+            title={`Previous warehouse: ${adjacent.previous.name}`}
+            onClick={() => navigate(pathForWarehouse(adjacent.previous))}
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+        )}
+        <h1>{warehouse.name}</h1>
+        {adjacent !== undefined && warehouses.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Next warehouse: ${adjacent.next.name}`}
+            title={`Next warehouse: ${adjacent.next.name}`}
+            onClick={() => navigate(pathForWarehouse(adjacent.next))}
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
+      </div>
       <label className="warehouse-page__tracks">
         Tracks
         <select
