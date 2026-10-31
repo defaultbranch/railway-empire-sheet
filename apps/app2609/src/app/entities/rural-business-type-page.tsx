@@ -4,7 +4,7 @@ import { useRuralBusinessTypes } from '../game-state/rural-business-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useNavigation } from '../navigation';
 import { pathForRuralBusiness } from './rural-business-routes';
-import { ruralBusinessTypeSlug } from './rural-business-type-routes';
+import { adjacentRuralBusinessTypes, pathForRuralBusinessType, ruralBusinessTypeSlug } from './rural-business-type-routes';
 
 export function RuralBusinessTypePage({ slug }: { slug: string }) {
   const { ruralBusinessTypes, setRuralBusinessProduction } = useRuralBusinessTypes();
@@ -30,6 +30,7 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
     );
   }
 
+  const adjacent = adjacentRuralBusinessTypes(ruralBusinessTypes, type);
   const businesses = ruralBusinesses
     .filter((business) => business.typeName === type.name)
     .sort((left, right) => left.name.localeCompare(right.name));
@@ -45,7 +46,31 @@ export function RuralBusinessTypePage({ slug }: { slug: string }) {
 
   return (
     <section className="rural-business-type-page">
-      <h1>{type.name}</h1>
+      <div className="entity-page__heading">
+        {adjacent !== undefined && ruralBusinessTypes.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Previous rural business type: ${adjacent.previous.name}`}
+            title={`Previous rural business type: ${adjacent.previous.name}`}
+            onClick={() => navigate(pathForRuralBusinessType(adjacent.previous))}
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+        )}
+        <h1>{type.name}</h1>
+        {adjacent !== undefined && ruralBusinessTypes.length > 1 && (
+          <button
+            className="entity-page__navigate"
+            type="button"
+            aria-label={`Next rural business type: ${adjacent.next.name}`}
+            title={`Next rural business type: ${adjacent.next.name}`}
+            onClick={() => navigate(pathForRuralBusinessType(adjacent.next))}
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
+      </div>
       <p className="rural-business-type-page__good">Produces: {type.good}</p>
       <p className="rural-business-type-page__setup-cost">
         Setup cost basis: {type.setupCostBasis === undefined ? '?' : type.setupCostBasis.toLocaleString()}
