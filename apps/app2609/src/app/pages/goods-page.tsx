@@ -17,25 +17,40 @@ export function GoodsPage() {
 
   return (
     <div className="goods-page">
-      <ul className="goods-page__list">
-        {goods.length === 0 && <li className="goods-page__empty">No goods yet.</li>}
-        {goods.map((good) => (
-          <li key={good}>
-            <a
-              href={pathForGood(good)}
-              onClick={(event) => {
-                event.preventDefault();
-                navigate(pathForGood(good));
-              }}
-            >
-              {good}
-            </a>
-            <button type="button" onClick={() => removeGood(good)} aria-label={`Remove ${good}`}>
-              ✕
-            </button>
-          </li>
-        ))}
-      </ul>
+      {goods.length === 0 ? (
+        <p className="goods-page__empty">No goods yet.</p>
+      ) : (
+        <table className="goods-page__table">
+          <thead>
+            <tr>
+              <th scope="col">Good</th>
+              <th scope="col" aria-label="Actions" />
+            </tr>
+          </thead>
+          <tbody>
+            {goods.map((good) => (
+              <tr key={good}>
+                <td>
+                  <a
+                    href={pathForGood(good)}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      navigate(pathForGood(good));
+                    }}
+                  >
+                    {good}
+                  </a>
+                </td>
+                <td>
+                  <button type="button" onClick={() => removeGood(good)} aria-label={`Remove ${good}`} title={`Remove ${good}`}>
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       <form
         className="goods-page__add"
         onSubmit={(event) => {

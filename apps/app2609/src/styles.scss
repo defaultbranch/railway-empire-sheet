@@ -329,11 +329,10 @@ body {
 	}
 }
 
-.goods-page__list li {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 0.25rem 0;
+.goods-page__table {
+	max-width: 100%;
+	td:first-child, th:first-child { padding-left: 0; }
+	a { overflow-wrap: anywhere; }
 }
 
 .industry-types-page {
