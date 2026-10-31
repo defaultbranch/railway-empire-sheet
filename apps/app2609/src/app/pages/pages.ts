@@ -3,7 +3,6 @@ import { GoodsPage } from './goods-page';
 import { RuralBusinessTypesPage } from './rural-business-types-page';
 import { RuralBusinessesPage } from './rural-businesses-page';
 import { IndustryTypesPage } from './industry-types-page';
-import { IndustriesPage } from './industries-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
 import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
@@ -100,16 +99,6 @@ export const pages: Page[] = [
       'it belongs to, and its current level (1 to 5). Register the rural businesses you discover during ' +
       'play here, and update their level as they grow.',
     Component: RuralBusinessesPage,
-  },
-  {
-    title: 'Industries',
-    slug: 'industries',
-    description:
-      'An industry is a concrete, placed instance of an industry type: its own name, the type it belongs ' +
-      'to, the city hosting it, which of the city\'s industry slots (1 to 3) it occupies, and its current ' +
-      'level (1 to 5). Register the industries you discover during play here, and update their level as ' +
-      'they grow.',
-    Component: IndustriesPage,
   },
   {
     title: 'Supply vs Demand',
