@@ -39,8 +39,7 @@ function PagesRoute({ pageIndex }: { pageIndex: number }) {
   }, [pageIndex]);
 
   const goToPage = (index: number) => {
-    const clamped = Math.max(0, Math.min(pages.length - 1, index));
-    navigate(pathForPageIndex(clamped));
+    navigate(pathForPageIndex((index + pages.length) % pages.length));
   };
 
   return (
@@ -48,8 +47,6 @@ function PagesRoute({ pageIndex }: { pageIndex: number }) {
       index={pageIndex + 1}
       title={page.title}
       description={page.description}
-      canGoPrevious={pageIndex > 0}
-      canGoNext={pageIndex < pages.length - 1}
       onPrevious={() => goToPage(pageIndex - 1)}
       onNext={() => goToPage(pageIndex + 1)}
     >

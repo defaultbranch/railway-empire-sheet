@@ -314,15 +314,7 @@ body {
 	margin: 0;
 
 	&__header {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-
 		h1 {
-			flex: 1;
-			min-width: 0;
-			overflow-wrap: anywhere;
-			text-align: left;
 			margin: 0;
 		}
 	}
