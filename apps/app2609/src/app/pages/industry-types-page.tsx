@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { businessLevels, type BusinessLevel, type Good, type GoodFlow, type IndustryFlowField } from '../game-state/types';
+import { Fragment, useState } from 'react';
+import type { GoodFlow } from '../game-state/types';
 import { useGoods } from '../game-state/goods-state';
 import { useIndustryTypes } from '../game-state/industry-state';
+import { useNavigation } from '../navigation';
+import { pathForIndustryType } from '../entities/industry-type-routes';
+import { pathForGood } from '../entities/good-routes';
 
 export function IndustryTypesPage() {
+  const { navigate } = useNavigation();
   const { goods } = useGoods();
   const {
     industryTypes,
     addIndustryType,
     removeIndustryType,
-    addIndustryFlow,
-    removeIndustryFlow,
-    setIndustryFlowGood,
-    setIndustryFlowAmount,
     setIndustrySetupCostBasis,
   } = useIndustryTypes();
   const [newName, setNewName] = useState('');
@@ -24,102 +24,68 @@ export function IndustryTypesPage() {
     setNewName('');
   };
 
-  const renderFlows = (typeName: string, field: IndustryFlowField, label: string, flows: GoodFlow[]) => (
-    <div className="industry-types-page__flows">
-      <span className="industry-types-page__flows-label">{label}</span>
-      <table>
+  const summarizeGoods = (flows: GoodFlow[]) => flows.length === 0 ? '?' : flows.map(({ good }, index) => (
+    <Fragment key={index}>
+      {index > 0 && ', '}
+      {good == null ? '?' : (
+        <a href={pathForGood(good)} onClick={(event) => {
+          event.preventDefault();
+          navigate(pathForGood(good));
+        }}>{good}</a>
+      )}
+    </Fragment>
+  ));
+
+  return (
+    <div className="industry-types-page">
+      <div className="industry-types-page__table-scroll">
+      <table className="industry-types-page__table">
         <thead>
           <tr>
-            <th>Good</th>
-            {businessLevels.map((level) => (
-              <th key={level}>L{level}</th>
-            ))}
+            <th>Name</th>
+            <th>Input goods</th>
+            <th>Output goods</th>
+            <th>Setup cost basis</th>
             <th />
           </tr>
         </thead>
         <tbody>
-          {flows.map((flow, index) => (
-            <tr key={index}>
+          {industryTypes.length === 0 && (
+            <tr><td colSpan={5} className="industry-types-page__empty">No industry types yet.</td></tr>
+          )}
+          {industryTypes.map((type) => (
+            <tr key={type.name}>
               <td>
-                <select
-                  value={flow.good ?? ''}
-                  onChange={(event) =>
-                    setIndustryFlowGood(typeName, field, index, (event.target.value || undefined) as Good | undefined)
-                  }
-                >
-                  <option value="">Select good…</option>
-                  {goods.map((good) => (
-                    <option key={good} value={good}>
-                      {good}
-                    </option>
-                  ))}
-                </select>
+                <a href={pathForIndustryType(type)} onClick={(event) => {
+                  event.preventDefault();
+                  navigate(pathForIndustryType(type));
+                }}>{type.name}</a>
               </td>
-              {businessLevels.map((level: BusinessLevel) => (
-                <td key={level}>
-                  <input
-                    type="number"
-                    min={0}
-                    value={flow.amountByLevel[level] ?? ''}
-                    placeholder="?"
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      setIndustryFlowAmount(typeName, field, index, level, value === '' ? undefined : Number(value));
-                    }}
-                  />
-                </td>
-              ))}
+              <td>{summarizeGoods(type.rawMaterials)}</td>
+              <td>{summarizeGoods(type.products)}</td>
               <td>
-                {flows.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeIndustryFlow(typeName, field, index)}
-                    aria-label={`Remove ${label.toLowerCase()}`}
-                  >
-                    ✕
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {flows.length < 2 && (
-        <button type="button" onClick={() => addIndustryFlow(typeName, field)}>
-          + {label}
-        </button>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="industry-types-page">
-      {industryTypes.length === 0 && <p className="industry-types-page__empty">No industry types yet.</p>}
-      {industryTypes.map((type) => (
-        <div className="industry-types-page__card" key={type.name}>
-          <div className="industry-types-page__card-header">
-            <h3>{type.name}</h3>
-            <label className="industry-types-page__setup-cost">
-              Setup cost basis
               <input
                 type="number"
                 min={0}
                 value={type.setupCostBasis ?? ''}
                 placeholder="?"
+                aria-label={`${type.name} setup cost basis`}
                 onChange={(event) => {
                   const value = event.target.value;
                   setIndustrySetupCostBasis(type.name, value === '' ? undefined : Number(value));
                 }}
               />
-            </label>
-            <button type="button" onClick={() => removeIndustryType(type.name)} aria-label={`Remove ${type.name}`}>
-              ✕
-            </button>
-          </div>
-          {renderFlows(type.name, 'rawMaterials', 'Raw material', type.rawMaterials)}
-          {renderFlows(type.name, 'products', 'Product', type.products)}
-        </div>
-      ))}
+              </td>
+              <td>
+                <button type="button" onClick={() => removeIndustryType(type.name)} aria-label={`Remove ${type.name}`}>
+                  ✕
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
       <form
         className="industry-types-page__add"
         onSubmit={(event) => {

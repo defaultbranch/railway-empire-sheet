@@ -255,11 +255,6 @@ body {
 	@extend %data-table;
 }
 
-// The only table that isn't itself tagged `__table` (it sits inside industry-types-page__flows).
-.industry-types-page__flows table {
-	@extend %data-table;
-}
-
 .nav-menu {
 	&__panel {
 		position: sticky;
@@ -348,28 +343,30 @@ body {
 }
 
 .industry-types-page {
-	&__card {
-		border: 1px solid var(--color-border);
-		border-radius: 0.5rem;
-		padding: 0.75rem 1rem;
-		margin-bottom: 1rem;
+	&__table {
+		width: 100%;
+		th, td { border-bottom: 1px solid var(--color-border); }
+		input[type='number'] { width: 7rem; }
 	}
+}
 
-	&__card-header {
+.industry-types-page__table-scroll,
+.industry-type-page__table-scroll {
+	overflow-x: auto;
+}
+
+.industry-type-page {
+	&__setup-cost {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		justify-content: space-between;
-
-		h3 {
-			margin: 0;
-		}
+		gap: 0.5rem;
+		input { width: 7rem; }
 	}
-
-	&__flows-label {
-		display: block;
-		color: var(--color-muted);
-		font-size: 0.85rem;
-		margin-top: 0.5rem;
+	&__flows {
+		margin-block: 1.5rem;
+		h2 { font-size: 1.25rem; }
+		button { margin-top: 0.5rem; }
 	}
 }
 
