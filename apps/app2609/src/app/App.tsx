@@ -13,6 +13,11 @@ import { RuralBusinessTypePage } from './entities/rural-business-type-page';
 import { TrainLinePage } from './entities/train-line-page';
 import { GoodPage } from './entities/good-page';
 
+const pageHeadings = pages.map((page, index) => ({
+  title: `${index + 1}. ${page.title}`,
+  path: pathForPageIndex(index),
+}));
+
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   return (
@@ -38,17 +43,12 @@ function PagesRoute({ pageIndex }: { pageIndex: number }) {
     }
   }, [pageIndex]);
 
-  const goToPage = (index: number) => {
-    navigate(pathForPageIndex((index + pages.length) % pages.length));
-  };
-
   return (
     <PageFrame
-      index={pageIndex + 1}
-      title={page.title}
+      headings={pageHeadings}
+      currentPath={pathForPageIndex(pageIndex)}
       description={page.description}
-      onPrevious={() => goToPage(pageIndex - 1)}
-      onNext={() => goToPage(pageIndex + 1)}
+      onNavigate={navigate}
     >
       <page.Component />
     </PageFrame>

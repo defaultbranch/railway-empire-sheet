@@ -11,7 +11,8 @@ import { useGoodsFlow } from '../solver';
 import { useNavigation } from '../navigation';
 import { pages, pathForPageIndex } from '../pages/pages';
 import { pathForCity } from './city-routes';
-import { adjacentGoods, goodSlug, pathForGood } from './good-routes';
+import { goodSlug, pathForGood } from './good-routes';
+import { NavigatableHeading } from '../navigatable-heading';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
 
@@ -50,7 +51,7 @@ export function GoodPage({ slug }: { slug: string }) {
     );
   }
 
-  const adjacent = adjacentGoods(goods, good);
+  const headings = goods.map((title) => ({ title, path: pathForGood(title) }));
   const demand = demands.find((existing) => existing.good === good);
   const showPopulationDemand = demand !== undefined && demand.wagonsPerMillion > 0;
   const showIndustryDemand = industryTypes.some((type) => type.rawMaterials.some((flow) => flow.good === good));
@@ -178,31 +179,12 @@ export function GoodPage({ slug }: { slug: string }) {
 
   return (
     <section className="good-page">
-      <div className="entity-page__heading">
-        {adjacent !== undefined && goods.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Previous good: ${adjacent.previous}`}
-            title={`Previous good: ${adjacent.previous}`}
-            onClick={() => navigate(pathForGood(adjacent.previous))}
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-        )}
-        <h1>{good}</h1>
-        {adjacent !== undefined && goods.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Next good: ${adjacent.next}`}
-            title={`Next good: ${adjacent.next}`}
-            onClick={() => navigate(pathForGood(adjacent.next))}
-          >
-            <span aria-hidden="true">→</span>
-          </button>
-        )}
-      </div>
+      <NavigatableHeading
+        headings={headings}
+        currentPath={pathForGood(good)}
+        onNavigate={navigate}
+        navigationLabel="good"
+      />
       <h2>Production and consumption (wagons/week)</h2>
       {showPopulationDemand && (
         <p>

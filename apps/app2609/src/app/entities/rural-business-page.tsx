@@ -12,7 +12,8 @@ import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainStations } from '../game-state/train-stations-state';
 import { useWarehouses } from '../game-state/warehouses-state';
 import { useNavigation } from '../navigation';
-import { adjacentRuralBusinesses, pathForRuralBusiness, ruralBusinessSlug } from './rural-business-routes';
+import { pathForRuralBusiness, ruralBusinessSlug } from './rural-business-routes';
+import { NavigatableHeading } from '../navigatable-heading';
 import { pathForRuralBusinessType } from './rural-business-type-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
@@ -54,7 +55,9 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
     );
   }
 
-  const adjacent = adjacentRuralBusinesses(ruralBusinesses, business);
+  const headings = [...ruralBusinesses]
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((entry) => ({ title: entry.name, path: pathForRuralBusiness(entry) }));
   const diagram = buildRuralBusinessFlowDiagram(network, solution, { kind: 'rural business', name: business.name });
   const modeled = network.nodes.some((node) => node.sources.some((source) =>
     source.contributor.kind === 'rural business' && source.contributor.name === business.name));
@@ -125,31 +128,12 @@ export function RuralBusinessPage({ slug }: { slug: string }) {
 
   return (
     <section className="rural-business-page">
-      <div className="entity-page__heading">
-        {adjacent !== undefined && ruralBusinesses.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Previous rural business: ${adjacent.previous.name}`}
-            title={`Previous rural business: ${adjacent.previous.name}`}
-            onClick={() => navigate(pathForRuralBusiness(adjacent.previous))}
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-        )}
-        <h1>{business.name}</h1>
-        {adjacent !== undefined && ruralBusinesses.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Next rural business: ${adjacent.next.name}`}
-            title={`Next rural business: ${adjacent.next.name}`}
-            onClick={() => navigate(pathForRuralBusiness(adjacent.next))}
-          >
-            <span aria-hidden="true">→</span>
-          </button>
-        )}
-      </div>
+      <NavigatableHeading
+        headings={headings}
+        currentPath={pathForRuralBusiness(business)}
+        onNavigate={navigate}
+        navigationLabel="rural business"
+      />
       <p className="rural-business-page__type">
         Type:{' '}
         <a

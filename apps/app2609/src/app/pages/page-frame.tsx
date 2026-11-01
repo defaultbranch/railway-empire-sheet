@@ -1,35 +1,30 @@
 import type { ReactNode } from 'react';
+import { NavigatableHeading, type Heading } from '../navigatable-heading';
 
 export type PageFrameProps = {
-  index: number;
-  title: string;
+  headings: readonly Heading[];
+  currentPath: string;
   description: string;
-  onPrevious: () => void;
-  onNext: () => void;
+  onNavigate: (path: string) => void;
   children: ReactNode;
 };
 
 export function PageFrame({
-  index,
-  title,
+  headings,
+  currentPath,
   description,
-  onPrevious,
-  onNext,
+  onNavigate,
   children,
 }: PageFrameProps) {
   return (
     <section className="page-frame">
-      <header className="page-frame__header entity-page__heading">
-        <button className="entity-page__navigate" type="button" onClick={onPrevious} aria-label="Previous page" title="Previous page">
-          <span aria-hidden="true">←</span>
-        </button>
-        <h1>
-          {index}. {title}
-        </h1>
-        <button className="entity-page__navigate" type="button" onClick={onNext} aria-label="Next page" title="Next page">
-          <span aria-hidden="true">→</span>
-        </button>
-      </header>
+      <NavigatableHeading
+        className="page-frame__header"
+        headings={headings}
+        currentPath={currentPath}
+        onNavigate={onNavigate}
+        navigationLabel="page"
+      />
       <p className="page-frame__description">{description}</p>
       <div className="page-frame__content">{children}</div>
     </section>

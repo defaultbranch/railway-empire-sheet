@@ -6,7 +6,8 @@ import { useCities } from '../game-state/city-state';
 import { useRuralBusinesses } from '../game-state/rural-businesses-state';
 import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
-import { adjacentStations, pathForStation, stationSlug } from './station-routes';
+import { pathForStation, stationSlug } from './station-routes';
+import { NavigatableHeading } from '../navigatable-heading';
 import { pathForCity } from './city-routes';
 import { pathForRuralBusiness } from './rural-business-routes';
 import { pathForTrainLine } from './train-line-routes';
@@ -73,7 +74,9 @@ export function StationPage({ slug }: { slug: string }) {
     );
   }
 
-  const adjacent = adjacentStations(trainStations, station);
+  const headings = [...trainStations]
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((entry) => ({ title: entry.name, path: pathForStation(entry) }));
   const host = station.host;
   const hostCity = host.kind === 'city' ? cities.find((city) => city.name === host.city) : undefined;
   const hostBusinesses =
@@ -146,31 +149,12 @@ export function StationPage({ slug }: { slug: string }) {
 
   return (
     <section className="station-page">
-      <div className="entity-page__heading">
-        {adjacent !== undefined && trainStations.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Previous station: ${adjacent.previous.name}`}
-            title={`Previous station: ${adjacent.previous.name}`}
-            onClick={() => navigate(pathForStation(adjacent.previous))}
-          >
-            <span aria-hidden="true">←</span>
-          </button>
-        )}
-        <h1>{station.name}</h1>
-        {adjacent !== undefined && trainStations.length > 1 && (
-          <button
-            className="entity-page__navigate"
-            type="button"
-            aria-label={`Next station: ${adjacent.next.name}`}
-            title={`Next station: ${adjacent.next.name}`}
-            onClick={() => navigate(pathForStation(adjacent.next))}
-          >
-            <span aria-hidden="true">→</span>
-          </button>
-        )}
-      </div>
+      <NavigatableHeading
+        headings={headings}
+        currentPath={pathForStation(station)}
+        onNavigate={navigate}
+        navigationLabel="station"
+      />
       <label className="station-page__tracks">
         Tracks
         <select
