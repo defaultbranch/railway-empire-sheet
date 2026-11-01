@@ -1,8 +1,8 @@
 import { pathForCity } from '../entities/city-routes';
+import { pathForIndustry } from '../entities/industry-routes';
 import { pathForRuralBusiness } from '../entities/rural-business-routes';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
-import { pages, pathForPageIndex } from './pages';
 import type { Contributor, FlowNetwork, FlowSolution, NodeId } from '@railway/shared';
 
 export type FlowDiagramNode = {
@@ -73,9 +73,7 @@ export function buildGoodsFlowDiagram(network: FlowNetwork, solution: FlowSoluti
           path: flow.contributor.kind === 'rural business'
             ? pathForRuralBusiness({ name: flow.contributor.name })
             : flow.contributor.kind === 'industry'
-              ? `${pathForPageIndex(pages.findIndex((page) => page.slug === 'industry-supply-chain'))}?${new URLSearchParams({
-                city: flow.contributor.city, slot: String(flow.contributor.slot + 1),
-              })}`
+              ? pathForIndustry({ city: flow.contributor.city, citySlot: flow.contributor.slot })
               : pathForCity({ name: flow.contributor.city }),
         };
         entities.set(id, entity);

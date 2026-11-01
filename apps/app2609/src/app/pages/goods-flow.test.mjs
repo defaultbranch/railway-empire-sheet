@@ -80,9 +80,9 @@ test('industry diagrams trace all upstream sources and downstream sinks over mul
   assert.ok(outbound.nodes.every((node) => !node.label.includes('Farm')));
   assert.ok(outbound.links.every((link) => link.good === 'Corn'));
   assert.equal(inbound.nodes.find((node) => node.label === 'Town industry 1').path,
-    '/pages/12-industry-supply-chain?city=Town&slot=1');
+    '/industries/town-0');
   assert.equal(outbound.nodes.find((node) => node.label === 'Town industry 1').path,
-    '/pages/12-industry-supply-chain?city=Town&slot=1');
+    '/industries/town-0');
   assert.equal(outbound.nodes.find((node) => node.label === 'Beyond population').path, '/cities/beyond');
   for (const diagram of [inbound, outbound]) {
     const graph = layoutGoodsFlow(diagram.nodes, diagram.links, 500);
@@ -168,7 +168,8 @@ test('rural business outflow traces local and branching multi-hop sinks without 
   assert.deepEqual(diagram.nodes.filter((node) => node.role === 'consumer').map((node) => node.label).sort(),
     ['Grand Rapids industry 2', 'Local industry 1', 'Town population']);
   assert.equal(diagram.nodes.find((node) => node.label === 'Grand Rapids industry 2').path,
-    '/pages/12-industry-supply-chain?city=Grand+Rapids&slot=2');
+    '/industries/grand-rapids-1');
+  assert.equal(diagram.nodes.find((node) => node.label === 'Local industry 1').path, '/industries/local-0');
   assert.equal(diagram.nodes.find((node) => node.label === 'Farm').path, '/rural-businesses/farm');
   assert.ok(diagram.links.every((link) => link.good === 'Wheat'));
   assert.equal(diagram.nodes.find((node) => node.label === 'Farm').served, 6);
