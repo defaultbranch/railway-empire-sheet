@@ -177,6 +177,23 @@ body {
 	}
 }
 
+.navigatable-heading {
+	&__title {
+		display: grid;
+		width: max-content;
+		text-align: center;
+		> span {
+			grid-area: 1 / 1;
+			min-width: 0;
+		}
+	}
+	&__measure {
+		visibility: hidden;
+		pointer-events: none;
+		user-select: none;
+	}
+}
+
 .good-page {
 	&__balance {
 		overflow-x: auto;

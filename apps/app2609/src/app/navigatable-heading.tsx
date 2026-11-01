@@ -40,7 +40,14 @@ export function NavigatableHeading({
           <span aria-hidden="true">←</span>
         </button>
       )}
-      <h1>{current.title}</h1>
+      <h1 className="navigatable-heading__title">
+        <span>{current.title}</span>
+        {headings.map((heading) => (
+          <span key={heading.path} className="navigatable-heading__measure" aria-hidden="true">
+            {heading.title}
+          </span>
+        ))}
+      </h1>
       {headings.length > 1 && (
         <button
           className="entity-page__navigate"

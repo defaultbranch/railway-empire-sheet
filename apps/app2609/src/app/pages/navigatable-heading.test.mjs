@@ -27,7 +27,7 @@ test('headings use collection order and wrap in both directions', () => {
     { title: 'Beer', path: '/goods/beer' },
   ];
   const first = render(headings);
-  assert.match(first, /<h1>Wood<\/h1>/);
+  assert.match(first, /<h1 class="navigatable-heading__title"><span>Wood<\/span>/);
   assert.match(first, /aria-label="Previous good: Beer"/);
   assert.match(first, /aria-label="Next good: Wheat"/);
   const last = render(headings, '/goods/beer');
@@ -41,8 +41,22 @@ test('updated collections and heading values are reflected on the next render', 
   assert.doesNotMatch(render([wood]), /<button/);
   assert.match(render([wood, wheat]), /aria-label="Next good: Wheat"/);
   assert.match(render([wood, { title: 'Beer', path: '/goods/beer' }]), /aria-label="Next good: Beer"/);
-  assert.match(render([{ ...wood, title: 'Timber' }]), /<h1>Timber<\/h1>/);
+  assert.match(render([{ ...wood, title: 'Timber' }]), /<h1 class="navigatable-heading__title"><span>Timber<\/span>/);
   assert.doesNotMatch(render([wood]), /<button/);
+});
+
+test('all titles reserve space independently of selection and update with the collection', () => {
+  const wood = { title: 'Wood', path: '/goods/wood' };
+  const longer = { title: 'Very long commodity name', path: '/goods/long' };
+  const measurements = (markup) => markup.match(/<span class="navigatable-heading__measure" aria-hidden="true">.*?<\/span>/g);
+  const initial = measurements(render([wood, longer]));
+  assert.deepEqual(initial, [
+    '<span class="navigatable-heading__measure" aria-hidden="true">Wood</span>',
+    '<span class="navigatable-heading__measure" aria-hidden="true">Very long commodity name</span>',
+  ]);
+  assert.deepEqual(measurements(render([wood, longer], longer.path)), initial);
+  assert.deepEqual(measurements(render([wood])), initial.slice(0, 1));
+  assert.match(render([wood, { ...longer, title: 'Renamed commodity' }]), /aria-hidden="true">Renamed commodity<\/span>/);
 });
 
 test('empty collections and removed current headings render nothing', () => {
