@@ -6,7 +6,6 @@ import { IndustryTypesPage } from './industry-types-page';
 import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
 import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
-import { TotalDemandPage } from './total-demand-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
@@ -82,16 +81,6 @@ export const pages: Page[] = [
     Component: CitiesPage,
   },
   {
-    title: 'Total Demand',
-    slug: 'total-demand',
-    description:
-      'Total demand extends population demand up each production pipeline: a manufactured good ' +
-      "needed by the population induces demand for its industry's raw materials, in proportion to " +
-      "the industry's level-1 recipe. This table lists, per good, the resulting demand of a single " +
-      'selected city and the sum of that demand across all registered cities.',
-    Component: TotalDemandPage,
-  },
-  {
     title: 'Rural Businesses',
     slug: 'rural-businesses',
     description:
@@ -133,10 +122,10 @@ export const pages: Page[] = [
     title: 'Total Demand in Reach',
     slug: 'total-demand-in-reach',
     description:
-      'Total demand in reach extends population demand in reach up each production pipeline, the same ' +
-      'way total demand extends population demand: comparing each good\'s total demand across all ' +
-      'cities with total demand across cities hosted by player-owned stations or warehouses, alongside ' +
-      'total demand for a selected city.',
+      'Total demand in reach extends population demand through each production pipeline using ' +
+      "level-1 industry recipes: comparing each good's resulting demand across all cities with " +
+      'demand across cities hosted by player-owned stations or warehouses, alongside demand for a ' +
+      'selected city.',
     Component: TotalDemandInReachPage,
   },
   {
