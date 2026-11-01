@@ -5,7 +5,7 @@ import { industrySlots } from '../game-state/types';
 import { useNavigation } from '../navigation';
 import { useGoodsFlow } from '../solver';
 import { buildIndustryFlowDiagram } from './goods-flow';
-import { FlowSankey } from './goods-flow-page';
+import { FlowSankey } from './flow-sankey';
 
 function selectionFromUrl() {
   const params = new URLSearchParams(window.location.search);

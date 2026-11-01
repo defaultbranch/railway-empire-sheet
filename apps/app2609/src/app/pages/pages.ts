@@ -11,7 +11,6 @@ import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
 import { TrainLinesPage } from './train-lines-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
-import { GoodsFlowPage } from './goods-flow-page';
 import { IndustryFlowPage } from './industry-flow-page';
 import { AnalyticsPage } from './analytics-page';
 
@@ -134,12 +133,6 @@ export const pages: Page[] = [
       'For a selected city and good, shows how much of the population demand the goods-flow solver ' +
       'fulfills from local production and rail deliveries. This is served demand, not surplus.',
     Component: CityGoodBalancePage,
-  },
-  {
-    title: 'Goods Flow',
-    slug: 'goods-flow',
-    description: '',
-    Component: GoodsFlowPage,
   },
   {
     title: 'Industry Supply Chain',

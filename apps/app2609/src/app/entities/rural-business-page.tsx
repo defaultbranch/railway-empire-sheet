@@ -19,7 +19,7 @@ import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import { useGoodsFlow } from '../solver';
 import { buildRuralBusinessFlowDiagram } from '../pages/goods-flow';
-import { FlowSankey } from '../pages/goods-flow-page';
+import { FlowSankey } from '../pages/flow-sankey';
 
 const hostsBusiness = (host: StopHost, businessName: string): boolean =>
   host.kind === 'ruralBusinesses' && host.ruralBusinesses.includes(businessName);

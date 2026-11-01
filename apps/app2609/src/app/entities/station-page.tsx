@@ -14,7 +14,7 @@ import { pathForTrainLine } from './train-line-routes';
 import { useGoodsFlow, stopNodeId } from '../solver';
 import type { LegFlow } from '../solver';
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
-import { FlowSankey } from '../pages/goods-flow-page';
+import { FlowSankey } from '../pages/flow-sankey';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 

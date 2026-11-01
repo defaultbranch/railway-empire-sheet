@@ -16,7 +16,7 @@ import { useGoodsFlow, stopNodeId } from '../solver';
 import type { LegFlow } from '../solver';
 import { warehouseGoodSlotsByTracks, warehouseTrackCounts, type WarehouseTrackCount } from '../game-state/types';
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
-import { FlowSankey } from '../pages/goods-flow-page';
+import { FlowSankey } from '../pages/flow-sankey';
 import type { WarehouseGoodSimulation } from '../solver/warehouse-recommendations';
 import type { WarehouseRecommendationsRequest } from '../solver/warehouse-recommendations.worker';
 

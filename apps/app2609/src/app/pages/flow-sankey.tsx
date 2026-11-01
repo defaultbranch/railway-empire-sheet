@@ -1,23 +1,36 @@
-import { useEffect, useState, type MouseEvent } from 'react';
-import { useGoods } from '../game-state/goods-state';
-import { useNavigation } from '../navigation';
-import { useGoodsFlow } from '../solver';
-import { buildGoodsFlowDiagram, type FlowDiagramLink, type FlowDiagramNode } from './goods-flow';
+import type { MouseEvent } from 'react';
+import type { FlowDiagramLink, FlowDiagramNode } from './goods-flow';
 import { flowNodeLabelOffset, layoutGoodsFlow } from './goods-flow-layout';
 
 const rate = (amount: number) => amount.toLocaleString(undefined, { maximumFractionDigits: 2 });
 const percentage = (node: FlowDiagramNode) => node.requested > 0
   ? `${rate(100 * node.served / node.requested)}%` : '\u2014';
-const goodFromUrl = () => new URLSearchParams(window.location.search).get('good') ?? '';
 
 const goodColors = ['#19866e', '#bf563d', '#377bb5', '#b58a1f', '#b0456c', '#5a843c', '#168c97', '#886b53'];
 
-export function FlowSankey({ diagram, good, follow, showGross = true }: {
+/** Inputs for rendering a flow graph and handling navigation from its nodes. */
+export type FlowSankeyProps = {
+  /** The precomputed nodes and links to visualize. */
   diagram: { nodes: FlowDiagramNode[]; links: FlowDiagramLink[] };
+  /** Context label and fallback good name for links without one. */
   good: string;
+  /** Handles diagram-node activation, including navigation. */
   follow: (event: MouseEvent<HTMLElement | SVGElement>, path: string) => void;
+  /** Whether link details include gross forward and reverse amounts; defaults to `true`. */
   showGross?: boolean;
-}) {
+};
+
+/**
+ * Renders a computed flow graph as a navigable Sankey diagram. Nodes represent
+ * producers, consumers, or transport stops; links show net movement, with goods
+ * distinguished visually. The containing view handles navigation through
+ * `follow`. Set `showGross` to include forward and reverse quantities alongside
+ * net flow. A graph with no realized links displays an empty state.
+ *
+ * @param props - The diagram data, context label, activation handler, and display options.
+ */
+export function FlowSankey(props: FlowSankeyProps) {
+  const { diagram, good, follow, showGross = true } = props;
   if (diagram.links.length === 0) return <p className="goods-flow-page__empty">No realized flow for {good}.</p>;
   const goods = [...new Set(diagram.links.map((link) => link.good ?? good))].sort();
   const colors = new Map(goods.map((name, index) => [name,
@@ -85,73 +98,5 @@ export function FlowSankey({ diagram, good, follow, showGross = true }: {
       </svg>
       </div>
     </div>
-  );
-}
-
-export function GoodsFlowPage() {
-  const { goods } = useGoods();
-  const { network, solution, droppedLines } = useGoodsFlow();
-  const { navigate } = useNavigation();
-  const [selectedGood, setSelectedGood] = useState(goodFromUrl);
-  useEffect(() => {
-    const onPopState = () => setSelectedGood(goodFromUrl());
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
-  const chooseGood = (good: string) => {
-    const url = new URL(window.location.href);
-    if (good === '') url.searchParams.delete('good');
-    else url.searchParams.set('good', good);
-    window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
-    setSelectedGood(good);
-  };
-  const follow = (event: MouseEvent<HTMLElement | SVGElement>, path: string) => {
-    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    navigate(path);
-  };
-  const diagram = buildGoodsFlowDiagram(network, solution, selectedGood);
-  const validGood = goods.includes(selectedGood);
-  return (
-    <section className="goods-flow-page">
-      <label className="goods-flow-page__selector" htmlFor="flow-good">Good
-        <select id="flow-good" value={selectedGood} onChange={(event) => chooseGood(event.target.value)}>
-          <option value="">Select good...</option>
-          {selectedGood !== '' && !validGood && <option value={selectedGood}>{selectedGood} (unavailable)</option>}
-          {goods.map((good) => <option key={good} value={good}>{good}</option>)}
-        </select>
-      </label>
-      {!solution.converged && <p role="status">The solver did not converge after {solution.iterations} iterations. Flows are estimates.</p>}
-      {solution.missingCoefficients.length > 0 && <p role="status">{solution.missingCoefficients.length} missing production figures; affected entities are excluded.</p>}
-      {droppedLines.length > 0 && <details><summary>{droppedLines.length} excluded train lines</summary><ul>{droppedLines.map((line) => <li key={line.line}>{line.line}: {line.reason}</li>)}</ul></details>}
-      {selectedGood === '' ? <p className="goods-flow-page__empty">No good selected.</p> : !validGood ? <p className="goods-flow-page__empty">This good is no longer registered.</p> : <>
-        <FlowSankey diagram={diagram} good={selectedGood} follow={follow} />
-        <div className="goods-flow-page__balances">
-          {(['producer', 'consumer'] as const).map((role) => {
-            const entities = role === 'producer' ? diagram.producers : diagram.consumers;
-            return <details key={role}>
-              <summary>{role === 'producer' ? 'Producers' : 'Consumers'} ({entities.length})</summary>
-              {entities.length === 0 ? <p className="goods-flow-page__empty">None in the modeled network.</p> : <table className="goods-flow-page__table">
-                <thead><tr><th>Entity</th><th>Actual units/week</th><th>{role === 'producer' ? 'Capacity' : 'Demand'} units/week</th><th>{role === 'producer' ? 'Utilization' : 'Satisfaction'}</th></tr></thead>
-                <tbody>{entities.map((node) => <tr key={node.id}>
-                  <td><a href={node.path} onClick={(event) => follow(event, node.path)}>{node.label}</a></td>
-                  <td>{rate(node.served)}</td><td>{rate(node.requested)}</td><td>{percentage(node)}</td>
-                </tr>)}</tbody>
-              </table>}
-            </details>;
-          })}
-        </div>
-        {diagram.transport.length > 0 && <details className="goods-flow-page__transport-details">
-          <summary>Net Transport ({diagram.transport.length})</summary>
-          <div className="goods-flow-page__transport"><table className="goods-flow-page__table">
-            <thead><tr><th>From</th><th>To</th><th>Net units/week</th><th>Gross forward</th><th>Gross reverse</th></tr></thead>
-            <tbody>{diagram.transport.map((link) => <tr key={`${link.source}:${link.target}`}>
-              {[link.source, link.target].map((id) => <td key={id}><a href={diagram.allNodes.get(id)!.path} onClick={(event) => follow(event, diagram.allNodes.get(id)!.path)}>{diagram.allNodes.get(id)!.label}</a></td>)}
-              <td>{rate(link.value)}</td><td>{rate(link.forward)}</td><td>{rate(link.reverse)}</td>
-            </tr>)}</tbody>
-          </table></div>
-        </details>}
-      </>}
-    </section>
   );
 }

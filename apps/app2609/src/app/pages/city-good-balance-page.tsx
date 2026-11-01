@@ -5,7 +5,7 @@ import { useNavigation } from '../navigation';
 import { useGoodsFlow } from '../solver';
 import { suppliedToCityForGood } from './city-good-balance';
 import { buildCityGoodFlowDiagram } from './goods-flow';
-import { FlowSankey } from './goods-flow-page';
+import { FlowSankey } from './flow-sankey';
 
 function selectionsFromUrl(): { city: string; good: string } {
   const params = new URLSearchParams(window.location.search);
