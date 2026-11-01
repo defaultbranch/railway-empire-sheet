@@ -7,7 +7,6 @@ import { DemandsPage } from './demands-page';
 import { CitiesPage } from './cities-page';
 import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
-import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
 import { TrainLinesPage } from './train-lines-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
@@ -88,17 +87,6 @@ export const pages: Page[] = [
     Component: RuralBusinessesPage,
   },
   {
-    title: 'Supply vs Demand',
-    slug: 'supply-demand',
-    description:
-      'Supply vs demand opposes total demand against an idealized world supply: raw production from ' +
-      "registered rural businesses, plus whatever registered industries can manufacture from what's " +
-      "left of their raw materials once each good's own population demand is met, settling goods in " +
-      'the order listed on the Goods page. This does not model the game\'s actual logistics or ' +
-      'distribution, only a rough ceiling on how much of each good could be available.',
-    Component: SupplyDemandPage,
-  },
-  {
     title: 'Stations & Warehouses',
     slug: 'stations-warehouses',
     description:
@@ -154,8 +142,8 @@ export function pathForPageIndex(index: number): string {
 }
 
 export function pageIndexForPath(pathname: string): number {
-  const match = /^\/pages\/(\d+)-/.exec(pathname);
-  const index = match ? Number(match[1]) - 1 : 0;
-  return index >= 0 && index < pages.length ? index : 0;
+  const match = /^\/pages\/(\d+)-([^/]+)\/?$/.exec(pathname);
+  const index = match ? Number(match[1]) - 1 : -1;
+  return index >= 0 && index < pages.length && pages[index].slug === match?.[2] ? index : 0;
 }
 
