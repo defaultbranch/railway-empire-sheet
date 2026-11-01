@@ -9,7 +9,6 @@ import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { SupplyDemandPage } from './supply-demand-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
-import { TotalDemandInReachPage } from './total-demand-in-reach-page';
 import { TrainLinesPage } from './train-lines-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
 import { GoodsFlowPage } from './goods-flow-page';
@@ -117,16 +116,6 @@ export const pages: Page[] = [
       'Population demand in reach compares each good\'s demand across all cities with demand across ' +
       'cities hosted by player-owned stations or warehouses, alongside demand for a selected city.',
     Component: PopulationDemandInReachPage,
-  },
-  {
-    title: 'Total Demand in Reach',
-    slug: 'total-demand-in-reach',
-    description:
-      'Total demand in reach extends population demand through each production pipeline using ' +
-      "level-1 industry recipes: comparing each good's resulting demand across all cities with " +
-      'demand across cities hosted by player-owned stations or warehouses, alongside demand for a ' +
-      'selected city.',
-    Component: TotalDemandInReachPage,
   },
   {
     title: 'Train Lines',
