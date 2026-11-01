@@ -65,9 +65,10 @@ export function IndustryPage({ slug }: { slug: string }) {
   );
 
   return (
-    <section className="industry-type-page">
+    <section className="industry-type-page industry-page">
       <NavigatableHeading headings={headings} currentPath={pathForIndustry(industry)}
         onNavigate={navigate} navigationLabel="industry" />
+      <div className="industry-page__stats">
       <p>City: <a href={cityPath} onClick={(event) => { event.preventDefault(); navigate(cityPath); }}>{industry.city}</a></p>
       <p>Slot: {industry.citySlot}</p>
       <p>Type: <a href={typePath} onClick={(event) => { event.preventDefault(); navigate(typePath); }}>{industry.typeName}</a></p>
@@ -78,11 +79,12 @@ export function IndustryPage({ slug }: { slug: string }) {
           {businessLevels.map((level) => <option key={level} value={level}>{level}</option>)}
         </select>
       </label>
+      </div>
       {type === undefined ? <p>No industry type found for "{industry.typeName}".</p> : (
-        <>
+        <div className="industry-page__recipes">
           {renderFlows('Input goods', type.rawMaterials)}
           {renderFlows('Output goods', type.products)}
-        </>
+        </div>
       )}
       <section aria-label="Outflowing products" className="industry-flow-page__flow">
         <h2>Outflowing products</h2>
