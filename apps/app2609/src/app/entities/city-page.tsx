@@ -12,6 +12,7 @@ import { citySlug, pathForCity } from './city-routes';
 import { NavigatableHeading } from '../navigatable-heading';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
+import { pathForIndustry } from './industry-routes';
 import {
   businessLevels,
   industrySlots,
@@ -142,7 +143,6 @@ export function CityPage({ slug }: { slug: string }) {
   };
 
   const cityGoodBalanceIndex = pages.findIndex((page) => page.slug === 'city-good-balance');
-  const industryFlowIndex = pages.findIndex((page) => page.slug === 'industry-supply-chain');
   const cityGoodBalancePathForGood = (good: string) =>
     `${pathForPageIndex(cityGoodBalanceIndex)}?${new URLSearchParams({ city: city.name, good })}`;
   const goodDetailLink = (good: string) => {
@@ -243,6 +243,7 @@ export function CityPage({ slug }: { slug: string }) {
               <tr>
                 <th rowSpan={2}>Industry</th>
                 <th rowSpan={2}>Level</th>
+                <th rowSpan={2}>Details</th>
                 {rawMaterialGoods.length > 0 && <th colSpan={rawMaterialGoods.length}>Raw materials</th>}
                 {productGoods.length > 0 && <th colSpan={productGoods.length}>Products</th>}
               </tr>
@@ -292,13 +293,19 @@ export function CityPage({ slug }: { slug: string }) {
                           ))}
                         </select>
                       )}
-                      {industry !== undefined && <>{' '}<a
-                        href={`${pathForPageIndex(industryFlowIndex)}?${new URLSearchParams({ city: city.name, slot: String(slot + 1) })}`}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          navigate(`${pathForPageIndex(industryFlowIndex)}?${new URLSearchParams({ city: city.name, slot: String(slot + 1) })}`);
-                        }}
-                      >Supply chain</a></>}
+                    </td>
+                    <td>
+                      {industry === undefined ? '—' : (
+                        <a
+                          href={pathForIndustry(industry)}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            navigate(pathForIndustry(industry));
+                          }}
+                        >
+                          View industry
+                        </a>
+                      )}
                     </td>
                     {rawMaterialGoods.map((good) => (
                       <td key={`raw-${good}`}>{formatIndustryAmount(slot, good, 'rawMaterials')}</td>
