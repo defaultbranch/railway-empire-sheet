@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type MouseEvent } from 'react';
 import { businessLevels, type BusinessLevel, type GoodFlow } from '../game-state/types';
 import { useIndustries } from '../game-state/industries-state';
 import { useIndustryTypes } from '../game-state/industry-state';
@@ -7,11 +7,15 @@ import { NavigatableHeading } from '../navigatable-heading';
 import { industrySlug, pathForIndustry } from './industry-routes';
 import { pathForIndustryType } from './industry-type-routes';
 import { pathForCity } from './city-routes';
+import { useGoodsFlow } from '../solver';
+import { buildIndustryFlowDiagram } from '../pages/goods-flow';
+import { FlowSankey } from '../pages/flow-sankey';
 
 export function IndustryPage({ slug }: { slug: string }) {
   const { industries, setIndustryLevel } = useIndustries();
   const { industryTypes } = useIndustryTypes();
   const { navigate } = useNavigation();
+  const { network, solution, droppedLines } = useGoodsFlow();
   const industry = industries.find((entry) => industrySlug(entry) === slug);
 
   useEffect(() => {
@@ -26,6 +30,16 @@ export function IndustryPage({ slug }: { slug: string }) {
   }
 
   const type = industryTypes.find((entry) => entry.name === industry.typeName);
+  const diagram = buildIndustryFlowDiagram(network, solution,
+    { kind: 'industry', city: industry.city, slot: industry.citySlot }, 'out');
+  const modeled = network.nodes.some((node) => node.conversions.some((conversion) =>
+    conversion.contributor.kind === 'industry' && conversion.contributor.city === industry.city
+    && conversion.contributor.slot === industry.citySlot));
+  const followFlow = (event: MouseEvent<HTMLElement | SVGElement>, path: string) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(path);
+  };
   const cityPath = pathForCity({ name: industry.city });
   const typePath = pathForIndustryType({ name: industry.typeName });
   const headings = [...industries]
@@ -70,6 +84,17 @@ export function IndustryPage({ slug }: { slug: string }) {
           {renderFlows('Output goods', type.products)}
         </>
       )}
+      <section aria-label="Outflowing products" className="industry-flow-page__flow">
+        <h2>Outflowing products</h2>
+        {!solution.converged && <p role="status">The solver did not converge after {solution.iterations} iterations. Flows are estimates.</p>}
+        {!modeled && <p role="status">This industry is not in the modeled network. Check its connected stops and production figures.</p>}
+        {solution.missingCoefficients.length > 0 && <p role="status">{solution.missingCoefficients.length} missing production figures; affected entities are excluded.</p>}
+        {droppedLines.length > 0 && <details><summary>{droppedLines.length} excluded train lines</summary>
+          <ul>{droppedLines.map((line) => <li key={line.line}>{line.line}: {line.reason}</li>)}</ul>
+        </details>}
+        <FlowSankey diagram={diagram} good={`${industry.city} slot ${industry.citySlot + 1}: outflowing products`}
+          follow={followFlow} showGross={false} />
+      </section>
     </section>
   );
 }
