@@ -364,10 +364,19 @@ body {
 		gap: 0.5rem;
 		input { width: 7rem; }
 	}
-	&__flows {
+	&__flows,
+	&__industries {
 		margin-block: 1.5rem;
 		h2 { font-size: 1.25rem; }
 		button { margin-top: 0.5rem; }
+	}
+	&__add {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+		select { max-width: 100%; }
 	}
 }
 
