@@ -32,6 +32,8 @@ export function IndustryPage({ slug }: { slug: string }) {
   const type = industryTypes.find((entry) => entry.name === industry.typeName);
   const diagram = buildIndustryFlowDiagram(network, solution,
     { kind: 'industry', city: industry.city, slot: industry.citySlot }, 'out');
+  const inflowDiagram = buildIndustryFlowDiagram(network, solution,
+    { kind: 'industry', city: industry.city, slot: industry.citySlot }, 'in');
   const modeled = network.nodes.some((node) => node.conversions.some((conversion) =>
     conversion.contributor.kind === 'industry' && conversion.contributor.city === industry.city
     && conversion.contributor.slot === industry.citySlot));
@@ -95,6 +97,11 @@ export function IndustryPage({ slug }: { slug: string }) {
           <ul>{droppedLines.map((line) => <li key={line.line}>{line.line}: {line.reason}</li>)}</ul>
         </details>}
         <FlowSankey diagram={diagram} good={`${industry.city} slot ${industry.citySlot + 1}: outflowing products`}
+          follow={followFlow} showGross={false} />
+      </section>
+      <section aria-label="Inflowing products" className="industry-flow-page__flow">
+        <h2>Inflowing products</h2>
+        <FlowSankey diagram={inflowDiagram} good={`${industry.city} slot ${industry.citySlot + 1}: inflowing products`}
           follow={followFlow} showGross={false} />
       </section>
     </section>
