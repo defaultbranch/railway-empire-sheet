@@ -8,7 +8,7 @@ import { useNavigation } from '../navigation';
 import { NavigatableHeading } from '../navigatable-heading';
 import { pathForPageIndex } from '../pages/pages';
 import { industryTypeSlug, pathForIndustryType } from './industry-type-routes';
-import { pathForCity } from './city-routes';
+import { pathForIndustry } from './industry-routes';
 
 export function IndustryTypePage({ slug }: { slug: string }) {
   const { goods } = useGoods();
@@ -126,7 +126,7 @@ export function IndustryTypePage({ slug }: { slug: string }) {
               </thead>
               <tbody>
                 {placedIndustries.map((industry) => {
-                  const path = pathForCity({ name: industry.city });
+                  const path = pathForIndustry(industry);
                   return (
                     <tr key={JSON.stringify([industry.city, industry.citySlot])}>
                       <td>

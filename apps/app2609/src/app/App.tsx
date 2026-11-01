@@ -10,6 +10,7 @@ import { StationPage } from './entities/station-page';
 import { WarehousePage } from './entities/warehouse-page';
 import { RuralBusinessPage } from './entities/rural-business-page';
 import { RuralBusinessTypePage } from './entities/rural-business-type-page';
+import { IndustryPage } from './entities/industry-page';
 import { IndustryTypePage } from './entities/industry-type-page';
 import { TrainLinePage } from './entities/train-line-page';
 import { GoodPage } from './entities/good-page';
@@ -85,6 +86,10 @@ function AppRoutes() {
 
   if (route.kind === 'trainLine') {
     return <TrainLinePage slug={route.slug} />;
+  }
+
+  if (route.kind === 'industry') {
+    return <IndustryPage slug={route.slug} />;
   }
 
   if (route.kind === 'industryType') {
