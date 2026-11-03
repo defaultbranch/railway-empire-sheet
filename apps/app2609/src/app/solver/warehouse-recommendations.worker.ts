@@ -1,11 +1,11 @@
 import { simulateWarehouseGoods } from './warehouse-recommendations.ts';
-import type { Warehouse, TrainLine } from '../game-state/types.ts';
+import type { Warehouse, ContinuousTrainLine } from '../game-state/types.ts';
 import type { GoodsFlow } from './solve-goods-flow.ts';
 
 export type WarehouseRecommendationsRequest = {
   baseline: GoodsFlow;
   warehouse: Warehouse;
-  trainLines: TrainLine[];
+  trainLines: ContinuousTrainLine[];
 };
 
 addEventListener('message', (event: MessageEvent<WarehouseRecommendationsRequest>) => {

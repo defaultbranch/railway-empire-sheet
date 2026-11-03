@@ -1,10 +1,10 @@
 import { slugify } from '../slug';
-import type { TrainLine } from '../game-state/types';
+import type { ContinuousTrainLine } from '../game-state/types';
 
-export function trainLineSlug(trainLine: Pick<TrainLine, 'name'>): string {
+export function trainLineSlug(trainLine: Pick<ContinuousTrainLine, 'name'>): string {
   return slugify(trainLine.name);
 }
 
-export function pathForTrainLine(trainLine: Pick<TrainLine, 'name'>): string {
+export function pathForTrainLine(trainLine: Pick<ContinuousTrainLine, 'name'>): string {
   return `/train-lines/${trainLineSlug(trainLine)}`;
 }

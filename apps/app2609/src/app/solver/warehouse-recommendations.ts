@@ -1,4 +1,4 @@
-import { warehouseGoodSlotsByTracks, type Good, type TrainLine, type Warehouse } from '../game-state/types.ts';
+import { warehouseGoodSlotsByTracks, type Good, type ContinuousTrainLine, type Warehouse } from '../game-state/types.ts';
 import type { GoodsFlow } from './solve-goods-flow';
 import { solveFlowNetwork } from '@railway/shared';
 import { analyzeTransportRevenue } from './transport-revenue.ts';
@@ -12,7 +12,7 @@ export type WarehouseGoodSimulation = {
 export function simulateWarehouseGoods(
   baseline: GoodsFlow,
   warehouse: Warehouse,
-  trainLines: TrainLine[],
+  trainLines: ContinuousTrainLine[],
 ): WarehouseGoodSimulation[] {
   if (warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]) return [];
   const nodeId = `warehouse:${warehouse.name}`;

@@ -72,7 +72,7 @@ No changes needed here — the existing types in
 [../game-state/types.ts](../game-state/types.ts) already carry everything the spec's algorithm
 needs:
 
-- `TrainLine`: `stops`, `trains`, `tourDays`, `cargo` — enough to build arcs and per-leg capacity
+- `ContinuousTrainLine`: `stops`, `trains`, `tourDays`, `cargo` — enough to build arcs and per-leg capacity
   (`trains × 8 × 7 / tourDays`), and to drop lines with unknown `tourDays` or `cargo` set to
   `'mail and passengers'`.
 - `TrainStation` / `Warehouse`: `host: StopHost` (a city, or one/two rural businesses), track-based

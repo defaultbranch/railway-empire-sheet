@@ -21,7 +21,7 @@ export type GameState = {
   industries: GameDomain.Industry[];
   trainStations: GameDomain.TrainStation[];
   warehouses: GameDomain.Warehouse[];
-  trainLines: GameDomain.TrainLine[];
+  trainLines: GameDomain.ContinuousTrainLine[];
 };
 
 export const GameState = {
@@ -36,5 +36,5 @@ export const GameState = {
     isArrayOf(value.industries, GameDomain.Industry.isInstance) &&
     isArrayOf(value.trainStations, GameDomain.TrainStation.isInstance) &&
     isArrayOf(value.warehouses, GameDomain.Warehouse.isInstance) &&
-    isArrayOf(value.trainLines, GameDomain.TrainLine.isInstance),
+    isArrayOf(value.trainLines, GameDomain.ContinuousTrainLine.isInstance),
 } as const;

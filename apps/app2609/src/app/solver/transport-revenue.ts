@@ -1,4 +1,4 @@
-import type { Good, TrainLine } from '../game-state/types';
+import type { Good, ContinuousTrainLine } from '../game-state/types';
 import { buildLocalities, contributorKey } from '@railway/shared';
 import type { FlowNetwork, FlowSolution, Leg, NodeId } from '@railway/shared';
 
@@ -63,7 +63,7 @@ function cancelCycles(edges: Edge[], nodeCount: number): void {
 export function analyzeTransportRevenue(
   network: FlowNetwork,
   solution: Pick<FlowSolution, 'legFlows' | 'contributorFlows'>,
-  trainLines: Pick<TrainLine, 'name' | 'trains' | 'tourDays'>[],
+  trainLines: Pick<ContinuousTrainLine, 'name' | 'trains' | 'tourDays'>[],
   payout = nominalDeliveryYield,
 ): TransportRevenue {
   const localities = buildLocalities(network.nodes);

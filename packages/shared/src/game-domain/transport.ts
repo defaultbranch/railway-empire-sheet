@@ -89,7 +89,7 @@ export const TrainCargo = {
 // an ordered, looping route: after the last stop, the train returns to the first
 // trains: how many identical trains (each up to 8 wagons) run this route concurrently
 // tourDays: how many days a train takes to complete the full loop, once known
-export type TrainLine = {
+export type ContinuousTrainLine = {
   name: string;
   stops: StopRef[];
   trains: number;
@@ -97,8 +97,8 @@ export type TrainLine = {
   cargo: TrainCargo;
 };
 
-export const TrainLine = {
-  isInstance: (value: unknown): value is TrainLine =>
+export const ContinuousTrainLine = {
+  isInstance: (value: unknown): value is ContinuousTrainLine =>
     isRecord(value) &&
     isString(value.name) &&
     isArrayOf(value.stops, StopRef.isInstance) &&

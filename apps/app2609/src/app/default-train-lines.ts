@@ -1,4 +1,4 @@
-import type { TrainLine } from './game-state/types';
+import type { ContinuousTrainLine } from './game-state/types';
 import type { DefaultTrainStationName } from './default-train-stations';
 import type { DefaultWarehouseName } from './default-warehouses';
 
@@ -6,7 +6,7 @@ type DefaultStopRef =
   | { kind: 'station'; name: DefaultTrainStationName }
   | { kind: 'warehouse'; name: DefaultWarehouseName };
 
-type DefaultTrainLine = Omit<TrainLine, 'stops'> & { stops: DefaultStopRef[] };
+type DefaultTrainLine = Omit<ContinuousTrainLine, 'stops'> & { stops: DefaultStopRef[] };
 
 export const defaultTrainLines: readonly DefaultTrainLine[] = [
   {

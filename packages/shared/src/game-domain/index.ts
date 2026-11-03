@@ -8,7 +8,7 @@ export {
   StopRef,
   StationTrackCount,
   TrainCargo,
-  TrainLine,
+  ContinuousTrainLine,
   TrainStation,
   Warehouse,
   WarehouseTrackCount,
