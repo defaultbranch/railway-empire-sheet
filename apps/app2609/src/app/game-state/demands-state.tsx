@@ -1,8 +1,13 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { Demand, Good } from './types';
+import type { DemandSample } from '../pages/demand-estimation';
 
 export type DemandsState = {
   demands: Demand[];
+  demandSamples: DemandSample[];
+  addDemandSample: (sample: DemandSample) => void;
+  removeDemandSample: (id: string) => void;
+  replaceDemandSamples: (samples: DemandSample[]) => void;
   addDemand: (good: Good) => void;
   removeDemand: (good: Good) => void;
   setDemandMinPopulation: (good: Good, minPopulation: number) => void;
@@ -12,8 +17,13 @@ export type DemandsState = {
 
 const DemandsContext = createContext<DemandsState | undefined>(undefined);
 
-export function DemandsProvider({ initialDemands, children }: { initialDemands: Demand[]; children: ReactNode }) {
+export function DemandsProvider({ initialDemands, initialDemandSamples = [], children }: {
+  initialDemands: Demand[]; initialDemandSamples?: DemandSample[]; children: ReactNode;
+}) {
   const [demands, setDemands] = useState<Demand[]>(initialDemands);
+  const [demandSamples, setDemandSamples] = useState<DemandSample[]>(initialDemandSamples);
+  const addDemandSample = (sample: DemandSample) => setDemandSamples((previous) => [...previous, sample]);
+  const removeDemandSample = (id: string) => setDemandSamples((previous) => previous.filter((sample) => sample.id !== id));
 
   const addDemand = (good: Good) => {
     setDemands((prev) =>
@@ -41,7 +51,8 @@ export function DemandsProvider({ initialDemands, children }: { initialDemands: 
 
   return (
     <DemandsContext.Provider
-      value={{ demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion, replaceDemands }}
+      value={{ demands, addDemand, removeDemand, setDemandMinPopulation, setDemandWagonsPerMillion, replaceDemands,
+        demandSamples, addDemandSample, removeDemandSample, replaceDemandSamples: setDemandSamples }}
     >
       {children}
     </DemandsContext.Provider>

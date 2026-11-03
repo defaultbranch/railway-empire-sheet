@@ -35,7 +35,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
         <RuralBusinessesProvider initialBusinesses={initialState.ruralBusinesses}>
           <IndustryProvider initialTypes={initialState.industryTypes}>
             <IndustriesProvider initialIndustries={initialState.industries}>
-              <DemandsProvider initialDemands={initialState.demands}>
+              <DemandsProvider initialDemands={initialState.demands} initialDemandSamples={initialState.demandSamples}>
                 <CityProvider initialCities={initialState.cities}>
                   <TrainStationsProvider initialTrainStations={initialState.trainStations}>
                     <WarehousesProvider initialWarehouses={initialState.warehouses}>

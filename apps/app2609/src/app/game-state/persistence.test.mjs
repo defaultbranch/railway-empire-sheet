@@ -56,3 +56,13 @@ test('loading rejects unknown types, malformed legacy lines and on-demand app st
   assert.equal(deserializeGameState('{'), undefined);
   assert.equal(deserializeGameState(JSON.stringify({ version: 2, state: emptyGameState() })), undefined);
 });
+
+test('demand samples round-trip, old saves remain valid and malformed samples are rejected', () => {
+  const state = emptyGameState();
+  assert.ok(deserializeGameState(serializeGameState(state)));
+  const sample = { id: 'one', city: 'A', population: 100_000, observations: [{ good: 'Grain', total: 12, industry: 2 }] };
+  state.demandSamples = [sample];
+  assert.deepEqual(deserializeGameState(serializeGameState(state)).demandSamples, [sample]);
+  state.demandSamples = [{ ...sample, population: -1 }];
+  assert.equal(deserializeGameState(serializeGameState(state)), undefined);
+});

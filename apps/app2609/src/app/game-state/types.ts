@@ -1,4 +1,5 @@
 import * as GameDomain from '@railway/shared/game-domain';
+import { isDemandSample, type DemandSample } from '../pages/demand-estimation.ts';
 
 export * from '@railway/shared/game-domain';
 
@@ -16,6 +17,7 @@ export type GameState = {
   ruralBusinessTypes: GameDomain.RuralBusinessType[];
   industryTypes: GameDomain.IndustryType[];
   demands: GameDomain.Demand[];
+  demandSamples?: DemandSample[];
   cities: GameDomain.City[];
   ruralBusinesses: GameDomain.RuralBusiness[];
   industries: GameDomain.Industry[];
@@ -31,6 +33,7 @@ export const GameState = {
     isArrayOf(value.ruralBusinessTypes, GameDomain.RuralBusinessType.isInstance) &&
     isArrayOf(value.industryTypes, GameDomain.IndustryType.isInstance) &&
     isArrayOf(value.demands, GameDomain.Demand.isInstance) &&
+    (value.demandSamples === undefined || isArrayOf(value.demandSamples, isDemandSample)) &&
     isArrayOf(value.cities, GameDomain.City.isInstance) &&
     isArrayOf(value.ruralBusinesses, GameDomain.RuralBusiness.isInstance) &&
     isArrayOf(value.industries, GameDomain.Industry.isInstance) &&

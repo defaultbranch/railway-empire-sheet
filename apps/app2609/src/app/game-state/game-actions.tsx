@@ -42,6 +42,7 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
       ruralBusinessTypes: ruralBusinessTypes.ruralBusinessTypes,
       industryTypes: industryTypes.industryTypes,
       demands: demands.demands,
+      demandSamples: demands.demandSamples,
       cities: cities.cities,
       ruralBusinesses: ruralBusinesses.ruralBusinesses,
       industries: industries.industries,
@@ -56,6 +57,7 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
       industryTypes.industryTypes,
       industries.industries,
       demands.demands,
+      demands.demandSamples,
       cities.cities,
       trainStations.trainStations,
       warehouses.warehouses,
@@ -74,6 +76,7 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
     industryTypes.replaceIndustryTypes(state.industryTypes);
     industries.replaceIndustries(state.industries);
     demands.replaceDemands(state.demands);
+    demands.replaceDemandSamples(state.demandSamples ?? []);
     cities.replaceCities(state.cities);
     trainStations.replaceTrainStations(state.trainStations);
     warehouses.replaceWarehouses(state.warehouses);
