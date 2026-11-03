@@ -1,6 +1,6 @@
-import type { Good } from './game-domain';
+import type { Good } from './game-domain/index.ts';
 
-export type { Good } from './game-domain';
+export type { Good } from './game-domain/index.ts';
 export type IndustrySlot = 0 | 1 | 2;
 
 // The solver works on a flattened, pre-resolved view of the game state: levels have already been
