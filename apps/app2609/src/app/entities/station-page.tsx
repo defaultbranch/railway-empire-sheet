@@ -131,6 +131,7 @@ export function StationPage({ slug }: { slug: string }) {
     if (!canAddTrainLine) return;
     const parsedTourDays = newLineTourDays.trim() === '' ? undefined : Number(newLineTourDays);
     addTrainLine({
+      type: 'ContinuousTrainLine',
       name: newLineName.trim(),
       stops: [
         { kind: 'station', name: station.name },

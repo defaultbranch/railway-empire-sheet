@@ -27,6 +27,11 @@ export function serializeGameState(state: GameState): string {
 export function deserializeGameState(json: string): GameState | undefined {
   try {
     const parsed: unknown = JSON.parse(json);
+    if (isRecord(parsed) && parsed.version === STORAGE_VERSION && isRecord(parsed.state) && Array.isArray(parsed.state.trainLines)) {
+      parsed.state.trainLines = parsed.state.trainLines.map((line: unknown) =>
+        isRecord(line) && line.type === undefined ? { ...line, type: 'ContinuousTrainLine' } : line,
+      );
+    }
     return StoredGameState.isInstance(parsed) ? parsed.state : undefined;
   } catch {
     return undefined;

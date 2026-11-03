@@ -1,4 +1,5 @@
 export { Good } from './good.ts';
+export { GameDate } from './game-date.ts';
 export { BusinessLevel, businessLevels, emptyProductionByLevel } from './production.ts';
 export { City, Demand } from './city.ts';
 export { RuralBusiness, RuralBusinessType } from './rural-business.ts';
@@ -9,6 +10,8 @@ export {
   StationTrackCount,
   TrainCargo,
   ContinuousTrainLine,
+  OnDemandTrainLine,
+  TrainLine,
   TrainStation,
   Warehouse,
   WarehouseTrackCount,

@@ -86,6 +86,7 @@ export function TrainLinesPage() {
     if (!canAdd) return;
     const parsedTourDays = tourDays.trim() === '' ? undefined : Number(tourDays);
     addTrainLine({
+      type: 'ContinuousTrainLine',
       name: newName.trim(),
       stops: [
         { kind: fromKind, name: fromName },

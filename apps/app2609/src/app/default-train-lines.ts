@@ -8,7 +8,7 @@ type DefaultStopRef =
 
 type DefaultTrainLine = Omit<ContinuousTrainLine, 'stops'> & { stops: DefaultStopRef[] };
 
-export const defaultTrainLines: readonly DefaultTrainLine[] = [
+const defaultContinuousTrainLines: readonly Omit<DefaultTrainLine, 'type'>[] = [
   {
     name: 'Collins Farm - Baker City WH',
     stops: [
@@ -331,3 +331,8 @@ export const defaultTrainLines: readonly DefaultTrainLine[] = [
     cargo: 'anything',
   },
 ] as const;
+
+export const defaultTrainLines: readonly DefaultTrainLine[] = defaultContinuousTrainLines.map((line) => ({
+  ...line,
+  type: 'ContinuousTrainLine',
+}));

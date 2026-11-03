@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit",
-    "test": "node --test src/solve-flow/*.test.mjs"
+    "test": "node --test src/solve-flow/*.test.mjs src/game-domain/*.test.mjs"
   },
   "devDependencies": {
     "typescript": ">=7.0.2"

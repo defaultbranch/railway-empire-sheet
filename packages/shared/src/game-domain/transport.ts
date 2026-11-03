@@ -1,4 +1,5 @@
 import { Good } from './good.ts';
+import { GameDate } from './game-date.ts';
 import { isArrayOf, isNumber, isOneOf, isRecord, isString } from './validation.ts';
 
 // exclusive: a stop is hosted by either a single city, or by 1-2 rural businesses
@@ -90,6 +91,7 @@ export const TrainCargo = {
 // trains: how many identical trains (each up to 8 wagons) run this route concurrently
 // tourDays: how many days a train takes to complete the full loop, once known
 export type ContinuousTrainLine = {
+  type: 'ContinuousTrainLine';
   name: string;
   stops: StopRef[];
   trains: number;
@@ -100,9 +102,39 @@ export type ContinuousTrainLine = {
 export const ContinuousTrainLine = {
   isInstance: (value: unknown): value is ContinuousTrainLine =>
     isRecord(value) &&
+    value.type === 'ContinuousTrainLine' &&
     isString(value.name) &&
     isArrayOf(value.stops, StopRef.isInstance) &&
     isNumber(value.trains) &&
     (value.tourDays === undefined || isNumber(value.tourDays)) &&
     TrainCargo.isInstance(value.cargo),
+} as const;
+
+export type OnDemandTrainLine = {
+  type: 'OnDemandTrainLine';
+  name: string;
+  stops: [StopRef, StopRef];
+  travelDays?: number;
+  lastDispatchDate?: GameDate;
+  cargo: TrainCargo;
+};
+
+export const OnDemandTrainLine = {
+  isInstance: (value: unknown): value is OnDemandTrainLine =>
+    isRecord(value) &&
+    value.type === 'OnDemandTrainLine' &&
+    isString(value.name) &&
+    isArrayOf(value.stops, StopRef.isInstance) &&
+    value.stops.length === 2 &&
+    (value.travelDays === undefined ||
+      (isNumber(value.travelDays) && Number.isFinite(value.travelDays) && value.travelDays > 0)) &&
+    (value.lastDispatchDate === undefined || GameDate.isInstance(value.lastDispatchDate)) &&
+    TrainCargo.isInstance(value.cargo),
+} as const;
+
+export type TrainLine = ContinuousTrainLine | OnDemandTrainLine;
+
+export const TrainLine = {
+  isInstance: (value: unknown): value is TrainLine =>
+    ContinuousTrainLine.isInstance(value) || OnDemandTrainLine.isInstance(value),
 } as const;
