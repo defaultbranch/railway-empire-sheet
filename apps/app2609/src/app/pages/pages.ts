@@ -9,6 +9,7 @@ import { PopulationDemandInReachPage } from './population-demand-in-reach-page';
 import { ProductionPipelinesPage } from './production-pipelines-page';
 import { StationsWarehousesPage } from './stations-warehouses-page';
 import { TrainLinesPage } from './train-lines-page';
+import { OnDemandDispatchPage } from './on-demand-dispatch-page';
 import { CityGoodBalancePage } from './city-good-balance-page';
 import { IndustryFlowPage } from './industry-flow-page';
 import { AnalyticsPage } from './analytics-page';
@@ -113,6 +114,12 @@ export const pages: Page[] = [
       'with how many trains work each one; this is the first step toward weighing line capacity ' +
       'against demand.',
     Component: TrainLinesPage,
+  },
+  {
+    title: 'On-Demand Dispatch',
+    slug: 'on-demand-dispatch',
+    description: 'Review directional on-demand lines, update the game date, and record confirmed departures.',
+    Component: OnDemandDispatchPage,
   },
   {
     title: 'City Good Balance',

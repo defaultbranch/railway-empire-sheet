@@ -461,6 +461,36 @@ body {
 	width: max-content;
 }
 
+.on-demand-dispatch-page {
+	min-width: 0;
+
+	&__date-control {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-bottom: 1rem;
+		input { font: inherit; }
+	}
+
+	&__table-scroll {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	&__table {
+		width: 100%;
+		min-width: 46rem;
+		font-variant-numeric: tabular-nums;
+		th, td { border-bottom: 1px solid var(--color-border); padding: 0.5rem; text-align: left; }
+		th { font-size: 0.85rem; }
+		a { color: inherit; }
+		button { white-space: nowrap; }
+	}
+
+	&__empty { color: var(--color-muted); }
+}
+
 .city-good-balance-page {
 	display: flex;
 	flex-direction: column;
