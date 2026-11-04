@@ -28,8 +28,8 @@ export function cityPopulationDemandRows(
 
 // wagons/week demanded by a single city for a good, 0 below the demand's population threshold
 export function demandForCity(demand: Demand, city: City): number {
-  if (city.population < demand.minPopulation) return 0;
-  return (demand.wagonsPerMillion * city.population) / 1_000_000;
+  if (city.population < (demand.minPopulation ?? 0)) return 0;
+  return ((demand.wagonsPerMillion ?? 0) * city.population) / 1_000_000;
 }
 
 // wagons/week demanded across all cities for a good

@@ -7,12 +7,15 @@ let analyzePopulationSupply;
 let cityPopulationDemandRows;
 let cityGoodDemandRows;
 let formatIndustryAmount;
+let solveGoodsFlow;
+let demandForCity;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true, hmr: false }, appType: 'custom' });
   ({ analyzePopulationSupply } = await server.ssrLoadModule('/src/app/pages/analytics.ts'));
-  ({ cityPopulationDemandRows } = await server.ssrLoadModule('/src/app/pages/population-demand.ts'));
+  ({ cityPopulationDemandRows, demandForCity } = await server.ssrLoadModule('/src/app/pages/population-demand.ts'));
   ({ cityGoodDemandRows, formatIndustryAmount } = await server.ssrLoadModule('/src/app/pages/city-good-balance.ts'));
+  ({ solveGoodsFlow } = await server.ssrLoadModule('/src/app/solver/solve-goods-flow.ts'));
 });
 after(async () => { await server?.close(); });
 
@@ -27,6 +30,31 @@ const solution = (contributorFlows = []) => ({ contributorFlows, legFlows: [], n
   converged: true, iterations: 1, missingCoefficients: [] });
 const populationFlow = (city, good, served, node = 'station:Town') => ({
   contributor: { kind: 'population', city }, good, requested: 10, served, node,
+});
+
+test('missing supplies survive incomplete production figures, dropped lines and disconnected cities', () => {
+  const state = {
+    goods: ['Grain', 'Beer'], demands: [{ good: 'Grain', minPopulation: 0, wagonsPerMillion: 17.5 }],
+    cities: [{ name: 'Town', population: 100000 }, { name: 'Disconnected', population: 50000 }],
+    ruralBusinessTypes: [{ name: 'Farm', good: 'Grain', productionByLevel: {} }],
+    ruralBusinesses: [{ name: 'Farm', typeName: 'Farm', level: 1 }],
+    industryTypes: [{ name: 'Brewery', rawMaterials: [{ good: 'Grain', amountByLevel: {} }],
+      products: [{ good: 'Beer', amountByLevel: {} }] }],
+    industries: [{ city: 'Town', citySlot: 0, typeName: 'Brewery', level: 1 }],
+    trainStations: [
+      { name: 'Town', host: { kind: 'city', city: 'Town' }, tracks: 1 },
+      { name: 'Farm', host: { kind: 'rural', ruralBusinesses: ['Farm'] }, tracks: 1 },
+    ],
+    warehouses: [],
+    trainLines: [{ type: 'ContinuousTrainLine', name: 'Incomplete', cargo: 'goods', trains: 1,
+      stops: [{ kind: 'station', name: 'Farm' }, { kind: 'station', name: 'Town' }] }],
+  };
+  const { solution: solved, droppedLines } = solveGoodsFlow(state);
+  assert.ok(solved.missingCoefficients.length > 0);
+  assert.equal(droppedLines.length, 1);
+  const warnings = analyzePopulationSupply(state.cities, state.demands, solved);
+  assert.deepEqual(warnings.map(({ city, good, priority }) => [city, good, priority]),
+    [['Disconnected', 'Grain', 1], ['Town', 'Grain', 1]]);
 });
 
 test('industry amounts combine actual, maximum and percentage without inventing unknown or zero-capacity ratios', () => {
@@ -192,6 +220,21 @@ test('missing supply includes disconnected cities and prioritizes earlier goods 
   assert.equal(warnings[1].demand, 1.75);
   assert.equal(warnings[1].kind, 'missing-population-supply');
   assert.equal(warnings[1].minPopulation, 0);
+});
+
+test('gaps in demand coefficients default to zero and unset thresholds still produce level-one findings', () => {
+  const city = { name: 'Town', population: 100000 };
+  const incompleteDemands = [
+    { good: 'Grain', wagonsPerMillion: 17.5 },
+    { good: 'Beer', minPopulation: 0 },
+    { good: 'Wood' },
+    { good: 'Cloth', minPopulation: 35000, wagonsPerMillion: 10 },
+  ];
+  assert.equal(demandForCity(incompleteDemands[1], city), 0);
+  assert.equal(demandForCity(incompleteDemands[2], city), 0);
+  const warnings = analyzePopulationSupply([city], incompleteDemands, solution());
+  assert.deepEqual(warnings.map(({ good, priority, minPopulation, demand }) => [good, priority, minPopulation, demand]),
+    [['Grain', 1, 0, 1.75], ['Cloth', 2, 35000, 1]]);
 });
 
 test('only active positive population demands generate warnings, including at the unlock boundary', () => {

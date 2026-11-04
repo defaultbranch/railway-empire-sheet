@@ -17,7 +17,7 @@ export function analyzePopulationSupply(
   solution: FlowSolution,
 ): MissingPopulationSupply[] {
   const thresholds = [...new Set(demands.filter((demand) => demand.wagonsPerMillion > 0)
-    .map((demand) => demand.minPopulation))].sort((first, second) => first - second);
+    .map((demand) => demand.minPopulation ?? 0))].sort((first, second) => first - second);
   const supplied = new Map<string, Map<Good, number>>();
   for (const flow of solution.contributorFlows) {
     if (flow.contributor.kind !== 'population') continue;
@@ -33,8 +33,8 @@ export function analyzePopulationSupply(
       kind: 'missing-population-supply',
       city: city.name,
       good: demand.good,
-      minPopulation: demand.minPopulation,
-      priority: thresholds.indexOf(demand.minPopulation) + 1,
+      minPopulation: demand.minPopulation ?? 0,
+      priority: thresholds.indexOf(demand.minPopulation ?? 0) + 1,
       demand: requested,
     }];
   })).sort((first, second) => first.priority - second.priority
