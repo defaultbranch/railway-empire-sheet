@@ -1,4 +1,4 @@
-import { warehouseGoodSlotsByTracks, type Good, type ContinuousTrainLine, type Warehouse } from '../game-state/types.ts';
+import { warehouseGoodSlotsByTracks, type Good, type TrainLine, type Warehouse } from '../game-state/types.ts';
 import type { GoodsFlow } from './solve-goods-flow';
 import { solveFlowNetwork } from '@railway/shared';
 import { analyzeTransportRevenue } from './transport-revenue.ts';
@@ -12,9 +12,9 @@ export type WarehouseGoodSimulation = {
 export function simulateWarehouseGoods(
   baseline: GoodsFlow,
   warehouse: Warehouse,
-  trainLines: ContinuousTrainLine[],
+  trainLines: TrainLine[],
 ): WarehouseGoodSimulation[] {
-  if (warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]) return [];
+  if (!baseline.revenue.journeyTimeKnown || warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]) return [];
   const nodeId = `warehouse:${warehouse.name}`;
   if (!baseline.network.nodes.some((node) => node.id === nodeId)) return [];
   const connectedLines = new Set(baseline.network.legs
@@ -23,10 +23,10 @@ export function simulateWarehouseGoods(
   if (connectedLines.size === 0) return [];
   const connectedYield = (revenue: GoodsFlow['revenue']) => revenue.lines
     .filter((line) => connectedLines.has(line.line))
-    .reduce((sum, line) => sum + line.weeklyYield, 0);
+    .reduce((sum, line) => sum + (line.weeklyYield ?? 0), 0);
   const baselineYield = connectedYield(baseline.revenue);
 
-  return baseline.network.goods.filter((good) => !warehouse.goods.includes(good)).map((good) => {
+  return baseline.network.goods.filter((good) => !warehouse.goods.includes(good)).flatMap((good) => {
     const network = {
       ...baseline.network,
       nodes: baseline.network.nodes.map((node) => node.id === nodeId ? {
@@ -37,6 +37,8 @@ export function simulateWarehouseGoods(
     };
     const solution = solveFlowNetwork(network);
     const revenue = analyzeTransportRevenue(network, solution, trainLines);
-    return { good, weeklyYieldChange: connectedYield(revenue) - baselineYield, converged: solution.converged };
+    return revenue.journeyTimeKnown
+      ? [{ good, weeklyYieldChange: connectedYield(revenue) - baselineYield, converged: solution.converged }]
+      : [];
   }).sort((left, right) => right.weeklyYieldChange - left.weeklyYieldChange || left.good.localeCompare(right.good));
 }

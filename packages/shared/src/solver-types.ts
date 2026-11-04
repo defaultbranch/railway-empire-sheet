@@ -57,12 +57,11 @@ export type Leg = {
   line: string;
   from: NodeId;
   to: NodeId;
-  // weekly units shared across all goods: trains * 8 * 7 / tourDays
+  // weekly units shared across all goods; continuous lines use trains * 8 * 7 / tourDays
   capacity: number;
 };
 
-// the compiled problem; lines are absent, and warned about, when they have more than two stops, an
-// unknown tourDays, or carry only mail and passengers
+// the compiled problem; unsupported lines are absent and reported with a reason
 export type FlowNetwork = {
   goods: Good[];
   nodes: FlowNode[];

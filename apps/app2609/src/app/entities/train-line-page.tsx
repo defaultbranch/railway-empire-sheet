@@ -92,7 +92,15 @@ export function TrainLinePage({ slug }: { slug: string }) {
           <p className="train-line-page__empty">Not modelled: {dropped.reason}.</p>
         ) : (
           <>
-            <p>Per train: {currency.format(lineRevenue?.weeklyYieldPerTrain ?? 0)} / week</p>
+            <p>{trainLine.type === 'ContinuousTrainLine' ? 'Per train' : 'Weekly yield'}: {
+              !revenue.journeyTimeKnown ? 'Unknown'
+                : trainLine.type === 'ContinuousTrainLine'
+                  ? currency.format(lineRevenue?.weeklyYieldPerTrain ?? 0)
+                  : currency.format(lineRevenue?.weeklyYield ?? 0)
+            } / week</p>
+            {!revenue.journeyTimeKnown && (
+              <p className="train-line-page__hint">Journey-time revenue and arrival estimates are unavailable for a used line with unknown duration.</p>
+            )}
             <table className="train-line-page__table">
               <thead>
                 <tr>
@@ -114,7 +122,7 @@ export function TrainLinePage({ slug }: { slug: string }) {
                     {legs.map((leg) => (
                       <td key={leg.id}>{perWeek(unitsByGood.get(good)?.get(leg.id) ?? 0)}</td>
                     ))}
-                    <td>{currency.format(yieldByGood.get(good) ?? 0)}</td>
+                    <td>{revenue.journeyTimeKnown ? currency.format(yieldByGood.get(good) ?? 0) : '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -122,17 +130,24 @@ export function TrainLinePage({ slug }: { slug: string }) {
                 <tr>
                   <th>Total</th>
                   {legs.map((leg) => (
-                    <td key={leg.id} title="Average utilization per train per ride, out of 8 goods">
-                      <div>{perWeek(totalByLeg.get(leg.id) ?? 0)} of {perWeek(leg.capacity)}</div>
+                    <td key={leg.id} title={trainLine.type === 'OnDemandTrainLine'
+                      ? 'Solved weekly flow; no fleet capacity limit'
+                      : 'Average utilization per train per ride, out of 8 goods'}>
+                      <div>{perWeek(totalByLeg.get(leg.id) ?? 0)}{trainLine.type === 'ContinuousTrainLine'
+                        ? ` of ${perWeek(leg.capacity)}` : ' / week'}</div>
                     </td>
                   ))}
-                  <td>{currency.format(lineRevenue?.weeklyYield ?? 0)}</td>
+                  <td>{revenue.journeyTimeKnown ? currency.format(lineRevenue?.weeklyYield ?? 0) : '—'}</td>
                 </tr>
                 <tr>
                   <th>Utilization</th>
                   {legs.map((leg) => (
-                    <td key={leg.id} title="Average utilization per train per ride, out of 8 goods">
-                      {utilizationPercent(totalByLeg.get(leg.id) ?? 0, leg.capacity)}%
+                    <td key={leg.id} title={trainLine.type === 'OnDemandTrainLine'
+                      ? 'No fleet capacity limit'
+                      : 'Average utilization per train per ride, out of 8 goods'}>
+                      {trainLine.type === 'ContinuousTrainLine'
+                        ? `${utilizationPercent(totalByLeg.get(leg.id) ?? 0, leg.capacity)}%`
+                        : '—'}
                     </td>
                   ))}
                   <td>—</td>

@@ -8,7 +8,7 @@ import { simulateWarehouseGoods } from './warehouse-recommendations.ts';
 
 const goods = ['Wheat', 'Corn', 'Coal', 'Beer'];
 const warehouse = { name: 'Hub', tracks: 2, goods: ['Beer'], host: { kind: 'city', city: 'Empty' } };
-const lines = ['Inbound', 'Outbound'].map((name) => ({ name, trains: 1, tourDays: 7,
+const lines = ['Inbound', 'Outbound'].map((name) => ({ type: 'ContinuousTrainLine', name, trains: 1, tourDays: 7,
   cargo: 'goods', stops: [{ kind: 'station', name: 'Farm' }, { kind: 'warehouse', name: 'Hub' }] }));
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1, `${actual} != ${expected}`);
 

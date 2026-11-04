@@ -10,7 +10,7 @@ const node = (name, sources = [], sinks = [], conversions = []) => ({
   loadableGoods: new Set(['Wheat', 'Beer']), unloadableGoods: new Set(['Wheat', 'Beer']),
 });
 const leg = (line, from, to) => ({ id: `${line}@0`, line, from: `station:${from}`, to: `station:${to}`, capacity: 100 });
-const line = (name, tourDays, trains = 1) => ({ name, tourDays, trains });
+const line = (name, tourDays, trains = 1) => ({ type: 'ContinuousTrainLine', name, tourDays, trains });
 const flow = (line, units, good = 'Wheat') => ({ leg: `${line}@0`, good, units });
 const served = (name, units, good = 'Wheat', contributor = sink(name, good).contributor) => ({
   node: `station:${name}`, good, contributor, requested: units, served: units,
@@ -35,6 +35,27 @@ test('a direct delivery earns its payout once and divides equally across trains'
   near(destination.soldUnits, 5);
   near(destination.forwardedUnits, 0);
   assert.equal(destination.remainingYield, undefined);
+});
+
+test('on-demand revenue uses one-way travel days and has no per-train yield', () => {
+  const onDemand = { type: 'OnDemandTrainLine', name: 'AB', travelDays: 7, cargo: 'goods' };
+  const result = analyze([node('A', [source('A')]), node('B', [], [sink('B')])], [leg('AB', 'A', 'B')],
+    [flow('AB', 5)], [served('B', 5)], [onDemand]);
+
+  assert.equal(result.journeyTimeKnown, true);
+  near(result.lines[0].weeklyYield, 10000);
+  assert.equal(result.lines[0].weeklyYieldPerTrain, undefined);
+});
+
+test('unknown on-demand travel time leaves flow revenue and arrival metrics unknown', () => {
+  const onDemand = { type: 'OnDemandTrainLine', name: 'AB', cargo: 'goods' };
+  const result = analyze([node('A', [source('A')]), node('B', [], [sink('B')])], [leg('AB', 'A', 'B')],
+    [flow('AB', 5)], [served('B', 5)], [onDemand]);
+
+  assert.equal(result.journeyTimeKnown, false);
+  assert.equal(result.lines[0].weeklyYield, undefined);
+  assert.equal(result.lines[0].weeklyYieldPerTrain, undefined);
+  assert.deepEqual(result.storageValues, []);
 });
 
 test('local sales do not dilute the remaining value of forwarded goods', () => {

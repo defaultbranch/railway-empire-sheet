@@ -32,7 +32,7 @@ export function solveGoodsFlow(state: Omit<GameState, 'gameDate'>, options: Solv
   return {
     network,
     solution,
-    revenue: analyzeTransportRevenue(network, solution, state.trainLines.filter((line) => line.type === 'ContinuousTrainLine')),
+    revenue: analyzeTransportRevenue(network, solution, state.trainLines),
     droppedLines,
   };
 }

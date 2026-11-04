@@ -127,6 +127,13 @@ export function stopNodeId(stop: StopRef): NodeId {
   return stop.kind === 'station' ? `station:${stop.name}` : `warehouse:${stop.name}`;
 }
 
+function totalPotentialWeeklySupply(nodes: FlowNode[]): number {
+  return nodes.reduce((total, node) =>
+    total + node.sources.reduce((sum, source) => sum + source.amount, 0) +
+      node.conversions.reduce((sum, conversion) =>
+        sum + conversion.products.reduce((productSum, product) => productSum + product.amount, 0), 0), 0);
+}
+
 export function compileFlowNetwork(state: Omit<GameState, 'gameDate'>): CompiledNetwork {
   const missingCoefficients: MissingCoefficient[] = [];
   const droppedLines: { line: string; reason: string }[] = [];
@@ -160,18 +167,11 @@ export function compileFlowNetwork(state: Omit<GameState, 'gameDate'>): Compiled
 
   const nodeIds = new Set(nodes.map((node) => node.id));
   const legs: Leg[] = [];
+  const onDemandCapacity = totalPotentialWeeklySupply(nodes);
 
   for (const line of state.trainLines) {
-    if (line.type !== 'ContinuousTrainLine') {
-      droppedLines.push({ line: line.name, reason: 'on-demand lines are not modelled yet' });
-      continue;
-    }
     if (line.cargo === 'mail and passengers') {
       droppedLines.push({ line: line.name, reason: 'carries no goods' });
-      continue;
-    }
-    if (line.tourDays === undefined || line.tourDays <= 0) {
-      droppedLines.push({ line: line.name, reason: 'tour duration not known yet' });
       continue;
     }
     if (line.stops.length !== 2) {
@@ -182,6 +182,18 @@ export function compileFlowNetwork(state: Omit<GameState, 'gameDate'>): Compiled
     const to = stopNodeId(line.stops[1]);
     if (!nodeIds.has(from) || !nodeIds.has(to) || from === to) {
       droppedLines.push({ line: line.name, reason: 'stops do not resolve to two distinct stations or warehouses' });
+      continue;
+    }
+    if (line.type === 'OnDemandTrainLine') {
+      if (!Number.isFinite(onDemandCapacity)) {
+        droppedLines.push({ line: line.name, reason: 'potential weekly supply exceeds finite solver capacity' });
+        continue;
+      }
+      legs.push({ id: `${line.name}@0`, line: line.name, from, to, capacity: onDemandCapacity });
+      continue;
+    }
+    if (line.tourDays === undefined || line.tourDays <= 0) {
+      droppedLines.push({ line: line.name, reason: 'tour duration not known yet' });
       continue;
     }
     // a train carries up to eight units per run, whatever it carries, so capacity is shared across goods

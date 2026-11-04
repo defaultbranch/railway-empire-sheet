@@ -1,4 +1,4 @@
-import type { Good, ContinuousTrainLine } from '../game-state/types';
+import type { Good, TrainLine } from '../game-state/types';
 import { buildLocalities, contributorKey } from '@railway/shared';
 import type { FlowNetwork, FlowSolution, Leg, NodeId } from '@railway/shared';
 
@@ -6,12 +6,13 @@ export const nominalDeliveryYield = 2000;
 
 export type LineRevenue = {
   line: string;
-  weeklyYield: number;
-  weeklyYieldPerTrain: number;
+  weeklyYield: number | undefined;
+  weeklyYieldPerTrain: number | undefined;
   byGood: { good: Good; weeklyYield: number }[];
 };
 
 export type TransportRevenue = {
+  journeyTimeKnown: boolean;
   lines: LineRevenue[];
   storageValues: {
     node: NodeId;
@@ -63,16 +64,24 @@ function cancelCycles(edges: Edge[], nodeCount: number): void {
 export function analyzeTransportRevenue(
   network: FlowNetwork,
   solution: Pick<FlowSolution, 'legFlows' | 'contributorFlows'>,
-  trainLines: Pick<ContinuousTrainLine, 'name' | 'trains' | 'tourDays'>[],
+  trainLines: TrainLine[],
   payout = nominalDeliveryYield,
 ): TransportRevenue {
   const localities = buildLocalities(network.nodes);
   const localityOf = new Map(localities.flatMap((locality, index) => locality.nodes.map((node) => [node.id, index] as const)));
-  const lineByName = new Map(trainLines.map((line) => [line.name, line]));
   const revenue = new Map(trainLines.map((line) => [line.name, new Map<Good, number>()]));
   const storage = new Map<NodeId, Map<Good, { soldUnits: number; forwardedUnits: number; value: number }>>();
   const arrivals = new Map<NodeId, Map<Good, { units: number; unitDays: number }>>();
   const legById = new Map(network.legs.map((leg) => [leg.id, leg]));
+  const journeyDaysByLine = new Map(trainLines.map((line) => [line.name,
+    line.type === 'ContinuousTrainLine' ? line.tourDays === undefined ? undefined : line.tourDays / 2 : line.travelDays,
+  ]));
+  const journeyTimeKnown = !solution.legFlows.some((flow) => {
+    if (flow.units <= 1e-9) return false;
+    const leg = legById.get(flow.leg);
+    const days = leg === undefined ? undefined : journeyDaysByLine.get(leg.line);
+    return days === undefined || !Number.isFinite(days) || days <= 0;
+  });
 
   for (const good of network.goods) {
     const consumers = localities.map((locality) => new Set([
@@ -96,9 +105,9 @@ export function analyzeTransportRevenue(
       if (leg === undefined) continue;
       const from = localityOf.get(leg.from);
       const to = localityOf.get(leg.to);
-      const days = lineByName.get(leg.line)?.tourDays;
+      const days = journeyDaysByLine.get(leg.line);
       if (from === undefined || to === undefined || from === to || days === undefined || !Number.isFinite(days) || days <= 0) continue;
-      edges.push({ leg, from, to, units: flow.units, days: days / 2 });
+      edges.push({ leg, from, to, units: flow.units, days });
     }
     cancelCycles(edges, localities.length);
     const outgoing = localities.map((_, index) => edges.filter((edge) => edge.from === index && edge.units > 1e-9));
@@ -161,12 +170,20 @@ export function analyzeTransportRevenue(
 
   return {
     lines: trainLines.map((line) => {
+      if (!journeyTimeKnown) {
+        return { line: line.name, weeklyYield: undefined, weeklyYieldPerTrain: undefined, byGood: [] };
+      }
       const byGood = [...(revenue.get(line.name) ?? [])].map(([good, weeklyYield]) => ({ good, weeklyYield }))
         .sort((first, second) => second.weeklyYield - first.weeklyYield || first.good.localeCompare(second.good));
       const weeklyYield = byGood.reduce((sum, entry) => sum + entry.weeklyYield, 0);
-      return { line: line.name, weeklyYield, weeklyYieldPerTrain: line.trains > 0 ? weeklyYield / line.trains : 0, byGood };
+      return {
+        line: line.name,
+        weeklyYield,
+        weeklyYieldPerTrain: line.type === 'ContinuousTrainLine' ? line.trains > 0 ? weeklyYield / line.trains : 0 : undefined,
+        byGood,
+      };
     }),
-    storageValues: [...storage].flatMap(([node, goods]) => [...goods].map(([good, value]) => {
+    storageValues: journeyTimeKnown ? [...storage].flatMap(([node, goods]) => [...goods].map(([good, value]) => {
       const arrival = arrivals.get(node)?.get(good);
       return {
         node, good,
@@ -175,6 +192,7 @@ export function analyzeTransportRevenue(
         averageArrivalAgeWeeks: arrival === undefined ? undefined : arrival.unitDays / arrival.units / 7,
         remainingYield: value.forwardedUnits > 0 ? value.value / value.forwardedUnits : undefined,
       };
-    })),
+    })) : [],
+    journeyTimeKnown,
   };
 }

@@ -27,7 +27,9 @@ export function TrainLinesPage() {
   }
   const utilizationByLine = new Map(trainLines.map((line) => {
     const legs = network.legs.filter((leg) => leg.line === line.name);
-    if (droppedByLine.has(line.name) || legs.length !== 2) return [line.name, undefined] as const;
+    if (droppedByLine.has(line.name) || line.type === 'OnDemandTrainLine' || legs.length !== 2) {
+      return [line.name, undefined] as const;
+    }
     const utilization = legs.reduce((sum, leg) => {
       return sum + (leg.capacity > 0 ? (unitsByLeg.get(leg.id) ?? 0) / leg.capacity : 0);
     }, 0) / legs.length;
@@ -46,18 +48,23 @@ export function TrainLinesPage() {
   const [tourDays, setTourDays] = useState('');
   const [cargo, setCargo] = useState<TrainCargo>('anything');
 
+  const yieldPerTrain = (line: (typeof trainLines)[number]) =>
+    droppedByLine.has(line.name) || line.type === 'OnDemandTrainLine' || !revenue.journeyTimeKnown
+      ? undefined
+      : revenueByLine.get(line.name)?.weeklyYieldPerTrain;
+
   const sortedLines = [...trainLines].sort((left, right) => {
     const direction = sort.descending ? -1 : 1;
     if (sort.key === 'name') return direction * left.name.localeCompare(right.name);
     const leftValue = sort.key === 'duration'
       ? left.type === 'ContinuousTrainLine' ? left.tourDays : left.travelDays
       : sort.key === 'yield'
-        ? droppedByLine.has(left.name) ? undefined : revenueByLine.get(left.name)?.weeklyYieldPerTrain ?? 0
+        ? yieldPerTrain(left)
         : utilizationByLine.get(left.name);
     const rightValue = sort.key === 'duration'
       ? right.type === 'ContinuousTrainLine' ? right.tourDays : right.travelDays
       : sort.key === 'yield'
-        ? droppedByLine.has(right.name) ? undefined : revenueByLine.get(right.name)?.weeklyYieldPerTrain ?? 0
+        ? yieldPerTrain(right)
         : utilizationByLine.get(right.name);
     if (leftValue === undefined && rightValue !== undefined) return 1;
     if (rightValue === undefined && leftValue !== undefined) return -1;
@@ -161,10 +168,12 @@ export function TrainLinesPage() {
               <td>{(line.type === 'ContinuousTrainLine' ? line.tourDays : line.travelDays) ?? '—'}</td>
               <td>{line.cargo}</td>
               <td title={droppedByLine.get(line.name)}>
-                {droppedByLine.has(line.name) ? 'Not modelled' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}
+                {droppedByLine.has(line.name) ? 'Not modelled' : line.type === 'OnDemandTrainLine' ? '—'
+                  : !revenue.journeyTimeKnown ? 'Unknown' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}
               </td>
               <td title={droppedByLine.get(line.name)}>
-                {utilizationByLine.get(line.name) === undefined ? 'Not modelled' : percentage.format(utilizationByLine.get(line.name) ?? 0)}
+                {droppedByLine.has(line.name) ? 'Not modelled' : line.type === 'OnDemandTrainLine' ? '—'
+                  : percentage.format(utilizationByLine.get(line.name) ?? 0)}
               </td>
               <td>
                 <button type="button" onClick={() => removeTrainLine(line.name)} aria-label={`Remove ${line.name}`}>

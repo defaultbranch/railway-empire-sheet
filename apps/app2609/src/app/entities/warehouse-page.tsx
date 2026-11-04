@@ -63,10 +63,10 @@ export function WarehousePage({ slug }: { slug: string }) {
   const [newLineCargo, setNewLineCargo] = useState<TrainCargo>('anything');
   const warehouse = warehouses.find((existing) => warehouseSlug(existing) === slug);
   const recommendationRequest = useMemo<WarehouseRecommendationsRequest | undefined>(
-    () => warehouse === undefined || !goodsFlow.solution.converged ||
+    () => warehouse === undefined || !goodsFlow.solution.converged || !goodsFlow.revenue.journeyTimeKnown ||
       warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]
       ? undefined
-      : { baseline: goodsFlow, warehouse, trainLines: trainLines.filter((line) => line.type === 'ContinuousTrainLine') },
+      : { baseline: goodsFlow, warehouse, trainLines },
     [goodsFlow, warehouse, trainLines],
   );
   const [recommendationResult, setRecommendationResult] = useState<{
@@ -162,11 +162,11 @@ export function WarehousePage({ slug }: { slug: string }) {
     const departing = legs.find((leg) => leg.from === nodeId);
     const broughtIn = amountsByGood(arriving ? solution.legFlows.filter((flow) => flow.leg === arriving.id) : []);
     const takenAway = amountsByGood(departing ? solution.legFlows.filter((flow) => flow.leg === departing.id) : []);
-    const utilization = dropped !== undefined || legs.length === 0 ? undefined : legs.reduce((sum, leg) => {
+    const utilization = dropped !== undefined || line.type === 'OnDemandTrainLine' || legs.length === 0 ? undefined : legs.reduce((sum, leg) => {
       const units = solution.legFlows.filter((flow) => flow.leg === leg.id).reduce((total, flow) => total + flow.units, 0);
       return sum + (leg.capacity > 0 ? units / leg.capacity : 0);
     }, 0) / legs.length;
-    const weeklyYield = dropped !== undefined
+    const weeklyYield = dropped !== undefined || line.type === 'OnDemandTrainLine' || !revenue.journeyTimeKnown
       ? undefined
       : revenue.lines.find((entry) => entry.line === line.name)?.weeklyYieldPerTrain ?? 0;
     return { line, dropped, broughtIn, takenAway, utilization, weeklyYield };
