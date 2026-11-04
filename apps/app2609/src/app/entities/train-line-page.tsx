@@ -56,8 +56,17 @@ export function TrainLinePage({ slug }: { slug: string }) {
   return (
     <section className="train-line-page">
       <h1>{trainLine.name}</h1>
-      <p className="train-line-page__trains">Trains: {trainLine.trains}</p>
-      <p className="train-line-page__tour-days">Tour days: {trainLine.tourDays ?? '—'}</p>
+      {trainLine.type === 'ContinuousTrainLine' ? (
+        <>
+          <p className="train-line-page__trains">Trains: {trainLine.trains}</p>
+          <p className="train-line-page__tour-days">Tour days: {trainLine.tourDays ?? '—'}</p>
+        </>
+      ) : (
+        <>
+          <p className="train-line-page__trains">Service: On demand</p>
+          <p className="train-line-page__tour-days">Travel days: {trainLine.travelDays ?? '—'}</p>
+        </>
+      )}
       <p className="train-line-page__cargo">Cargo: {trainLine.cargo}</p>
       <section className="train-line-page__stops">
         <h2>Stops</h2>

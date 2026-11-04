@@ -24,6 +24,14 @@ const legacyLine = {
   tourDays: 20,
   cargo: 'goods',
 };
+const onDemandLine = {
+  type: 'OnDemandTrainLine',
+  name: 'A to B',
+  stops: [{ kind: 'station', name: 'A' }, { kind: 'warehouse', name: 'B' }],
+  travelDays: 4,
+  lastDispatchDate: '1800-01-01',
+  cargo: 'anything',
+};
 
 test('default lines have their literal discriminator and round-trip through persistence', () => {
   const state = defaultGameState();
@@ -34,25 +42,36 @@ test('default lines have their literal discriminator and round-trip through pers
   assert.deepEqual(deserializeGameState(serialized), JSON.parse(serialized).state);
 });
 
+test('both train-line variants and the game date round-trip through persistence', () => {
+  const state = { ...emptyGameState(), gameDate: '1800-01-01', trainLines: [
+    { ...legacyLine, type: 'ContinuousTrainLine' }, onDemandLine,
+  ] };
+  const restored = deserializeGameState(serializeGameState(state));
+  assert.deepEqual(restored, state);
+  assert.equal(GameState.isInstance(state), true);
+});
+
 test('legacy saved and imported lines gain the continuous discriminator without losing fields', () => {
   const state = { ...emptyGameState(), trainLines: [legacyLine] };
+  delete state.gameDate;
   assert.equal(GameState.isInstance(state), false);
   const loaded = deserializeGameState(JSON.stringify({ version: 1, state }));
-  assert.deepEqual(loaded, { ...state, trainLines: [{ ...legacyLine, type: 'ContinuousTrainLine' }] });
+  assert.deepEqual(loaded, { ...state, gameDate: '1830-01-01', trainLines: [{ ...legacyLine, type: 'ContinuousTrainLine' }] });
   assert.equal(GameState.isInstance(loaded), true);
   assert.deepEqual(deserializeGameState(serializeGameState(loaded)), loaded);
 });
 
-test('loading rejects unknown types, malformed legacy lines and on-demand app state', () => {
+test('loading rejects unknown types, malformed lines and invalid game dates', () => {
   const { trains, tourDays, ...onDemandFields } = legacyLine;
   for (const line of [
     { ...legacyLine, type: 'unknown' },
     { ...legacyLine, trains: '1' },
-    { ...onDemandFields, type: 'OnDemandTrainLine', lastDispatchDate: '1800-01-01' },
+    { ...onDemandFields, type: 'OnDemandTrainLine', stops: [{ kind: 'station', name: 'A' }], lastDispatchDate: '1800-01-01' },
   ]) {
     const state = { ...emptyGameState(), trainLines: [line] };
     assert.equal(deserializeGameState(JSON.stringify({ version: 1, state })), undefined);
   }
+  assert.equal(deserializeGameState(JSON.stringify({ version: 1, state: { ...emptyGameState(), gameDate: '1800-02-30' } })), undefined);
   assert.equal(deserializeGameState('{'), undefined);
   assert.equal(deserializeGameState(JSON.stringify({ version: 2, state: emptyGameState() })), undefined);
 });

@@ -68,7 +68,7 @@ function industryConversion(
 
 function cityContent(
   cityName: string,
-  state: GameState,
+  state: Omit<GameState, 'gameDate'>,
   missing: MissingCoefficient[],
 ): HostContent {
   const content = emptyHostContent();
@@ -95,7 +95,7 @@ function cityContent(
   return content;
 }
 
-function ruralContent(names: readonly string[], state: GameState, missing: MissingCoefficient[]): HostContent {
+function ruralContent(names: readonly string[], state: Omit<GameState, 'gameDate'>, missing: MissingCoefficient[]): HostContent {
   const content = emptyHostContent();
 
   for (const name of names) {
@@ -117,7 +117,7 @@ function ruralContent(names: readonly string[], state: GameState, missing: Missi
   return content;
 }
 
-function hostContent(host: StopHost, state: GameState, missing: MissingCoefficient[]): HostContent {
+function hostContent(host: StopHost, state: Omit<GameState, 'gameDate'>, missing: MissingCoefficient[]): HostContent {
   return host.kind === 'city'
     ? cityContent(host.city, state, missing)
     : ruralContent(host.ruralBusinesses, state, missing);
@@ -127,7 +127,7 @@ export function stopNodeId(stop: StopRef): NodeId {
   return stop.kind === 'station' ? `station:${stop.name}` : `warehouse:${stop.name}`;
 }
 
-export function compileFlowNetwork(state: GameState): CompiledNetwork {
+export function compileFlowNetwork(state: Omit<GameState, 'gameDate'>): CompiledNetwork {
   const missingCoefficients: MissingCoefficient[] = [];
   const droppedLines: { line: string; reason: string }[] = [];
   const nodes: FlowNode[] = [];
@@ -162,6 +162,10 @@ export function compileFlowNetwork(state: GameState): CompiledNetwork {
   const legs: Leg[] = [];
 
   for (const line of state.trainLines) {
+    if (line.type !== 'ContinuousTrainLine') {
+      droppedLines.push({ line: line.name, reason: 'on-demand lines are not modelled yet' });
+      continue;
+    }
     if (line.cargo === 'mail and passengers') {
       droppedLines.push({ line: line.name, reason: 'carries no goods' });
       continue;

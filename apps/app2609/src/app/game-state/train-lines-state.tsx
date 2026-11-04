@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { ContinuousTrainLine } from './types';
+import type { TrainLine } from './types';
 
 export type TrainLinesState = {
-  trainLines: ContinuousTrainLine[];
-  addTrainLine: (line: ContinuousTrainLine) => void;
+  trainLines: TrainLine[];
+  addTrainLine: (line: TrainLine) => void;
   removeTrainLine: (name: string) => void;
-  replaceTrainLines: (lines: ContinuousTrainLine[]) => void;
+  replaceTrainLines: (lines: TrainLine[]) => void;
 };
 
 const TrainLinesContext = createContext<TrainLinesState | undefined>(undefined);
@@ -14,12 +14,12 @@ export function TrainLinesProvider({
   initialTrainLines,
   children,
 }: {
-  initialTrainLines: ContinuousTrainLine[];
+  initialTrainLines: TrainLine[];
   children: ReactNode;
 }) {
-  const [trainLines, setTrainLines] = useState<ContinuousTrainLine[]>(initialTrainLines);
+  const [trainLines, setTrainLines] = useState<TrainLine[]>(initialTrainLines);
 
-  const addTrainLine = (line: ContinuousTrainLine) => {
+  const addTrainLine = (line: TrainLine) => {
     setTrainLines((prev) => (prev.some((existing) => existing.name === line.name) ? prev : [...prev, line]));
   };
 
@@ -27,7 +27,7 @@ export function TrainLinesProvider({
     setTrainLines((prev) => prev.filter((existing) => existing.name !== name));
   };
 
-  const replaceTrainLines = (lines: ContinuousTrainLine[]) => {
+  const replaceTrainLines = (lines: TrainLine[]) => {
     setTrainLines(lines);
   };
 

@@ -1,6 +1,6 @@
 // Robust (de)serialization of GameState to/from localStorage: validates shape rather than trusting a cast,
 // since stored JSON can predate schema changes or be edited/corrupted outside the app.
-import { GameState } from './types';
+import { DEFAULT_GAME_DATE, GameState } from './types';
 
 const STORAGE_KEY = 'railway-empire-sheet:game-state';
 const STORAGE_VERSION = 1;
@@ -27,10 +27,13 @@ export function serializeGameState(state: GameState): string {
 export function deserializeGameState(json: string): GameState | undefined {
   try {
     const parsed: unknown = JSON.parse(json);
-    if (isRecord(parsed) && parsed.version === STORAGE_VERSION && isRecord(parsed.state) && Array.isArray(parsed.state.trainLines)) {
-      parsed.state.trainLines = parsed.state.trainLines.map((line: unknown) =>
-        isRecord(line) && line.type === undefined ? { ...line, type: 'ContinuousTrainLine' } : line,
-      );
+    if (isRecord(parsed) && parsed.version === STORAGE_VERSION && isRecord(parsed.state)) {
+      if (parsed.state.gameDate === undefined) parsed.state.gameDate = DEFAULT_GAME_DATE;
+      if (Array.isArray(parsed.state.trainLines)) {
+        parsed.state.trainLines = parsed.state.trainLines.map((line: unknown) =>
+          isRecord(line) && line.type === undefined ? { ...line, type: 'ContinuousTrainLine' } : line,
+        );
+      }
     }
     return StoredGameState.isInstance(parsed) ? parsed.state : undefined;
   } catch {

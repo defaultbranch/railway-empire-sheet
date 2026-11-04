@@ -12,6 +12,7 @@ import { useCities } from './city-state';
 import { useTrainStations } from './train-stations-state';
 import { useWarehouses } from './warehouses-state';
 import { useTrainLines } from './train-lines-state';
+import { useGameDate } from './game-date-state';
 
 export type GameActionsState = {
   exportGameState: () => string;
@@ -35,9 +36,11 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
   const trainStations = useTrainStations();
   const warehouses = useWarehouses();
   const trainLines = useTrainLines();
+  const gameDate = useGameDate();
 
   const currentState: GameState = useMemo(
     () => ({
+      gameDate: gameDate.gameDate,
       goods: goods.goods,
       ruralBusinessTypes: ruralBusinessTypes.ruralBusinessTypes,
       industryTypes: industryTypes.industryTypes,
@@ -62,6 +65,7 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
       trainStations.trainStations,
       warehouses.warehouses,
       trainLines.trainLines,
+      gameDate.gameDate,
     ],
   );
 
@@ -70,6 +74,7 @@ export function GameStatePersistence({ children }: { children: ReactNode }) {
   }, [currentState]);
 
   const applyState = (state: GameState) => {
+    gameDate.setGameDate(state.gameDate);
     goods.replaceGoods(state.goods);
     ruralBusinessTypes.replaceRuralBusinessTypes(state.ruralBusinessTypes);
     ruralBusinesses.replaceRuralBusinesses(state.ruralBusinesses);

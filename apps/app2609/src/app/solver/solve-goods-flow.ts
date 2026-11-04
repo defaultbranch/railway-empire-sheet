@@ -11,7 +11,7 @@ export type GoodsFlow = {
   droppedLines: { line: string; reason: string }[];
 };
 
-export function solveGoodsFlow(state: GameState, options: SolveOptions = defaultSolveOptions): GoodsFlow {
+export function solveGoodsFlow(state: Omit<GameState, 'gameDate'>, options: SolveOptions = defaultSolveOptions): GoodsFlow {
   const { network, missingCoefficients, droppedLines } = compileFlowNetwork(state);
 
   for (const missing of missingCoefficients) {
@@ -29,5 +29,10 @@ export function solveGoodsFlow(state: GameState, options: SolveOptions = default
   }
 
   const solution = { ...solved, missingCoefficients };
-  return { network, solution, revenue: analyzeTransportRevenue(network, solution, state.trainLines), droppedLines };
+  return {
+    network,
+    solution,
+    revenue: analyzeTransportRevenue(network, solution, state.trainLines.filter((line) => line.type === 'ContinuousTrainLine')),
+    droppedLines,
+  };
 }

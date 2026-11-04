@@ -11,7 +11,7 @@ import { pathForTrainLine } from '../entities/train-line-routes';
 import { useGoodsFlow } from '../solver';
 
 type StopKind = StopRef['kind'];
-type SortKey = 'name' | 'tourDays' | 'yield' | 'utilization';
+type SortKey = 'name' | 'duration' | 'yield' | 'utilization';
 
 export function TrainLinesPage() {
   const { navigate } = useNavigation();
@@ -49,11 +49,13 @@ export function TrainLinesPage() {
   const sortedLines = [...trainLines].sort((left, right) => {
     const direction = sort.descending ? -1 : 1;
     if (sort.key === 'name') return direction * left.name.localeCompare(right.name);
-    const leftValue = sort.key === 'tourDays' ? left.tourDays
+    const leftValue = sort.key === 'duration'
+      ? left.type === 'ContinuousTrainLine' ? left.tourDays : left.travelDays
       : sort.key === 'yield'
         ? droppedByLine.has(left.name) ? undefined : revenueByLine.get(left.name)?.weeklyYieldPerTrain ?? 0
         : utilizationByLine.get(left.name);
-    const rightValue = sort.key === 'tourDays' ? right.tourDays
+    const rightValue = sort.key === 'duration'
+      ? right.type === 'ContinuousTrainLine' ? right.tourDays : right.travelDays
       : sort.key === 'yield'
         ? droppedByLine.has(right.name) ? undefined : revenueByLine.get(right.name)?.weeklyYieldPerTrain ?? 0
         : utilizationByLine.get(right.name);
@@ -111,8 +113,8 @@ export function TrainLinesPage() {
           <tr>
             {sortHeader('name', 'Name')}
             <th>Stops</th>
-            <th>Trains</th>
-            {sortHeader('tourDays', 'Tour days')}
+                <th>Service</th>
+                {sortHeader('duration', 'Duration (days)')}
             <th>Cargo</th>
             {sortHeader('yield', 'Yield / train / week')}
             {sortHeader('utilization', 'Utilization')}
@@ -155,8 +157,8 @@ export function TrainLinesPage() {
                   </div>
                 ))}
               </td>
-              <td>{line.trains}</td>
-              <td>{line.tourDays ?? '—'}</td>
+              <td>{line.type === 'ContinuousTrainLine' ? `${line.trains} trains` : 'On demand'}</td>
+              <td>{(line.type === 'ContinuousTrainLine' ? line.tourDays : line.travelDays) ?? '—'}</td>
               <td>{line.cargo}</td>
               <td title={droppedByLine.get(line.name)}>
                 {droppedByLine.has(line.name) ? 'Not modelled' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}

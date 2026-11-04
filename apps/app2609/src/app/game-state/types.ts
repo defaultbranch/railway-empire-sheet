@@ -13,6 +13,7 @@ function isArrayOf<T>(value: unknown, isItem: (item: unknown) => item is T): val
 
 // combined shape used only by the initial-state loader; each dimension is otherwise stored independently
 export type GameState = {
+  gameDate: GameDomain.GameDate;
   goods: GameDomain.Good[];
   ruralBusinessTypes: GameDomain.RuralBusinessType[];
   industryTypes: GameDomain.IndustryType[];
@@ -23,12 +24,15 @@ export type GameState = {
   industries: GameDomain.Industry[];
   trainStations: GameDomain.TrainStation[];
   warehouses: GameDomain.Warehouse[];
-  trainLines: GameDomain.ContinuousTrainLine[];
+  trainLines: GameDomain.TrainLine[];
 };
+
+export const DEFAULT_GAME_DATE: GameDomain.GameDate = '1830-01-01';
 
 export const GameState = {
   isInstance: (value: unknown): value is GameState =>
     isRecord(value) &&
+    GameDomain.GameDate.isInstance(value.gameDate) &&
     isArrayOf(value.goods, GameDomain.Good.isInstance) &&
     isArrayOf(value.ruralBusinessTypes, GameDomain.RuralBusinessType.isInstance) &&
     isArrayOf(value.industryTypes, GameDomain.IndustryType.isInstance) &&
@@ -39,5 +43,5 @@ export const GameState = {
     isArrayOf(value.industries, GameDomain.Industry.isInstance) &&
     isArrayOf(value.trainStations, GameDomain.TrainStation.isInstance) &&
     isArrayOf(value.warehouses, GameDomain.Warehouse.isInstance) &&
-    isArrayOf(value.trainLines, GameDomain.ContinuousTrainLine.isInstance),
+    isArrayOf(value.trainLines, GameDomain.TrainLine.isInstance),
 } as const;

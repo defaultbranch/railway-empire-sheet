@@ -1,4 +1,4 @@
-import type { GameState } from './game-state/types';
+import { DEFAULT_GAME_DATE, type GameState } from './game-state/types';
 import { loadGameStateFromStorage } from './game-state/persistence';
 import { defaultGoods } from './default-goods';
 import { defaultRuralBusinessTypes } from './default-rural-business-types';
@@ -13,6 +13,7 @@ import { defaultTrainLines } from './default-train-lines';
 
 export function emptyGameState(): GameState {
   return {
+    gameDate: DEFAULT_GAME_DATE,
     goods: [],
     ruralBusinessTypes: [],
     industryTypes: [],
@@ -28,6 +29,7 @@ export function emptyGameState(): GameState {
 
 export function defaultGameState(): GameState {
   return {
+    gameDate: DEFAULT_GAME_DATE,
     goods: [...defaultGoods],
     ruralBusinessTypes: [...defaultRuralBusinessTypes],
     industryTypes: [...defaultIndustryTypes],

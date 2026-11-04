@@ -66,7 +66,7 @@ export function WarehousePage({ slug }: { slug: string }) {
     () => warehouse === undefined || !goodsFlow.solution.converged ||
       warehouse.goods.length >= warehouseGoodSlotsByTracks[warehouse.tracks]
       ? undefined
-      : { baseline: goodsFlow, warehouse, trainLines },
+      : { baseline: goodsFlow, warehouse, trainLines: trainLines.filter((line) => line.type === 'ContinuousTrainLine') },
     [goodsFlow, warehouse, trainLines],
   );
   const [recommendationResult, setRecommendationResult] = useState<{
@@ -371,8 +371,8 @@ export function WarehousePage({ slug }: { slug: string }) {
             <thead>
               <tr>
                 <th>Train line</th>
-                <th>Number of trains</th>
-                <th>Tour days</th>
+                <th>Trains / service</th>
+                <th>Tour / travel days</th>
                 <th title="Average over both directions">Utilization</th>
                 <th>Yield / week / train</th>
                 <th scope="col" aria-label="Actions" />
@@ -396,6 +396,7 @@ export function WarehousePage({ slug }: { slug: string }) {
                     </a>
                   </td>
                   <td>
+                    {line.type === 'ContinuousTrainLine' ? (
                     <input
                       type="number"
                       min={1}
@@ -404,7 +405,7 @@ export function WarehousePage({ slug }: { slug: string }) {
                       onChange={(event) =>
                         replaceTrainLines(
                           trainLines.map((existing) =>
-                            existing.name === line.name
+                            existing.name === line.name && existing.type === 'ContinuousTrainLine'
                               ? { ...existing, trains: Number(event.target.value) }
                               : existing,
                           ),
@@ -412,8 +413,10 @@ export function WarehousePage({ slug }: { slug: string }) {
                       }
                       aria-label={`${line.name} number of trains`}
                     />
+                    ) : 'On demand'}
                   </td>
                   <td>
+                    {line.type === 'ContinuousTrainLine' ? (
                     <input
                       type="number"
                       min={0}
@@ -423,7 +426,7 @@ export function WarehousePage({ slug }: { slug: string }) {
                         const value = event.target.value;
                         replaceTrainLines(
                           trainLines.map((existing) =>
-                            existing.name === line.name
+                            existing.name === line.name && existing.type === 'ContinuousTrainLine'
                               ? { ...existing, tourDays: value === '' ? undefined : Number(value) }
                               : existing,
                           ),
@@ -431,6 +434,7 @@ export function WarehousePage({ slug }: { slug: string }) {
                       }}
                       aria-label={`${line.name} tour days`}
                     />
+                    ) : line.travelDays ?? '—'}
                   </td>
                   <td>{utilization === undefined ? '—' : percentage.format(utilization)}</td>
                   <td>{weeklyYield === undefined ? '—' : currency.format(weeklyYield)}</td>
