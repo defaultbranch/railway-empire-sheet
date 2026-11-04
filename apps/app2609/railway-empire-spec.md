@@ -200,13 +200,13 @@ network through that warehouse at all. So a warehouse configured for Wheat, Corn
 connected to both a wheat farm and a logging camp, exposes the farm's wheat but not the camp's
 wood. What characterizes a warehouse is then its weekly turn-over volume per good.
 
-A stop hosting a city gates goods as well, but in one direction only and without any volume
-limit: a train may unload there only what the city takes, namely the population demands active at
-its current size plus the raw materials its industries consume, and carries anything else onwards.
-What the city produces can always be loaded, and so can what was unloaded there, which is how a
-city station serves as a transshipment point. A stop hosting rural businesses takes nothing at
-all, rural businesses being pure producers, and is therefore a source only. Unlike a warehouse, a
-city has no turn-over capacity in the model: its gate says which goods, never how many.
+A station hosting a city may unload only the population demands active at its current size and
+the raw materials its industries consume. Stations do not buffer goods or relay imports to other
+trains: imported goods are consumed locally and never re-exported, even if city stock is full.
+Only local industry production exceeding local population and industry consumption is available
+to load for export. A station hosting rural businesses takes nothing at all and is a source only.
+Warehouses can relay their configured goods, including when they share a city with a station;
+sharing that host does not make imported warehouse stock exportable through the station.
 
 An industry is not a fixed source the way a rural business is: what it puts out depends on what
 the network brings in. Its level states two weekly figures, a raw-material need and a product

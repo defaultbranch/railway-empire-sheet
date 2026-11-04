@@ -157,6 +157,7 @@ type LocalityNetting = {
   poolIn: Map<Good, number>;
   // what is left for the network once the locality has taken its own share
   exportable: Map<Good, number>;
+  localSurplus: Map<Good, number>;
   // demand the locality cannot cover itself; the pull it exerts on the network, independent of
   // what happens to arrive this round, so the iteration does not oscillate around its own inflow
   netNeed: Map<Good, number>;
@@ -240,9 +241,17 @@ function netLocality(
   }
 
   const exportable = new Map<Good, number>();
-  for (const [good, amount] of pool) if (amount > epsilon) exportable.set(good, amount);
+  const localSurplus = new Map<Good, number>();
+  for (const [good, amount] of pool) {
+    const canRelay = locality.nodes.some((node) => node.id.startsWith('warehouse:') && node.loadableGoods.has(good));
+    const surplus = Math.max(0, (production.get(good) ?? 0) -
+      (populationDemand.get(good) ?? 0) - (industryDemand.get(good) ?? 0));
+    localSurplus.set(good, surplus);
+    const available = canRelay ? amount : Math.min(amount, surplus);
+    if (available > epsilon) exportable.set(good, available);
+  }
 
-  return { poolIn, exportable, netNeed, consumerServed, conversionOutput };
+  return { poolIn, exportable, localSurplus, netNeed, consumerServed, conversionOutput };
 }
 
 export function solveFlowNetwork(
@@ -270,7 +279,9 @@ export function solveFlowNetwork(
     carriable.set(
       leg.id,
       localityOfNode.get(leg.from) === localityOfNode.get(leg.to) ? []
-        : network.goods.filter((good) => from.loadableGoods.has(good) && to.unloadableGoods.has(good)),
+        : network.goods.filter((good) => from.loadableGoods.has(good) && to.unloadableGoods.has(good) &&
+          (from.id.startsWith('warehouse:') || from.sources.some((source) => source.good === good) ||
+            from.conversions.some((conversion) => conversion.products.some((product) => product.good === good)))),
     );
     const locality = localityOfNode.get(leg.from);
     if (locality !== undefined) legsOutOfLocality[locality].push(leg);
@@ -346,7 +357,7 @@ export function solveFlowNetwork(
         for (const good of network.goods) {
           if (!node.unloadableGoods.has(good)) continue;
           let value = localNeed.get(node.id)?.get(good) ?? 0;
-          if (node.loadableGoods.has(good)) {
+          if (node.id.startsWith('warehouse:') && node.loadableGoods.has(good)) {
             for (const leg of outgoing.get(node.id) ?? []) {
               const onward = pull.get(leg.to)?.get(good) ?? 0;
               if (onward <= 0) continue;
@@ -382,15 +393,24 @@ export function solveFlowNetwork(
       const legs = legsOutOfLocality[index];
       if (legs.length === 0) return;
       const remaining = new Map(netting[index].exportable);
+      const stationRemaining = new Map(netting[index].localSurplus);
 
       const place = (good: Good, capOf: (leg: Leg) => number, weightOf: (leg: Leg) => number) => {
         const left = remaining.get(good) ?? 0;
         if (left <= epsilon) return;
-        const candidates = legs.filter((leg) => (carriable.get(leg.id) ?? []).includes(good));
+        const candidates = legs.filter((leg) => (carriable.get(leg.id) ?? []).includes(good) &&
+          (leg.from.startsWith('warehouse:') || (stationRemaining.get(good) ?? 0) > epsilon));
         if (candidates.length === 0) return;
         const caps = candidates.map((leg) => Math.max(0, Math.min(capOf(leg), legRemaining.get(leg.id) ?? 0)));
         const given = waterfill(left, candidates.map(weightOf), caps);
+        const stationTotal = candidates.reduce((sum, leg, position) =>
+          sum + (leg.from.startsWith('station:') ? given[position] : 0), 0);
+        const stationFactor = stationTotal > 0 ? Math.min(1, (stationRemaining.get(good) ?? 0) / stationTotal) : 1;
         candidates.forEach((leg, position) => {
+          if (leg.from.startsWith('station:')) {
+            given[position] *= stationFactor;
+            stationRemaining.set(good, (stationRemaining.get(good) ?? 0) - given[position]);
+          }
           if (given[position] <= epsilon) return;
           target.get(leg.id)?.set(good, (target.get(leg.id)?.get(good) ?? 0) + given[position]);
           legRemaining.set(leg.id, (legRemaining.get(leg.id) ?? 0) - given[position]);
@@ -488,6 +508,9 @@ export function solveFlowNetwork(
         for (const [good, amount] of goods) add(consumed, good, amount);
       }
       for (const good of network.goods) {
+        const stationOutbound = outbound.filter((leg) => leg.from.startsWith('station:'));
+        const stationShipped = stationOutbound.reduce((sum, leg) => sum + (flow.get(leg.id)?.get(good) ?? 0), 0);
+        restrict(stationOutbound, good, result.localSurplus.get(good) ?? 0, stationShipped);
         const received = inflowByLocality[index].get(good) ?? 0;
         const produced = (result.poolIn.get(good) ?? 0) - received;
         const sent = Math.min(shipped.get(good) ?? 0, result.exportable.get(good) ?? 0);

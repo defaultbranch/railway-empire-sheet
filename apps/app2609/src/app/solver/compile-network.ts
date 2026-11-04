@@ -143,9 +143,8 @@ export function compileFlowNetwork(state: Omit<GameState, 'gameDate'>): Compiled
     const content = hostContent(station.host, state, missingCoefficients);
     nodes.push({
       id: `station:${station.name}`,
-      // a city takes what it consumes and passes everything else on; a rural stop takes nothing
       unloadableGoods: content.consumed,
-      loadableGoods: new Set([...content.consumed, ...content.produced]),
+      loadableGoods: content.produced,
       sources: content.sources,
       sinks: content.sinks,
       conversions: content.conversions,

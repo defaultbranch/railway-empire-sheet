@@ -12,6 +12,11 @@ flows. A transfer-only warehouse must forward everything it receives; unused loc
 can remain unshipped, but imported goods cannot silently disappear into storage. Stops sharing
 a host pool goods locally rather than sending trains between themselves.
 
+Stations are not transshipment points. They load only their host's production surplus after
+local population and industry consumption; imports cannot increase that surplus. Only
+warehouses relay imported goods, restricted to their stocking lists. A station sharing a host
+with a warehouse still cannot load imported warehouse stock.
+
 Industry outputs and contributor figures are recomputed from the corrected flows. Allocation
 and conservation share the `maxIterations` budget; `converged` is true only when both settle.
 The correction only reduces flows, preserving leg capacity limits; it does not optimize routes

@@ -42,7 +42,7 @@ export type FlowNode = {
   // hosting rural businesses. Gates hosted sinks and transshipment alike, by good, never by volume
   unloadableGoods: Set<Good>;
   // what a train may pick up here: a warehouse's stocking list, or, for a station, whatever its
-  // host produces on top of the unloadable goods
+  // host produces; imported goods cannot be loaded again at stations
   loadableGoods: Set<Good>;
   // rural business production hosted here
   sources: Contribution[];

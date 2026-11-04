@@ -37,6 +37,32 @@ const onDemandLine = {
     cargo: 'goods',
 };
 
+test('city stations load only locally produced goods, not population purchases', () => {
+  const state = connectedState(onDemandLine);
+  const town = (network) => network.nodes.find((node) => node.id === 'station:Town');
+  const consumer = town(compileFlowNetwork(state).network);
+  assert.deepEqual([...consumer.unloadableGoods], ['Grain']);
+  assert.deepEqual([...consumer.loadableGoods], []);
+
+  state.industryTypes = [{ name: 'Grain producer', rawMaterials: [],
+    products: [{ good: 'Grain', amountByLevel: { 1: 56 } }] }];
+  state.industries = [{ city: 'Town', citySlot: 0, typeName: 'Grain producer', level: 1 }];
+  assert.deepEqual([...town(compileFlowNetwork(state).network).loadableGoods], ['Grain']);
+});
+
+test('compiled city stations cannot relay farm deliveries to another city', () => {
+  const state = connectedState(onDemandLine);
+  state.cities.push({ name: 'Other town', population: 1_000_000 });
+  state.trainStations.push({ name: 'Other town', host: { kind: 'city', city: 'Other town' }, tracks: 1 });
+  state.trainLines.push({ ...onDemandLine, name: 'Town to other town',
+    stops: [{ kind: 'station', name: 'Town' }, { kind: 'station', name: 'Other town' }] });
+  const { solution } = solveGoodsFlow(state);
+  assert.equal(solution.converged, true);
+  assert.equal(solution.legFlows.some((flow) => flow.leg.startsWith('Town to other town@')), false);
+  assert.equal(solution.contributorFlows.find((flow) =>
+    flow.contributor.kind === 'population' && flow.contributor.city === 'Other town').served, 0);
+});
+
 test('on-demand lines compile to one directed leg without travel duration', () => {
   const { network, droppedLines } = compileFlowNetwork(connectedState(onDemandLine));
 

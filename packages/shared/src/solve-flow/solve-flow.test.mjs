@@ -16,6 +16,53 @@ const connection = (line, from, to, capacity) => [
 ];
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-4, `${actual} != ${expected}`);
 
+test('city stations consume imports without relaying them to another city', () => {
+  const network = { goods: [good], nodes: [node('station:Logging camp', [source('Logging camp', 6.4)], [], false),
+    node('station:A', [], [sink('A', 1)]), node('station:B', [], [sink('B', 2)])],
+    legs: [...connection('Camp-A', 'station:Logging camp', 'station:A', 10),
+      ...connection('A-B', 'station:A', 'station:B', 10)] };
+  const result = solveFlowNetwork(network);
+  assert.equal(result.converged, true);
+  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'A').served, 1);
+  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'B').served, 0);
+  assert.equal(result.legFlows.some((flow) => flow.leg.startsWith('A-B@')), false);
+  near(result.nodeFlows.find((flow) => flow.node === 'station:A').unloaded, 1);
+});
+
+for (const production of [0.5, 3]) {
+  test(`city stations export only local industry surplus with production ${production}`, () => {
+    const city = node('station:A', [], [sink('A', 1)]);
+    city.conversions.push({ contributor: { kind: 'industry', city: 'A', slot: 0 },
+      rawMaterials: [], products: [{ good, amount: production }] });
+    const network = { goods: [good], nodes: [node('station:Farm', [source('Farm', 6.4)], [], false),
+      city, node('station:B', [], [sink('B', 4)])],
+      legs: [...connection('Farm-A', 'station:Farm', 'station:A', 10),
+        ...connection('A-B', 'station:A', 'station:B', 10)] };
+    const result = solveFlowNetwork(network);
+    assert.equal(result.converged, true);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'A').served, 1);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'B').served,
+      Math.max(0, production - 1));
+  });
+}
+
+test('a shared city warehouse does not make imported goods exportable at its station', () => {
+  const city = node('station:A', [], [sink('A', 1)]);
+  city.conversions.push({ contributor: { kind: 'industry', city: 'A', slot: 0 },
+    rawMaterials: [], products: [{ good, amount: 0.5 }] });
+  const warehouse = { ...city, id: 'warehouse:A' };
+  const network = { goods: [good], nodes: [node('station:Farm', [source('Farm', 6.4)], [], false),
+    city, warehouse, node('station:B', [], [sink('B', 2)]), node('station:C', [], [sink('C', 2)])],
+    legs: [...connection('Farm-Warehouse', 'station:Farm', 'warehouse:A', 10),
+      ...connection('Station-B', 'station:A', 'station:B', 10),
+      ...connection('Warehouse-C', 'warehouse:A', 'station:C', 10)] };
+  const result = solveFlowNetwork(network);
+  assert.equal(result.converged, true);
+  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'B').served, 0);
+  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'C').served, 2);
+  assert.equal(result.legFlows.some((flow) => flow.leg.startsWith('Station-B@')), false);
+});
+
 for (const accepts of [false, true]) {
   test(`warehouse conserves flow with ${accepts ? 'a receiving warehouse' : 'a rural station'} as producer`, () => {
     const farm = accepts ? 'warehouse:Farm' : 'station:Farm';
@@ -27,7 +74,7 @@ for (const accepts of [false, true]) {
         ...connection('Hub-A', 'warehouse:Hub', 'station:A', 3),
         ...connection('Hub-B', 'warehouse:Hub', 'station:B', 4)],
     };
-    const result = solveFlowNetwork(network);
+    const result = solveFlowNetwork(network, { damping: 0.5, tolerance: 1e-6, maxIterations: 200 });
     assert.equal(result.converged, true);
     const hub = result.nodeFlows.find((flow) => flow.node === 'warehouse:Hub');
     near(hub.loaded, hub.unloaded);
