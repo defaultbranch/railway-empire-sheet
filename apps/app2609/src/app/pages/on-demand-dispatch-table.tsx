@@ -12,6 +12,7 @@ import {
 } from './dispatch-schedule';
 
 const weeklyFlowFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+const weeklyYieldFormat = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 const pathForStop = (stop: StopRef) =>
   stop.kind === 'station' ? pathForStation(stop) : pathForWarehouse(stop);
 
@@ -19,7 +20,7 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
   const { trainLines, replaceTrainLines } = useTrainLines();
   const { gameDate, setGameDate } = useGameDate();
   const { navigate } = useNavigation();
-  const { network, solution, droppedLines } = useGoodsFlow();
+  const { network, solution, droppedLines, revenue } = useGoodsFlow();
   const onDemandLines = trainLines.filter((line): line is OnDemandTrainLine => line.type === 'OnDemandTrainLine' && (
     stop === undefined || line.stops.some((lineStop) => lineStop.kind === stop.kind && lineStop.name === stop.name)
   ));
@@ -34,6 +35,7 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
   }
 
   const droppedByLine = new Map(droppedLines.map((entry) => [entry.line, entry.reason]));
+  const revenueByLine = new Map(revenue.lines.map((entry) => [entry.line, entry.weeklyYield]));
   const unknownReason = !solution.converged
     ? 'The goods-flow solver did not converge.'
     : solution.missingCoefficients.length > 0
@@ -65,6 +67,7 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
               <th scope="col">Origin</th>
               <th scope="col">Destination</th>
               <th scope="col">Weekly flow</th>
+              <th scope="col" title="Total attributed yield for this on-demand line">Yield / week</th>
               <th scope="col">Last departure</th>
               <th scope="col">Next departure</th>
               <th scope="col" aria-label="Actions" />
@@ -73,7 +76,7 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
           <tbody>
             {schedules.length === 0 ? (
               <tr>
-                <td colSpan={7} className="on-demand-dispatch-page__empty">
+                <td colSpan={8} className="on-demand-dispatch-page__empty">
                   {stop === undefined ? 'No on-demand train lines.' : 'No on-demand train lines connect here.'}
                 </td>
               </tr>
@@ -105,6 +108,11 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
                 ))}
                 <td title={schedule.reason}>
                   {schedule.weeklyFlow === undefined ? 'Unknown' : weeklyFlowFormat.format(schedule.weeklyFlow)}
+                </td>
+                <td title={droppedByLine.get(schedule.line.name)}>
+                  {droppedByLine.has(schedule.line.name) ? 'Not modelled'
+                    : !revenue.journeyTimeKnown ? 'Unknown'
+                      : weeklyYieldFormat.format(revenueByLine.get(schedule.line.name) ?? 0)}
                 </td>
                 <td>{schedule.line.lastDispatchDate ?? '--'}</td>
                 <td title={schedule.reason}>
