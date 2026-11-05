@@ -3,6 +3,9 @@ import { useGameDate, useTrainLines } from '../game-state';
 import { useNavigation } from '../navigation';
 import { useGoodsFlow } from '../solver';
 import { pathForTrainLine } from '../entities/train-line-routes';
+import { pathForStation } from '../entities/station-routes';
+import { pathForWarehouse } from '../entities/warehouse-routes';
+import type { StopRef } from '../game-state/types';
 import {
   recordOnDemandDeparture,
   scheduleOnDemandLine,
@@ -10,6 +13,8 @@ import {
 } from './dispatch-schedule';
 
 const weeklyFlowFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
+const pathForStop = (stop: StopRef) =>
+  stop.kind === 'station' ? pathForStation(stop) : pathForWarehouse(stop);
 
 export function OnDemandDispatchPage() {
   const { trainLines, replaceTrainLines } = useTrainLines();
@@ -82,8 +87,19 @@ export function OnDemandDispatchPage() {
                     {schedule.line.name}
                   </a>
                 </td>
-                <td>{schedule.line.stops[0].name}</td>
-                <td>{schedule.line.stops[1].name}</td>
+                {schedule.line.stops.map((stop) => (
+                  <td key={`${stop.kind}-${stop.name}`}>
+                    <a
+                      href={pathForStop(stop)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        navigate(pathForStop(stop));
+                      }}
+                    >
+                      {stop.name}
+                    </a>
+                  </td>
+                ))}
                 <td title={schedule.reason}>
                   {schedule.weeklyFlow === undefined ? 'Unknown' : weeklyFlowFormat.format(schedule.weeklyFlow)}
                 </td>
