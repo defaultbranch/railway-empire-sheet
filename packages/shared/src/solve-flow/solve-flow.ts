@@ -170,6 +170,7 @@ function netLocality(
   locality: Locality,
   inflow: Map<Good, number>,
   previousOutput: Map<string, Map<Good, number>>,
+  utilization: Map<string, number>,
 ): LocalityNetting {
   const production = new Map<Good, number>();
   for (const source of locality.sources) add(production, source.good, source.amount);
@@ -182,7 +183,10 @@ function netLocality(
   for (const sink of locality.sinks) add(populationDemand, sink.good, sink.amount);
   const industryDemand = new Map<Good, number>();
   for (const conversion of locality.conversions) {
-    for (const rawMaterial of conversion.rawMaterials) add(industryDemand, rawMaterial.good, rawMaterial.amount);
+    const multiplier = utilization.get(contributorKey(conversion.contributor)) ?? 1;
+    for (const rawMaterial of conversion.rawMaterials) {
+      add(industryDemand, rawMaterial.good, rawMaterial.amount * multiplier);
+    }
   }
 
   const poolIn = new Map<Good, number>();
@@ -211,9 +215,11 @@ function netLocality(
     const taken = Math.min(demanded, available);
     pool.set(good, available - taken);
     for (const conversion of locality.conversions) {
-      const need = conversion.rawMaterials.find((rawMaterial) => rawMaterial.good === good)?.amount ?? 0;
+      const key = contributorKey(conversion.contributor);
+      const need = (conversion.rawMaterials.find((rawMaterial) => rawMaterial.good === good)?.amount ?? 0) *
+        (utilization.get(key) ?? 1);
       if (need <= 0) continue;
-      nested(consumerServed, contributorKey(conversion.contributor), good, (taken * need) / demanded);
+      nested(consumerServed, key, good, (taken * need) / demanded);
     }
   }
 
@@ -221,7 +227,7 @@ function netLocality(
   for (const conversion of locality.conversions) {
     const key = contributorKey(conversion.contributor);
     const delivered = consumerServed.get(key);
-    let multiplier = 1;
+    let multiplier = utilization.get(key) ?? 1;
     for (const rawMaterial of conversion.rawMaterials) {
       if (rawMaterial.amount <= 0) continue;
       multiplier = Math.min(multiplier, (delivered?.get(rawMaterial.good) ?? 0) / rawMaterial.amount);
@@ -304,6 +310,7 @@ export function solveFlowNetwork(
     network.legs.map((leg) => [leg.id, new Map((carriable.get(leg.id) ?? []).map((good) => [good, leg.capacity]))]),
   );
   let conversionOutput = new Map<string, Map<Good, number>>();
+  const utilization = new Map<string, number>();
   let netting: LocalityNetting[] = [];
   let iterations = 0;
   let converged = false;
@@ -325,14 +332,21 @@ export function solveFlowNetwork(
   while (iterations < options.maxIterations) {
     iterations++;
     const inflowByLocality = currentInflow();
+    let largestChange = 0;
 
     netting = localities.map((locality, index) =>
-      netLocality(locality, inflowByLocality[index], conversionOutput),
+      netLocality(locality, inflowByLocality[index], conversionOutput, utilization),
     );
-    conversionOutput = new Map();
+    const nextOutput = new Map<string, Map<Good, number>>();
     for (const result of netting) {
-      for (const [key, output] of result.conversionOutput) conversionOutput.set(key, output);
+      for (const [key, output] of result.conversionOutput) {
+        for (const [good, amount] of output) {
+          largestChange = Math.max(largestChange, Math.abs(amount - (conversionOutput.get(key)?.get(good) ?? 0)));
+        }
+        nextOutput.set(key, output);
+      }
     }
+    conversionOutput = nextOutput;
 
     // backwards pass: unmet demand spreads over the stops that can take the good, then upstream
     // through every leg that can carry it, bounded by the capacity last rationed to that good
@@ -432,7 +446,6 @@ export function solveFlowNetwork(
       for (const good of remaining.keys()) place(good, (leg) => headroom(leg, good), (leg) => leg.capacity);
     });
 
-    let largestChange = 0;
     for (const leg of network.legs) {
       const current = flow.get(leg.id);
       const wanted = target.get(leg.id);
@@ -482,7 +495,7 @@ export function solveFlowNetwork(
     iterations++;
     const inflowByLocality = currentInflow();
     netting = localities.map((locality, index) =>
-      netLocality(locality, inflowByLocality[index], conversionOutput),
+      netLocality(locality, inflowByLocality[index], conversionOutput, utilization),
     );
     const reductions = new Map<LegId, Map<Good, number>>();
     const restrict = (legs: Leg[], good: Good, allowed: number, total: number) => {
@@ -495,6 +508,7 @@ export function solveFlowNetwork(
       }
     };
 
+    let largestChange = 0;
     localities.forEach((locality, index) => {
       const result = netting[index];
       const inbound = locality.nodes.flatMap((node) => incoming.get(node.id) ?? []);
@@ -506,6 +520,22 @@ export function solveFlowNetwork(
       const consumed = new Map<Good, number>();
       for (const goods of result.consumerServed.values()) {
         for (const [good, amount] of goods) add(consumed, good, amount);
+      }
+      for (const conversion of locality.conversions) {
+        const key = contributorKey(conversion.contributor);
+        const before = utilization.get(key) ?? 1;
+        let needed = 0;
+        for (const product of conversion.products) {
+          if (product.amount <= 0) continue;
+          const available = result.poolIn.get(product.good) ?? 0;
+          const used = (consumed.get(product.good) ?? 0) + (shipped.get(product.good) ?? 0);
+          const fraction = available > epsilon ? Math.min(1, used / available) : 0;
+          const produced = conversionOutput.get(key)?.get(product.good) ?? 0;
+          needed = Math.max(needed, produced * fraction / product.amount);
+        }
+        const next = Math.min(before, needed);
+        largestChange = Math.max(largestChange, before - next);
+        utilization.set(key, next);
       }
       for (const good of network.goods) {
         const stationOutbound = outbound.filter((leg) => leg.from.startsWith('station:'));
@@ -519,7 +549,6 @@ export function solveFlowNetwork(
       }
     });
 
-    let largestChange = 0;
     for (const [leg, goods] of reductions) {
       for (const [good, factor] of goods) {
         const before = flow.get(leg)?.get(good) ?? 0;
@@ -544,7 +573,9 @@ export function solveFlowNetwork(
     }
   }
   const finalInflow = currentInflow();
-  netting = localities.map((locality, index) => netLocality(locality, finalInflow[index], conversionOutput));
+  netting = localities.map((locality, index) =>
+    netLocality(locality, finalInflow[index], conversionOutput, utilization),
+  );
 
   return {
     ...readResults(network, localities, localityOfNode, legsOutOfLocality, netting, flow),

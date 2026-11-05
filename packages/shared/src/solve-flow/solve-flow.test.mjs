@@ -168,10 +168,10 @@ test('industry conversion and local population priority survive conservation', (
     legs: [...connection('Farm-Factory', 'station:Farm', 'station:Factory', 10),
       ...connection('Factory-Hub', 'station:Factory', 'warehouse:Hub', 10),
       ...connection('Hub-A', 'warehouse:Hub', 'station:A', 10)] };
-  const result = solveFlowNetwork(network, { damping: 0.5, tolerance: 1e-4, maxIterations: 1000 });
+  const result = solveFlowNetwork(network, { damping: 0.5, tolerance: 1e-6, maxIterations: 1000 });
   assert.equal(result.converged, true);
   for (const flow of result.nodeFlows.filter((flow) => flow.node === 'warehouse:Hub')) near(flow.loaded, flow.unloaded);
-  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'rural business').served, 2);
+  near(result.contributorFlows.find((flow) => flow.contributor.kind === 'rural business').served, 1.6);
   near(result.contributorFlows.find((flow) => flow.contributor.kind === 'industry' && flow.good === 'Beer').served, 0.8);
   near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'Factory').served, 0.3);
   near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population' && flow.contributor.city === 'A').served, 0.5);
@@ -190,6 +190,35 @@ test('stops sharing one producer use local pooling instead of shipping to themse
   near(result.contributorFlows.filter((flow) => flow.contributor.kind === 'rural business')
     .reduce((sum, flow) => sum + flow.served, 0), 2);
 });
+
+for (const [demand, localWood] of [[0, false], [0.2, false], [0.2, true]]) {
+  test(`local sawmill and furniture industry only consume inputs for furniture demand ${demand}, local wood ${localWood}`, () => {
+    const goods = ['Wood', 'Lumber', 'Furniture'];
+    const camp = node('station:Camp', [{ ...source('Camp', 3.5), good: 'Wood' }], [], false);
+    const city = node('station:New York', [], [
+      { ...sink('New York', demand), good: 'Furniture' },
+    ]);
+    city.conversions = [
+      { contributor: { kind: 'industry', city: 'New York', slot: 0 },
+        rawMaterials: [{ good: 'Wood', amount: 1.6 }], products: [{ good: 'Lumber', amount: 1.6 }] },
+      { contributor: { kind: 'industry', city: 'New York', slot: 1 },
+        rawMaterials: [{ good: 'Lumber', amount: 0.4 }], products: [{ good: 'Furniture', amount: 0.8 }] },
+    ];
+    camp.loadableGoods = new Set(['Wood']);
+    city.loadableGoods = new Set(goods);
+    city.unloadableGoods = new Set(goods);
+    if (localWood) city.sources = camp.sources;
+    const result = solveFlowNetwork({ goods, nodes: localWood ? [city] : [camp, city],
+      legs: localWood ? [] : connection('Camp-City', camp.id, city.id, 10) });
+    assert.equal(result.converged, true);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'rural business').served, demand / 2);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'industry' &&
+      flow.contributor.slot === 0 && flow.good === 'Wood').served, demand / 2);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'industry' &&
+      flow.contributor.slot === 1 && flow.good === 'Lumber').served, demand / 2);
+    near(result.contributorFlows.find((flow) => flow.contributor.kind === 'population').served, demand);
+  });
+}
 
 test('exhausting the iteration budget does not claim convergence', () => {
   const network = { goods: [good], nodes: [node('station:Farm', [source('Farm', 6.4)], [], false),
