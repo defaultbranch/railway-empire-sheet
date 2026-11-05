@@ -16,6 +16,7 @@ import type { LegFlow } from '../solver';
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
 import { FlowSankey } from '../pages/flow-sankey';
 import { TrainLineConnectionForm } from '../pages/train-line-connection-form';
+import { OnDemandDispatchTable } from '../pages/on-demand-dispatch-table';
 
 const perWeek = (units: number) => units.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
@@ -172,6 +173,10 @@ export function StationPage({ slug }: { slug: string }) {
             ))}
           </ul>
         )}
+      </section>
+      <section className="station-page__dispatch">
+        <h2>On-demand dispatch</h2>
+        <OnDemandDispatchTable stop={{ kind: 'station', name: station.name }} />
       </section>
       <section className="station-page__train-lines">
         <h2>Train lines</h2>

@@ -17,6 +17,7 @@ import { warehouseGoodSlotsByTracks, warehouseTrackCounts, type WarehouseTrackCo
 import { buildWarehouseFlowDiagram } from '../pages/goods-flow';
 import { FlowSankey } from '../pages/flow-sankey';
 import { TrainLineConnectionForm } from '../pages/train-line-connection-form';
+import { OnDemandDispatchTable } from '../pages/on-demand-dispatch-table';
 import type { WarehouseGoodSimulation } from '../solver/warehouse-recommendations';
 import type { WarehouseRecommendationsRequest } from '../solver/warehouse-recommendations.worker';
 
@@ -328,6 +329,10 @@ export function WarehousePage({ slug }: { slug: string }) {
             ))}
           </ul>
         )}
+      </section>
+      <section className="warehouse-page__dispatch">
+        <h2>On-demand dispatch</h2>
+        <OnDemandDispatchTable stop={{ kind: 'warehouse', name: warehouse.name }} />
       </section>
       <section className="warehouse-page__train-lines">
         <h2>Train lines</h2>
