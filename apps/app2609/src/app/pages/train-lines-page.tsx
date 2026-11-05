@@ -38,10 +38,11 @@ export function TrainLinesPage() {
   const percentage = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 1 });
   const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
 
-  const yieldPerTrain = (line: (typeof trainLines)[number]) =>
-    droppedByLine.has(line.name) || line.type === 'OnDemandTrainLine' || !revenue.journeyTimeKnown
-      ? undefined
-      : revenueByLine.get(line.name)?.weeklyYieldPerTrain;
+  const yieldPerTrainOrLine = (line: (typeof trainLines)[number]) => {
+    if (droppedByLine.has(line.name) || !revenue.journeyTimeKnown) return undefined;
+    const lineRevenue = revenueByLine.get(line.name);
+    return line.type === 'OnDemandTrainLine' ? lineRevenue?.weeklyYield : lineRevenue?.weeklyYieldPerTrain;
+  };
 
   const sortedLines = [...trainLines].sort((left, right) => {
     const direction = sort.descending ? -1 : 1;
@@ -49,12 +50,12 @@ export function TrainLinesPage() {
     const leftValue = sort.key === 'duration'
       ? left.type === 'ContinuousTrainLine' ? left.tourDays : left.travelDays
       : sort.key === 'yield'
-        ? yieldPerTrain(left)
+        ? yieldPerTrainOrLine(left)
         : utilizationByLine.get(left.name);
     const rightValue = sort.key === 'duration'
       ? right.type === 'ContinuousTrainLine' ? right.tourDays : right.travelDays
       : sort.key === 'yield'
-        ? yieldPerTrain(right)
+        ? yieldPerTrainOrLine(right)
         : utilizationByLine.get(right.name);
     if (leftValue === undefined && rightValue !== undefined) return 1;
     if (rightValue === undefined && leftValue !== undefined) return -1;
@@ -86,7 +87,15 @@ export function TrainLinesPage() {
                 <th>Service</th>
                 {sortHeader('duration', 'Duration (days)')}
             <th>Cargo</th>
-            {sortHeader('yield', 'Yield / train / week')}
+            <th title="Per train for continuous service; total line yield for on-demand service">
+              <button
+                type="button"
+                aria-sort={sort.key === 'yield' ? sort.descending ? 'descending' : 'ascending' : 'none'}
+                onClick={() => setSort({ key: 'yield', descending: sort.key === 'yield' ? !sort.descending : false })}
+              >
+                Yield / week <span aria-hidden="true">{sort.key === 'yield' ? sort.descending ? '↓' : '↑' : '↕'}</span>
+              </button>
+            </th>
             {sortHeader('utilization', 'Utilization')}
             <th />
           </tr>
@@ -131,8 +140,8 @@ export function TrainLinesPage() {
               <td>{(line.type === 'ContinuousTrainLine' ? line.tourDays : line.travelDays) ?? '—'}</td>
               <td>{line.cargo}</td>
               <td title={droppedByLine.get(line.name)}>
-                {droppedByLine.has(line.name) ? 'Not modelled' : line.type === 'OnDemandTrainLine' ? '—'
-                  : !revenue.journeyTimeKnown ? 'Unknown' : currency.format(revenueByLine.get(line.name)?.weeklyYieldPerTrain ?? 0)}
+                {droppedByLine.has(line.name) ? 'Not modelled'
+                  : !revenue.journeyTimeKnown ? 'Unknown' : currency.format(yieldPerTrainOrLine(line) ?? 0)}
               </td>
               <td title={droppedByLine.get(line.name)}>
                 {droppedByLine.has(line.name) ? 'Not modelled' : line.type === 'OnDemandTrainLine' ? '—'
