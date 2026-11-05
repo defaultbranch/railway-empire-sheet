@@ -6,6 +6,7 @@ import { pathForTrainLine } from '../entities/train-line-routes';
 import { pathForStation } from '../entities/station-routes';
 import { pathForWarehouse } from '../entities/warehouse-routes';
 import {
+  continuousTrainEquivalentCount,
   recordOnDemandDeparture,
   scheduleOnDemandLine,
   sortDispatchSchedules,
@@ -13,6 +14,7 @@ import {
 
 const weeklyFlowFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 const weeklyYieldFormat = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+const trainEquivalentFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 const pathForStop = (stop: StopRef) =>
   stop.kind === 'station' ? pathForStation(stop) : pathForWarehouse(stop);
 
@@ -45,6 +47,10 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
     const reason = droppedByLine.get(line.name) ?? unknownReason;
     return scheduleOnDemandLine(line, reason === undefined ? flowByLine.get(line.name) ?? 0 : undefined, gameDate, reason);
   }));
+  const trainEquivalentByLine = new Map(schedules.map(({ line, weeklyFlow }) => {
+    const equivalents = continuousTrainEquivalentCount(weeklyFlow, line.travelDays);
+    return [line.name, equivalents === undefined ? 'Unknown' : `N=${trainEquivalentFormat.format(equivalents)}`];
+  }));
 
   return (
     <div className="on-demand-dispatch-page">
@@ -67,6 +73,9 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
               <th scope="col">Origin</th>
               <th scope="col">Destination</th>
               <th scope="col">Weekly flow</th>
+              <th scope="col" title="Equivalent number of continuous trains needed for this flow. A full-time on-demand line is N=2.">
+                Train equiv. (N)
+              </th>
               <th scope="col" title="Total attributed yield for this on-demand line">Yield / week</th>
               <th scope="col">Last departure</th>
               <th scope="col">Next departure</th>
@@ -76,7 +85,7 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
           <tbody>
             {schedules.length === 0 ? (
               <tr>
-                <td colSpan={8} className="on-demand-dispatch-page__empty">
+                <td colSpan={9} className="on-demand-dispatch-page__empty">
                   {stop === undefined ? 'No on-demand train lines.' : 'No on-demand train lines connect here.'}
                 </td>
               </tr>
@@ -108,6 +117,9 @@ export function OnDemandDispatchTable({ stop }: { stop?: StopRef }) {
                 ))}
                 <td title={schedule.reason}>
                   {schedule.weeklyFlow === undefined ? 'Unknown' : weeklyFlowFormat.format(schedule.weeklyFlow)}
+                </td>
+                <td title={droppedByLine.get(schedule.line.name)}>
+                  {droppedByLine.has(schedule.line.name) ? 'Not modelled' : trainEquivalentByLine.get(schedule.line.name)}
                 </td>
                 <td title={droppedByLine.get(schedule.line.name)}>
                   {droppedByLine.has(schedule.line.name) ? 'Not modelled'

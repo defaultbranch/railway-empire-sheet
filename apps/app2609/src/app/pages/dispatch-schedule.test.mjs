@@ -4,13 +4,14 @@ import { createServer } from 'vite';
 
 let server;
 let addGameDays;
+let continuousTrainEquivalentCount;
 let recordOnDemandDeparture;
 let scheduleOnDemandLine;
 let sortDispatchSchedules;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' });
-  ({ addGameDays, recordOnDemandDeparture, scheduleOnDemandLine, sortDispatchSchedules } =
+  ({ addGameDays, continuousTrainEquivalentCount, recordOnDemandDeparture, scheduleOnDemandLine, sortDispatchSchedules } =
     await server.ssrLoadModule('/src/app/pages/dispatch-schedule.ts'));
 });
 after(async () => { await server?.close(); });
@@ -19,6 +20,15 @@ const line = (name, lastDispatchDate) => ({
   type: 'OnDemandTrainLine', name,
   stops: [{ kind: 'station', name: 'Origin' }, { kind: 'station', name: 'Destination' }],
   cargo: 'goods', lastDispatchDate,
+});
+
+test('on-demand weekly flow converts to continuous train equivalents by one-way travel time', () => {
+  assert.equal(continuousTrainEquivalentCount(28, 1), 1);
+  assert.equal(continuousTrainEquivalentCount(56, 1), 2);
+  assert.equal(continuousTrainEquivalentCount(8, 7), 2);
+  assert.equal(continuousTrainEquivalentCount(0, undefined), 0);
+  assert.equal(continuousTrainEquivalentCount(8, undefined), undefined);
+  assert.equal(continuousTrainEquivalentCount(-1, 1), undefined);
 });
 
 test('calendar arithmetic is UTC-safe across pre-epoch, leap-day, and year boundaries', () => {

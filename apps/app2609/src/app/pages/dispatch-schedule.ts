@@ -9,6 +9,19 @@ export type DispatchSchedule = {
   reason: string | undefined;
 };
 
+export function continuousTrainEquivalentCount(
+  weeklyFlow: number | undefined,
+  onDemandTravelDays: number | undefined,
+): number | undefined {
+  if (weeklyFlow === undefined || !Number.isFinite(weeklyFlow) || weeklyFlow < 0) return undefined;
+  if (weeklyFlow === 0) return 0;
+  if (onDemandTravelDays === undefined || !Number.isFinite(onDemandTravelDays) || onDemandTravelDays <= 0) {
+    return undefined;
+  }
+  const equivalents = (weeklyFlow * onDemandTravelDays) / 28;
+  return Number.isFinite(equivalents) ? equivalents : undefined;
+}
+
 export function addGameDays(date: GameDateString, days: number): GameDateString | undefined {
   if (!GameDate.isInstance(date) || !Number.isSafeInteger(days) || days < 0) return undefined;
 
