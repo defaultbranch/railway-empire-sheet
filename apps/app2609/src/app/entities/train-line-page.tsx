@@ -1,6 +1,6 @@
 import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
-import { trainLineSlug } from './train-line-routes';
+import { pathForTrainLine, trainLineSlug } from './train-line-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
 import type { StopRef } from '../game-state/types';
@@ -19,7 +19,7 @@ const utilizationPercent = (units: number, capacity: number) =>
   capacity > 0 ? ((units / capacity) * 100).toLocaleString(undefined, { maximumFractionDigits: 1 }) : '0';
 
 export function TrainLinePage({ slug }: { slug: string }) {
-  const { trainLines } = useTrainLines();
+  const { trainLines, convertTrainLine, updateTrainLine } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines, revenue } = useGoodsFlow();
   const trainLine = trainLines.find((existing) => trainLineSlug(existing) === slug);
@@ -56,17 +56,59 @@ export function TrainLinePage({ slug }: { slug: string }) {
   return (
     <section className="train-line-page">
       <h1>{trainLine.name}</h1>
-      {trainLine.type === 'ContinuousTrainLine' ? (
-        <>
-          <p className="train-line-page__trains">Trains: {trainLine.trains}</p>
-          <p className="train-line-page__tour-days">Tour days: {trainLine.tourDays ?? '—'}</p>
-        </>
-      ) : (
-        <>
-          <p className="train-line-page__trains">Service: On demand</p>
-          <p className="train-line-page__tour-days">Travel days: {trainLine.travelDays ?? '—'}</p>
-        </>
-      )}
+      <button
+        type="button"
+        onClick={() => convertTrainLine(trainLine.name)}
+        disabled={trainLine.stops.length !== 2}
+        title={trainLine.stops.length !== 2 ? 'On-demand service requires exactly two stops' : undefined}
+      >
+        {trainLine.type === 'ContinuousTrainLine' ? 'Convert to on-demand' : 'Convert to continuous'}
+      </button>
+      <form
+        key={`${trainLine.name}-${trainLine.type}-${trainLine.type === 'ContinuousTrainLine' ? `${trainLine.tourDays}-${trainLine.trains}` : trainLine.travelDays}`}
+        style={{ display: 'grid', gap: '0.75rem', maxWidth: '24rem', marginBlock: '1rem' }}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const data = new FormData(form);
+          const name = String(data.get('name')).trim();
+          const nameInput = form.elements.namedItem('name') as HTMLInputElement;
+          const slug = trainLineSlug({ name });
+          nameInput.setCustomValidity(!slug ? 'Enter a name containing letters or numbers.'
+            : trainLines.some((existing) => existing.name !== trainLine.name && trainLineSlug(existing) === slug)
+              ? 'Another train line already uses this name or URL.' : '');
+          if (!form.reportValidity()) return;
+          const daysValue = String(data.get('days'));
+          updateTrainLine(trainLine.name, {
+            name,
+            days: daysValue === '' ? undefined : Number(daysValue),
+            trains: trainLine.type === 'ContinuousTrainLine' ? Number(data.get('trains')) : undefined,
+          });
+          if (name !== trainLine.name) navigate(pathForTrainLine({ name }));
+        }}
+      >
+        <label style={{ display: 'grid', gap: '0.25rem', minWidth: 0 }}>
+          Train name
+          <input name="name" required defaultValue={trainLine.name}
+            onChange={(event) => event.currentTarget.setCustomValidity('')} style={{ minWidth: 0 }} />
+        </label>
+        <label style={{ display: 'grid', gap: '0.25rem', minWidth: 0 }}>
+          {trainLine.type === 'ContinuousTrainLine' ? 'Tour days' : 'Travel days'}
+          <input name="days" type="number" min={0} step="any" placeholder="Unknown"
+            defaultValue={trainLine.type === 'ContinuousTrainLine' ? trainLine.tourDays ?? '' : trainLine.travelDays ?? ''}
+            onChange={(event) => event.currentTarget.setCustomValidity(
+              event.currentTarget.value !== '' && Number(event.currentTarget.value) <= 0 ? 'Duration must be greater than zero.' : '')}
+            style={{ minWidth: 0 }} />
+        </label>
+        {trainLine.type === 'ContinuousTrainLine' && (
+          <label style={{ display: 'grid', gap: '0.25rem', minWidth: 0 }}>
+            Number of trains
+            <input name="trains" type="number" required min={0} max={Number.MAX_SAFE_INTEGER} step={1}
+              defaultValue={trainLine.trains} style={{ minWidth: 0 }} />
+          </label>
+        )}
+        <button type="submit">Save changes</button>
+      </form>
       <p className="train-line-page__cargo">Cargo: {trainLine.cargo}</p>
       <section className="train-line-page__stops">
         <h2>Stops</h2>
