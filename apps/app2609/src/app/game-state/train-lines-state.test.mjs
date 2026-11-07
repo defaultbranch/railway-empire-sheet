@@ -4,12 +4,13 @@ import { createServer } from 'vite';
 
 let server;
 let convertTrainLineService;
+let removeTrainLinesUsingStation;
 let updateTrainLineDetails;
 let TrainLine;
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' });
-  ({ convertTrainLineService, updateTrainLineDetails } = await server.ssrLoadModule('/src/app/game-state/train-lines-state.tsx'));
+  ({ convertTrainLineService, removeTrainLinesUsingStation, updateTrainLineDetails } = await server.ssrLoadModule('/src/app/game-state/train-lines-state.tsx'));
   ({ TrainLine } = await server.ssrLoadModule('/src/app/game-state/types.ts'));
 });
 after(async () => { await server?.close(); });
@@ -18,6 +19,15 @@ const stops = [{ kind: 'station', name: 'Origin' }, { kind: 'warehouse', name: '
 const continuous = {
   type: 'ContinuousTrainLine', name: 'Connection', stops, cargo: 'goods', trains: 3, tourDays: 14,
 };
+
+test('removing a station also removes train lines that use it', () => {
+  const lines = [
+    continuous,
+    { ...continuous, name: 'Other Station', stops: [{ kind: 'station', name: 'Other' }, stops[1]] },
+    { ...continuous, name: 'Same Name Warehouse', stops: [{ kind: 'warehouse', name: 'Origin' }, stops[1]] },
+  ];
+  assert.deepEqual(removeTrainLinesUsingStation(lines, 'Origin'), lines.slice(1));
+});
 
 test('continuous conversion preserves direction and cargo and halves the round-trip duration', () => {
   const converted = convertTrainLineService(continuous);

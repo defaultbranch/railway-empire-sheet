@@ -1,5 +1,6 @@
 import { useTrainLines } from '../game-state/train-lines-state';
 import { useNavigation } from '../navigation';
+import { NavigatableHeading } from '../navigatable-heading';
 import { pathForTrainLine, trainLineSlug } from './train-line-routes';
 import { pathForStation } from './station-routes';
 import { pathForWarehouse } from './warehouse-routes';
@@ -19,7 +20,7 @@ const utilizationPercent = (units: number, capacity: number) =>
   capacity > 0 ? ((units / capacity) * 100).toLocaleString(undefined, { maximumFractionDigits: 1 }) : '0';
 
 export function TrainLinePage({ slug }: { slug: string }) {
-  const { trainLines, convertTrainLine, updateTrainLine } = useTrainLines();
+  const { trainLines, convertTrainLine, updateTrainLine, removeTrainLine } = useTrainLines();
   const { navigate } = useNavigation();
   const { network, solution, droppedLines, revenue } = useGoodsFlow();
   const trainLine = trainLines.find((existing) => trainLineSlug(existing) === slug);
@@ -32,6 +33,9 @@ export function TrainLinePage({ slug }: { slug: string }) {
     );
   }
 
+  const headings = [...trainLines]
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map((entry) => ({ title: entry.name, path: pathForTrainLine(entry) }));
   const legs = network.legs.filter((leg) => leg.line === trainLine.name);
   const dropped = droppedLines.find((entry) => entry.line === trainLine.name);
   const lineRevenue = revenue.lines.find((entry) => entry.line === trainLine.name);
@@ -55,7 +59,12 @@ export function TrainLinePage({ slug }: { slug: string }) {
 
   return (
     <section className="train-line-page">
-      <h1>{trainLine.name}</h1>
+      <NavigatableHeading
+        headings={headings}
+        currentPath={pathForTrainLine(trainLine)}
+        onNavigate={navigate}
+        navigationLabel="train line"
+      />
       <button
         type="button"
         onClick={() => convertTrainLine(trainLine.name)}
@@ -204,6 +213,16 @@ export function TrainLinePage({ slug }: { slug: string }) {
           </p>
         )}
       </section>
+      <button
+        className="entity-page__delete"
+        type="button"
+        onClick={() => {
+          removeTrainLine(trainLine.name);
+          navigate('/train-lines');
+        }}
+      >
+        Delete train line
+      </button>
     </section>
   );
 }

@@ -4,6 +4,10 @@ import { trainLineSlug } from '../entities/train-line-routes';
 
 export type TrainLineDetails = { name: string; days?: number; trains?: number };
 
+export function removeTrainLinesUsingStation(lines: TrainLine[], stationName: string): TrainLine[] {
+  return lines.filter((line) => !line.stops.some((stop) => stop.kind === 'station' && stop.name === stationName));
+}
+
 export function updateTrainLineDetails(lines: TrainLine[], name: string, details: TrainLineDetails): TrainLine[] {
   const line = lines.find((existing) => existing.name === name);
   const nextName = details.name.trim();
@@ -48,6 +52,7 @@ export type TrainLinesState = {
   trainLines: TrainLine[];
   addTrainLine: (line: TrainLine) => void;
   removeTrainLine: (name: string) => void;
+  removeTrainLinesUsingStation: (stationName: string) => void;
   convertTrainLine: (name: string) => void;
   updateTrainLine: (name: string, details: TrainLineDetails) => void;
   replaceTrainLines: (lines: TrainLine[]) => void;
@@ -72,6 +77,10 @@ export function TrainLinesProvider({
     setTrainLines((prev) => prev.filter((existing) => existing.name !== name));
   };
 
+  const removeLinesUsingStation = (stationName: string) => {
+    setTrainLines((prev) => removeTrainLinesUsingStation(prev, stationName));
+  };
+
   const convertTrainLine = (name: string) => {
     setTrainLines((prev) => prev.map((line) => line.name === name ? convertTrainLineService(line) ?? line : line));
   };
@@ -85,7 +94,7 @@ export function TrainLinesProvider({
   };
 
   return (
-    <TrainLinesContext.Provider value={{ trainLines, addTrainLine, removeTrainLine, convertTrainLine, updateTrainLine, replaceTrainLines }}>
+    <TrainLinesContext.Provider value={{ trainLines, addTrainLine, removeTrainLine, removeTrainLinesUsingStation: removeLinesUsingStation, convertTrainLine, updateTrainLine, replaceTrainLines }}>
       {children}
     </TrainLinesContext.Provider>
   );

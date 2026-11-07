@@ -42,7 +42,7 @@ function BalanceCell({ in: inAmount, out: outAmount }: { in?: number; out?: numb
 }
 
 export function StationPage({ slug }: { slug: string }) {
-  const { trainStations, replaceTrainStations } = useTrainStations();
+  const { trainStations, replaceTrainStations, removeTrainStation } = useTrainStations();
   const { warehouses } = useWarehouses();
   const { cities } = useCities();
   const { ruralBusinesses } = useRuralBusinesses();
@@ -292,6 +292,16 @@ export function StationPage({ slug }: { slug: string }) {
           onAdd={addTrainLine}
         />
       </section>
+      <button
+        className="entity-page__delete"
+        type="button"
+        onClick={() => {
+          removeTrainStation(station.name);
+          navigate('/stations-warehouses');
+        }}
+      >
+        Delete station
+      </button>
     </section>
   );
 }

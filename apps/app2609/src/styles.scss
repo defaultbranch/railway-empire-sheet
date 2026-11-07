@@ -448,6 +448,26 @@ body {
 	}
 }
 
+.entity-page__delete {
+	margin-top: 1.5rem;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid light-dark(#a12b23, #ff8b80);
+	background: light-dark(#fff0ee, #321e1c);
+	color: light-dark(#a12b23, #ffaaa2);
+	cursor: pointer;
+
+	&:hover {
+		border-color: #a12b23;
+		background: #a12b23;
+		color: #fff;
+	}
+
+	&:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+}
+
 .rural-business-type-page__table {
 	width: max-content;
 	max-width: 100%;

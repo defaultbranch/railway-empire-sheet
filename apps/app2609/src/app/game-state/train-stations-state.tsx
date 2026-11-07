@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { TrainStation } from './types';
+import { useTrainLines } from './train-lines-state';
 
 export type TrainStationsState = {
   trainStations: TrainStation[];
@@ -42,8 +43,15 @@ export function TrainStationsProvider({
 
 export function useTrainStations() {
   const context = useContext(TrainStationsContext);
+  const { removeTrainLinesUsingStation } = useTrainLines();
   if (context === undefined) {
     throw new Error('useTrainStations must be used within a TrainStationsProvider');
   }
-  return context;
+  return {
+    ...context,
+    removeTrainStation: (name: string) => {
+      context.removeTrainStation(name);
+      removeTrainLinesUsingStation(name);
+    },
+  };
 }
